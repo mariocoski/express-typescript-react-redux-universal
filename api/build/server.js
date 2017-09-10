@@ -1,0 +1,58 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var dotenv = require("dotenv");
+if (process.env.NODE_ENV !== 'production') {
+    dotenv.config();
+}
+var express = require("express");
+var v1_1 = require("./routes/v1");
+var routes_1 = require("./constants/routes");
+var mongoose = require("mongoose");
+var utils_1 = require("./utils");
+var bodyParser = require("body-parser");
+var logger = require("morgan");
+var routes_2 = require("./constants/routes");
+var auth_1 = require("./routes/auth");
+var app = express();
+var portCandidate = process.env.NODE_ENV === 'test' ?
+    process.env.TEST_PORT : process.env.PORT;
+var port = utils_1.resolvePort(portCandidate);
+app.use(bodyParser.urlencoded({ extended: false })); // Parses urlencoded bodies
+app.use(bodyParser.json()); // Send JSON responses
+app.use(logger('dev'));
+var db_host = process.env.DB_HOST || 'localhost';
+mongoose.connect(db_host, { useMongoClient: true });
+app.use(routes_1.API_V1, v1_1.default);
+app.use(routes_2.AUTH_ROUTE, auth_1.default);
+var server = app.listen(port);
+app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+    res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    next();
+});
+server.on('listening', function () {
+    console.log("Listening at http://localhost:" + port);
+});
+server.on('error', function (error) {
+    if (error.syscall !== "listen") {
+        throw error;
+    }
+    var bind = typeof port === "string"
+        ? "Pipe " + port
+        : "Port " + port;
+    switch (error.code) {
+        case "EACCES":
+            console.error(bind + " requires elevated privileges");
+            process.exit(1);
+            break;
+        case "EADDRINUSE":
+            console.error(bind + " is already in use");
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
+});
+exports.default = server;
