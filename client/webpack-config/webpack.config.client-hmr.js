@@ -11,7 +11,7 @@ const universalSrc = path.join(srcDir, 'universal');
 const clientInclude = [clientSrc, universalSrc];
 
 const vendor = [
-  'prop-types',
+  // 'prop-types',
   'react',
   'react-dom',
   'react-router',
@@ -41,14 +41,14 @@ module.exports = {
       'babel-polyfill/dist/polyfill.js',
       'react-hot-loader/patch',
       'webpack-hot-middleware/client?noInfo=false',
-      './client/app.jsx'
+      './client/app.js'
     ]
   },
   output: {
     filename: 'app.js',
     chunkFilename: '[name]_[chunkhash].js',
     path: path.join(rootDir, 'build'),
-    publicPath: '/dist/'
+    publicPath: '/static/'
   },
     resolve: {
       extensions: ['.js','.jsx'],

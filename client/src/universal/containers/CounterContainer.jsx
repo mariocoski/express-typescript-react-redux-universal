@@ -1,5 +1,5 @@
 import React from 'react';
 
-const CounterContainer = (props) => (<div>CounterContainer</div>);
+const CounterContainer = (props) => (<div>YOYOYO</div>);
 
 export default CounterContainer;

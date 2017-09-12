@@ -21,7 +21,7 @@ module.exports = {
     chunkFilename: '[name]_[chunkhash].js',
     filename: '[name].js',
     libraryTarget: 'commonjs2',
-    publicPath: '/dist/'
+    publicPath: '/static/'
   },
   resolve: {
     extensions: ['.js', '.jsx'],

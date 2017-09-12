@@ -13,7 +13,6 @@ const universalSrc = path.join(srcDir, 'universal');
 const clientInclude = [clientSrc, universalSrc];
 
 const vendor = [
-  'prop-types',
   'react',
   'react-dom',
   'react-router',
@@ -25,11 +24,12 @@ const vendor = [
 ];
 
 module.exports = {
+  devtool: 'source-map',
   context: srcDir,
   entry: {
     app: [
       'babel-polyfill/dist/polyfill.js',
-      './client/app.jsx'
+      './client/app.js'
     ],
     vendor
   },
@@ -37,7 +37,7 @@ module.exports = {
     filename: '[name]_[chunkhash].js',
     chunkFilename: '[name]_[chunkhash].js',
     path: buildDir,
-    publicPath: '/dist/'
+    publicPath: '/static/'
   },
   resolve: {
     extensions: ['.js','.jsx'],
@@ -104,7 +104,7 @@ module.exports = {
    new webpack.optimize.MinChunkSizePlugin({minChunkSize: 10}),
    new webpack.optimize.UglifyJsPlugin({compressor: {warnings: false}, comments: /(?:)/}),
    new AssetsPlugin({path: buildDir, filename: 'assets.json'}),
-   new webpack.NoEmitOnErrorsPlugin(),
+  //  new webpack.NoEmitOnErrorsPlugin(),
    new webpack.DefinePlugin({
      '__CLIENT__': true,
      '__PRODUCTION__': true,

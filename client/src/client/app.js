@@ -1,7 +1,7 @@
 import React from 'react';
 import {render} from 'react-dom';
 import {AppContainer} from 'react-hot-loader';
-import * as App from './containers/AppContainer';
+import  App from './containers/AppContainer';
 import { Provider } from 'react-redux';
 import configureStore from '../universal/store';
 import createHistory from 'history/createBrowserHistory';
