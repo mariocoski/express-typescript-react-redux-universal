@@ -3,7 +3,6 @@ const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const AssetsPlugin = require('assets-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-
 const rootDir = process.cwd();
 const srcDir  = path.join(rootDir, 'src');
 const buildDir = path.join(rootDir, 'build');
@@ -11,8 +10,11 @@ const buildDir = path.join(rootDir, 'build');
 const clientSrc    = path.join(srcDir, 'client');
 const universalSrc = path.join(srcDir, 'universal');
 const clientInclude = [clientSrc, universalSrc];
-
+const ExtractPlugin = new ExtractTextPlugin({
+  filename: '[name]_[chunkhash].css'
+});
 const vendor = [
+  'prop-types',
   'react',
   'react-dom',
   'react-router',
@@ -29,9 +31,11 @@ module.exports = {
   entry: {
     app: [
       'babel-polyfill/dist/polyfill.js',
-      './client/app.js'
+      './client/app.js',
+      
     ],
-    vendor
+    vendor,
+    main: './scss/main.scss'
   },
   output: {
     filename: '[name]_[chunkhash].js',
@@ -40,12 +44,22 @@ module.exports = {
     publicPath: '/static/'
   },
   resolve: {
-    extensions: ['.js','.jsx'],
+    extensions: ['.js','.jsx','.scss','.sass'],
     modules: [srcDir, 'node_modules'],
     unsafeCache: true
   },
   module: {
     loaders: [
+      {
+        test: /\.sa|css$/,
+        loader: ExtractPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            'css-loader', 'sass-loader'
+          ]
+        }),
+        include: path.resolve(srcDir, 'scss')
+      },
       {
         test: /\.(png|j|jpeg|gif|svg|woff|woff2)$/,
         use: {
@@ -55,7 +69,6 @@ module.exports = {
           }
         }
       },
- 
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
@@ -66,24 +79,6 @@ module.exports = {
         },
         include: clientInclude
       },
- 
-      {
-         test: /\.css|less$/,
-         include: clientInclude,
-         loaders: ExtractTextPlugin.extract({
-         fallback: 'style-loader',
-         use: [
-           {
-             loader: 'css-loader',
-             options: {
-               root: srcDir,
-               modules: true,
-               importLoaders: 1,
-               localIdentName: '[name]_[local]_[hash:base64:5]'
-            }}
-         ]})
-      }
- 
     ]
   },
   node: {
@@ -91,8 +86,8 @@ module.exports = {
     net: 'mock'
   },
   plugins: [
+    ExtractPlugin,
    new webpack.NamedModulesPlugin(),
-   new ExtractTextPlugin('[name].css'),
    new webpack.NormalModuleReplacementPlugin(/\.\.\/routes\/static/, '../routes/async'),
    new webpack.optimize.CommonsChunkPlugin({
      names: ['vendor', 'manifest'],

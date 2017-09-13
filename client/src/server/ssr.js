@@ -8,7 +8,7 @@ import Html from './Html.js';
 
 function renderApp(url, res, store, assets) {
   const context = {};
-
+  
   const html = renderToString(
     <Html
       title='ssr'

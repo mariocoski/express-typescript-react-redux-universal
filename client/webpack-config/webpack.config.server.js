@@ -1,13 +1,11 @@
 const path =  require('path');
 const webpack =  require('webpack');
-const ExtractTextPlugin =  require('extract-text-webpack-plugin');
 
 const rootDir = process.cwd();
 const srcDir  = path.join(rootDir, 'src');
 const build = path.join(rootDir, 'build');
 const universal = path.join(srcDir, 'universal');
 const server = path.join(srcDir, 'server');
-
 const serverInclude = [server, universal];
 
 module.exports = {
@@ -29,7 +27,6 @@ module.exports = {
   },
   plugins: [
     new webpack.NoEmitOnErrorsPlugin(),
-    new ExtractTextPlugin('[name].css'),
     new webpack.optimize.UglifyJsPlugin({compressor: {warnings: false}}),
     new webpack.optimize.LimitChunkCountPlugin({maxChunks: 1}),
     new webpack.DefinePlugin({
@@ -49,24 +46,6 @@ module.exports = {
           }
         }
       },
-      {
-        test: /\.css$/,
-        include: serverInclude,
-        loader: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                root: srcDir,
-                modules: true,
-                importLoaders: 1,
-                localIdentName: '[name]_[local]_[hash:base64:5]'
-              }
-            }
-          ]})
-      },
-
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',

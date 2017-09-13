@@ -5,6 +5,7 @@ import  App from './containers/AppContainer';
 import { Provider } from 'react-redux';
 import configureStore from '../universal/store';
 import createHistory from 'history/createBrowserHistory';
+import '../scss/main.scss';
 
 const history = createHistory();
 const store = configureStore(history);
@@ -27,4 +28,5 @@ if (module.hot) {
     const nextApp = require('./containers/AppContainer.js');
     renderApp(nextApp);
   });
+ 
 }

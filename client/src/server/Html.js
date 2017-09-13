@@ -26,6 +26,7 @@ class Html extends Component {
     const {
       manifest,
       app,
+      main,
       vendor
     } = assets || {};
 
@@ -48,7 +49,7 @@ class Html extends Component {
          <meta charSet="utf-8"/>
          <title>{title}</title>
 
-         {/* {PROD && <link rel="stylesheet" href="/static/prerender.css" type="text/css" />} */}
+          <link rel="stylesheet" href={PROD ? main.css:'/static/main.css'} type="text/css" />
        </head>
        <body>
          <script dangerouslySetInnerHTML={{__html: initialState}} />

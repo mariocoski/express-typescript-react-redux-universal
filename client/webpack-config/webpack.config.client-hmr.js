@@ -1,17 +1,14 @@
 const path = require('path');
 const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-
 const rootDir = process.cwd();
 const srcDir  = path.join(rootDir, 'src');
 const buildDir = path.join(rootDir, 'build');
-
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 const clientSrc    = path.join(srcDir, 'client');
 const universalSrc = path.join(srcDir, 'universal');
 const clientInclude = [clientSrc, universalSrc];
-
 const vendor = [
-  // 'prop-types',
+  'prop-types',
   'react',
   'react-dom',
   'react-router',
@@ -32,8 +29,12 @@ const babelQuery = {
       "react-hot-loader/babel"
     ]
   };
-
-module.exports = {
+  var ExtractPlugin = new ExtractTextPlugin({
+    filename: 'main.css',
+    allChunks: true
+  });
+module.exports =
+  {
   devtool: 'eval',
   context: srcDir,
   entry: {
@@ -42,16 +43,22 @@ module.exports = {
       'react-hot-loader/patch',
       'webpack-hot-middleware/client?noInfo=false',
       './client/app.js'
-    ]
+    ],
+    // main: [
+    //   // 'babel-polyfill/dist/polyfill.js',
+    //   'react-hot-loader/patch',
+    //   'webpack-hot-middleware/client?noInfo=false',
+    //   './scss/main.scss'
+    // ]
   },
   output: {
-    filename: 'app.js',
+    filename: '[name].js',
     chunkFilename: '[name]_[chunkhash].js',
     path: path.join(rootDir, 'build'),
     publicPath: '/static/'
   },
     resolve: {
-      extensions: ['.js','.jsx'],
+      extensions: ['.js','.jsx', '.scss','.css', '.sass'],
       modules: [srcDir, 'node_modules']
     },
     module: {
@@ -65,29 +72,32 @@ module.exports = {
             }
           }
         },
+        {
+          test: /\.sa|css$/,
+          // loaders: [ 'style-loader','css-loader', 'sass-loader'],
+         
+          include: path.resolve(srcDir, 'scss'),
+          exclude: clientInclude,
+          // loader: ExtractPlugin.extract({
+          //   use: [
+          //     'css-loader', 'sass-loader'
+          //   ]
+          // })
+          use: ['css-hot-loader'].concat(ExtractPlugin.extract({
+            fallback: 'style-loader',
+            use: ['css-loader','sass-loader']
+          })),
+        },
         { 
           test: /\.jsx?$/,
           loader: 'babel-loader',
           query: babelQuery,
           include: clientInclude
         },
-        {
-          test: /\.css$/,
-          include: clientInclude,
-          use: [
-            {loader: 'style-loader'},
-            {loader: 'css-loader',
-            options: {
-              root: srcDir,
-              modules: true,
-              importLoaders: 1,
-              localIdentName: '[name]_[local]_[hash:base64:5]'
-            }}
-         ]
-        }
       ]
     },
     plugins: [
+         ExtractPlugin,
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
