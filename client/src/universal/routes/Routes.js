@@ -21,6 +21,7 @@ class Routes extends Component {
         <div>
           <Route exact location={location} path='/' component={RouteMap.Home} />
           <Route exact location={location} path='/counter' component={RouteMap.Counter} />
+          <Route exact location={location} path='/contact' component={RouteMap.Contact} />
         </div>
       </AppContainer>
     );

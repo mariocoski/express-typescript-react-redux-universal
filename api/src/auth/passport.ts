@@ -1,4 +1,3 @@
-
 import * as passport from 'passport';
 import {User} from '../models/user';
 import {Strategy as JWTStrategy} from 'passport-jwt';
@@ -24,10 +23,19 @@ const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
     });
 });
 
+function env(key): string {
+    const myVal: string | undefined = process.env[key];
+    if(myVal === undefined){
+        throw new Error(`No ENV ${key} not found`);
+    }
+    return myVal;
+}
+
+
  
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.JWT_SECRET || 'secret',
+  secretOrKey: env('JWT_SECRET'),
   session: false
 };
 

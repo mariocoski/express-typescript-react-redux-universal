@@ -16,7 +16,8 @@ const vendor = [
   'react-redux',
   'redux',
   'history',
-  'redux-thunk'
+  'redux-thunk',
+  'semantic-ui-react'
 ];
 const babelQuery = {
     "presets": [
@@ -27,7 +28,8 @@ const babelQuery = {
     "plugins": [
       "transform-decorators-legacy",
       "react-hot-loader/babel"
-    ]
+    ],
+    compact: false
   };
   var ExtractPlugin = new ExtractTextPlugin({
     filename: 'main.css',
@@ -92,7 +94,8 @@ module.exports =
           test: /\.jsx?$/,
           loader: 'babel-loader',
           query: babelQuery,
-          include: clientInclude
+          include: clientInclude,
+          exclude: /node_modules/
         },
       ]
     },

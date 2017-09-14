@@ -49,7 +49,11 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loader: 'babel-loader',
-        include: serverInclude
+        include: serverInclude,
+        exclude: /node_modules/,
+        query: {
+          compact: false
+        }
       }
 
     ]

@@ -9,3 +9,8 @@ export const Counter = Loadable({
   loader: () => import('../containers/CounterContainer.jsx'),
   loading: ()=>(<div>Loading...</div>)
 });
+
+export const Contact = Loadable({
+  loader: () => import('../containers/ContactContainer.jsx'),
+  loading: ()=>(<div>Loading...</div>)
+});

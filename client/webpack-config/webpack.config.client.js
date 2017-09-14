@@ -22,7 +22,8 @@ const vendor = [
   'react-redux',
   'redux',
   'history',
-  'redux-thunk'
+  'redux-thunk',
+  'semantic-ui-react'
 ];
 
 module.exports = {
@@ -75,9 +76,12 @@ module.exports = {
         options: {
           babelrc: false,
           presets: ['react','es2015','stage-0'],
-          plugins: ['syntax-dynamic-import']
+          plugins: ['syntax-dynamic-import'],
+          compact: false
         },
-        include: clientInclude
+        include: clientInclude,
+        exclude: /node_modules/,
+        
       },
     ]
   },
@@ -99,7 +103,7 @@ module.exports = {
    new webpack.optimize.MinChunkSizePlugin({minChunkSize: 10}),
    new webpack.optimize.UglifyJsPlugin({compressor: {warnings: false}, comments: /(?:)/}),
    new AssetsPlugin({path: buildDir, filename: 'assets.json'}),
-  //  new webpack.NoEmitOnErrorsPlugin(),
+   new webpack.NoEmitOnErrorsPlugin(),
    new webpack.DefinePlugin({
      '__CLIENT__': true,
      '__PRODUCTION__': true,
