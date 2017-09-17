@@ -38,7 +38,7 @@ if (!PROD) {
 
 // production error handler
 app.use(function(err, req, res, next) {
-  console.error('error : ', err.message)
+  console.error('error : ', err.message);
   res.status(err.status || 500);
 });
 

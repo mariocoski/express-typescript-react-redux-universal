@@ -1,5 +1,5 @@
 import React, {Component} from  'react';
-import {Route, Redirect} from 'react-router';
+import {Route, Switch, Redirect} from 'react-router';
 import PropTypes from 'prop-types';
 import * as RouteMap from '../routes/static.js';
 
@@ -18,11 +18,14 @@ class Routes extends Component {
 
     return (
       <AppContainer>
-        <div>
+        <Switch>
           <Route exact location={location} path='/' component={RouteMap.Home} />
-          <Route exact location={location} path='/counter' component={RouteMap.Counter} />
+          <Route exact location={location} path='/todos' component={RouteMap.Todos} />
           <Route exact location={location} path='/contact' component={RouteMap.Contact} />
-        </div>
+          <Route exact location={location} path='/login' component={RouteMap.Login} />
+          <Route exact location={location} path='/register' component={RouteMap.Register} />
+          <Route component={RouteMap.NotFound} />
+        </Switch>
       </AppContainer>
     );
   }

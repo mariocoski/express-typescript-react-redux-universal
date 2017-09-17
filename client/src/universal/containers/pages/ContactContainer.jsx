@@ -7,7 +7,7 @@ const ContactContainer = (props) => (<div>
         as='h1'
         content='Contact'
         inverted
-        style={{ fontSize: '3.5em', fontWeight: 'normal', marginBottom: 0, marginTop: '3em' }}
+        style={{ fontSize: '3.5em', fontWeight: 'normal', marginBottom: 0 }}
     />
 </div>);
 

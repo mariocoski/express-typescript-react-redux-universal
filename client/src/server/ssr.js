@@ -4,6 +4,7 @@ import React from 'react';
 import {renderToString} from 'react-dom/server';
 import configureStore from 'universal/store';
 import createHistory from 'history/createMemoryHistory';
+import { setMobileDetect, mobileParser } from 'react-responsive-redux';
 import Html from './Html.js';
 
 function renderApp(url, res, store, assets) {
@@ -27,18 +28,31 @@ export const renderPage = function (req, res) {
 
   const assets = require('../../build/assets.json');
 
+  const { dispatch } = store;
+  
+  const mobileDetect = mobileParser(req)
+  dispatch(setMobileDetect(mobileDetect));
   assets.manifest.text = fs.readFileSync(
     join(__dirname, '..', '..', 'build', basename(assets.manifest.js)),
     'utf-8'
   );
-
-  renderApp(req.url, res, store, assets);
+  setTimeout(() => {
+    renderApp(req.url, res, store, assets);
+  },1000);
 };
 
 export const renderDevPage = function (req, res) {
   const history =  createHistory( );
   const store   = configureStore(history);
-  renderApp(req.url, res, store);
+  const { dispatch } = store;
+  
+  const mobileDetect = mobileParser(req)
+  console.log(mobileDetect,store.getState());
+  dispatch(setMobileDetect(mobileDetect));
+  setTimeout(() => {
+    renderApp(req.url, res, store);
+  },1000);
+
 };
 
 export default renderPage;

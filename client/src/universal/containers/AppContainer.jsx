@@ -1,55 +1,38 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import {NavLink} from 'react-router-dom';
-import {
-  Button,
-  Container,
-  Divider,
-  Grid,
-  Header,
-  Icon,
-  Image,
-  List,
-  Menu,
-  Segment,
-  Visibility,
-} from 'semantic-ui-react';
-
+import TopNavContainer from './nav/TopNavContainer.jsx';
+import SidebarNavContainer from './nav/SidebarNavContainer';
+// import {TopNavContainer, SidebarNavContainer} from './nav';
+import { Sidebar,Container} from 'semantic-ui-react';
 class AppContainer extends Component {
-  
+ 
+  constructor(){
+    super();
+  }
+  state = { visible: false }
+
+  toggleVisibility = () => {
+    this.setState({ visible: !this.state.visible });
+  }
+
+  closeIfVisible(){
+    if(this.state.visible){
+      this.setState({visible:false});
+    }
+  }
 
   render () {
-    return (
-      <div>
-        <div>
-        <Menu fixed='top' size='large' inverted={true}>
-          <Container>
-            <Menu.Item as='li' active color='teal'>
-              <NavLink activeClassName="teal" to="/">Home</NavLink>
-            </Menu.Item>
-            <Menu.Item as='li'>
-             <NavLink activeClassName="teal" to="/counter">Counter</NavLink>
-            </Menu.Item>
-            <Menu.Item as='li'>
-              <NavLink activeClassName="teal" to="/contact">Contact</NavLink>
-            </Menu.Item>
-            <Menu.Menu position='right'>
-              <Menu.Item className='item'>
-                <Button as='li' color='teal' inverted>Log in</Button>
-              </Menu.Item>
-              <Menu.Item>
-                <Button as='li' color='teal' inverted>Sign Up</Button>
-              </Menu.Item>
-            </Menu.Menu>
-          </Container>
-        </Menu>
-        </div>
-        <Container text>
-              {this.props.children}
-        </Container>
-       
-      </div>
-    );
+    const { visible } = this.state
+    return (<div>
+         <Sidebar.Pushable>
+          <Sidebar animation='overlay' visible={visible}>
+            <SidebarNavContainer toggle={this.toggleVisibility.bind(this)} />
+          </Sidebar>
+          <Sidebar.Pusher className="pusher-wrapper" onClick={this.closeIfVisible.bind(this)}>
+             <TopNavContainer toggle={this.toggleVisibility.bind(this)} />
+            <Container>{this.props.children}</Container> 
+          </Sidebar.Pusher>
+        </Sidebar.Pushable> 
+      </div>);
   }
 }
 

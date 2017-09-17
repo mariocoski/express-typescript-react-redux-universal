@@ -20,10 +20,12 @@ const vendor = [
   'react-router',
   'react-router-redux',
   'react-redux',
+  'react-loadable',
   'redux',
   'history',
   'redux-thunk',
-  'semantic-ui-react'
+  'semantic-ui-react',
+
 ];
 
 module.exports = {
@@ -76,7 +78,8 @@ module.exports = {
         options: {
           babelrc: false,
           presets: ['react','es2015','stage-0'],
-          plugins: ['syntax-dynamic-import'],
+          plugins: ['syntax-dynamic-import', 
+          ],
           compact: false
         },
         include: clientInclude,
