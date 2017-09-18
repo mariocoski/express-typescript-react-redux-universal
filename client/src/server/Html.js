@@ -32,7 +32,6 @@ class Html extends Component {
 
     let state = store.getState();
 
-    
     const initialState = `window.__INITIAL_STATE__ = ${JSON.stringify(state).replace(/</g, '\\u003c')}`;
     const Layout =  PROD ? require( '../../build/prerender.js') : () => {};
 

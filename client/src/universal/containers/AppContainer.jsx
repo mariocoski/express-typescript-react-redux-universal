@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import TopNavContainer from './nav/TopNavContainer.jsx';
 import SidebarNavContainer from './nav/SidebarNavContainer';
 // import {TopNavContainer, SidebarNavContainer} from './nav';
+import ReduxToastr from 'react-redux-toastr'
 import { Sidebar,Container} from 'semantic-ui-react';
 class AppContainer extends Component {
  
@@ -30,6 +31,13 @@ class AppContainer extends Component {
           <Sidebar.Pusher className="pusher-wrapper" onClick={this.closeIfVisible.bind(this)}>
              <TopNavContainer toggle={this.toggleVisibility.bind(this)} />
             <Container>{this.props.children}</Container> 
+            <ReduxToastr
+              timeOut={4000}
+              newestOnTop={true}
+              preventDuplicates
+              position="bottom-left"
+              transitionIn="fadeIn"
+              transitionOut="fadeOut"/>
           </Sidebar.Pusher>
         </Sidebar.Pushable> 
       </div>);

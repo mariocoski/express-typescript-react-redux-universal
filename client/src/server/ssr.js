@@ -32,13 +32,12 @@ export const renderPage = function (req, res) {
   
   const mobileDetect = mobileParser(req)
   dispatch(setMobileDetect(mobileDetect));
+  
   assets.manifest.text = fs.readFileSync(
     join(__dirname, '..', '..', 'build', basename(assets.manifest.js)),
     'utf-8'
   );
-  setTimeout(() => {
-    renderApp(req.url, res, store, assets);
-  },1000);
+  renderApp(req.url, res, store, assets);
 };
 
 export const renderDevPage = function (req, res) {
@@ -47,11 +46,9 @@ export const renderDevPage = function (req, res) {
   const { dispatch } = store;
   
   const mobileDetect = mobileParser(req)
-  console.log(mobileDetect,store.getState());
+ 
   dispatch(setMobileDetect(mobileDetect));
-  setTimeout(() => {
-    renderApp(req.url, res, store);
-  },1000);
+  renderApp(req.url, res, store);
 
 };
 

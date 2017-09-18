@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import { Grid,Message, Segment, Header, Button, Form } from 'semantic-ui-react';
+import { Grid,Message, Segment, Header, Button, Form , Icon, Divider} from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import {toastr} from 'react-redux-toastr';
 
 class LoginContainer extends Component {
 
@@ -19,7 +20,7 @@ class LoginContainer extends Component {
                     <Segment stacked>
                         <Form.Input
                         fluid
-                        icon='user'
+                        icon='mail'
                         iconPosition='left'
                         placeholder='E-mail address'
                         />
@@ -30,7 +31,22 @@ class LoginContainer extends Component {
                         placeholder='Password'
                         type='password'
                         />
-                        <Button color='teal' fluid size='large'>Login</Button>
+                        <Link to='/forgotten-password'>Forgotten password?</Link>
+                     
+                        <Button className='button-space-vertical' color='teal' fluid size='large' 
+                            onClick={() => toastr.error('The title', 'The message')}>
+                            Login
+                        </Button>
+                        <Divider horizontal>Or</Divider>
+                        <Button className='button-space-vertical' fluid color='facebook'>
+                        <Icon name='facebook' /> Login with Facebook
+                        </Button>
+                        <Button className='button-space-vertical' fluid color='twitter'>
+                        <Icon name='twitter' /> Login with Twitter
+                        </Button>
+                        <Button className='button-space-vertical' fluid color='google plus'>
+                        <Icon name='google plus' /> Login with Google Plus
+                        </Button>
                     </Segment>
                     </Form>
                     <Message>

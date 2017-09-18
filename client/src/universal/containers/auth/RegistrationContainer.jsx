@@ -21,7 +21,7 @@ class RegistrationContainer extends Component {
                             icon='user'
                             iconPosition='left'
                             placeholder='First Name'
-                            onChange={e => console.log(e.target.value)}s
+                            onChange={e => console.log(e.target.value)}
                         />
                         <Form.Input
                             fluid
@@ -31,7 +31,7 @@ class RegistrationContainer extends Component {
                         />
                         <Form.Input
                             fluid
-                            icon='user'
+                            icon='mail'
                             iconPosition='left'
                             placeholder='E-mail address'
                         />
