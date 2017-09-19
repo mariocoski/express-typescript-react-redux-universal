@@ -18,8 +18,13 @@ function renderApp(url, res, store, assets) {
       context={context}
       assets={assets} />
   );
-
-  res.send('<!DOCTYPE html>'+html);
+  if (context.url) {
+    // Somewhere a `<Redirect>` was rendered
+    redirect(301, context.url)
+  } else {
+    res.send('<!DOCTYPE html>'+html);
+  }
+  
 }
 
 export const renderPage = function (req, res) {
