@@ -20,7 +20,8 @@ const vendor = [
   'redux',
   'history',
   'redux-thunk',
-  'semantic-ui-react'
+  'semantic-ui-react',
+  'redux-form'
 ];
 const babelQuery = {
     "presets": [

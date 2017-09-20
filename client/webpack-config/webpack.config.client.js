@@ -27,8 +27,8 @@ const vendor = [
   'redux',
   'history',
   'redux-thunk',
+  'redux-form',
   'semantic-ui-react',
-
 ];
 
 module.exports = {
