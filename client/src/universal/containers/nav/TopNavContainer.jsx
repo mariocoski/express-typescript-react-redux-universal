@@ -28,12 +28,12 @@ class TopNavContainer extends Component {
                         <Menu.Menu position='right'>
                              <PhoneScreenHidden>   
                                 <Menu.Item className='item'>
-                                    <ButtonLink className="teal" inverted to="/login" exact={true}>Login</ButtonLink>
+                                    <ButtonLink className="inverted teal" to="/login" exact={true}>Login</ButtonLink>
                                 </Menu.Item>
                             </PhoneScreenHidden>
                             <PhoneScreenHidden>        
                                 <Menu.Item>
-                                    <ButtonLink className="teal" inverted to="/register" exact={true}>Register</ButtonLink>
+                                    <ButtonLink className="inverted teal" to="/register" exact={true}>Register</ButtonLink>
                                 </Menu.Item>
                             </PhoneScreenHidden>
                         </Menu.Menu>

@@ -65,7 +65,7 @@ module.exports =
   },
     resolve: {
       extensions: ['.js','.jsx', '.scss','.css', '.sass'],
-      modules: [srcDir, 'node_modules']
+      modules: [srcDir, 'node_modules'],
     },
     module: {
       loaders: [

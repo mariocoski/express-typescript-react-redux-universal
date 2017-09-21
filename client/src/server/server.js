@@ -1,6 +1,7 @@
 import http    from 'http';
 import express from 'express';
-
+//only for dev then enable gzip compression on nginx
+import compression from 'compression';
 // Server Side Rendering
 import {
   renderPage,
@@ -10,6 +11,9 @@ import {
 const PROD = process.env.NODE_ENV === 'production';
 
 const app = express();
+
+//only for dev then enable gzip compression on nginx
+app.use(compression());
 
 if (PROD) {
   app.use('/static', express.static('build'));

@@ -81,7 +81,12 @@ module.exports = {
         options: {
           babelrc: false,
           presets: ['react','es2015','stage-0'],
-          plugins: ['syntax-dynamic-import', 
+          plugins: [
+            'syntax-dynamic-import', 
+            //to improve performance use (must be in that order):
+            //https://www.youtube.com/watch?v=PnpfGy7q96U
+            'transform-react-constant-elements',
+            'transform-react-inline-elements'
           ],
           compact: false
         },

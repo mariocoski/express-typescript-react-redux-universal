@@ -52,6 +52,12 @@ module.exports = {
         include: serverInclude,
         exclude: /node_modules/,
         query: {
+          plugins: [
+            //to improve performance use (must be in that order):
+             //https://www.youtube.com/watch?v=PnpfGy7q96U
+             'transform-react-constant-elements',
+             'transform-react-inline-elements'
+          ],
           compact: false
         }
       }
