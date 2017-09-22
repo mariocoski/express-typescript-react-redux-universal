@@ -2,28 +2,16 @@ import React, {Component} from 'react';
 import { Grid,Message, Segment, Header, Button, Form , Icon, Divider} from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import {LoginForm}  from '../../components/forms';
-import {login} from '../../actions';
-
+import {login} from '../../redux/actions.js';
+import {connect} from 'react-redux';
 import { SubmissionError } from 'redux-form'
-
+import { loginUser } from '../../redux/modules/auth/login.js';
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
-function submit(values) {
-    console.log(values);
-  return sleep(1000) // simulate server latency
-    .then(() => {
-      if (![ 'john', 'paul', 'george', 'ringo' ].includes(values.username)) {
-        throw new SubmissionError({ username: 'User does not exist', _error: 'Login failed!' })
-      } else if (values.password !== 'redux-form') {
-        throw new SubmissionError({ password: 'Wrong password', _error: 'Login failed!' })
-      } else {
-        window.alert(`You submitted:\n\n${JSON.stringify(values, null, 2)}`)
-      }
-    })
-}
 class LoginContainer extends Component {
-
+   
     render(){
+        console.log('func', this.props.loginUser);
         return (<Grid
                 textAlign='center'
                 style={{ height: '100%' }}
@@ -33,7 +21,7 @@ class LoginContainer extends Component {
                     {/* <Image src='/logo.png' /> */}
                     {' '} Login
                     </Header>
-                    <LoginForm onSubmit={submit} ></LoginForm>
+                    <LoginForm handleSubmit={this.props.loginUser} ></LoginForm>
                     <Message>
                       New to us? <Link to='/register'>Register</Link>
                     </Message>
@@ -42,4 +30,8 @@ class LoginContainer extends Component {
         );
     }
 }
-export default LoginContainer;
+export default connect(null, (dispatch)=> {
+    return {
+        loginUser: (values) => dispatch(loginUser(values))
+    }
+})(LoginContainer);

@@ -2,7 +2,7 @@ import fs from 'fs';
 import {basename, join} from 'path';
 import React from 'react';
 import {renderToString} from 'react-dom/server';
-import configureStore from 'universal/store';
+import configureStore from 'universal/redux/store';
 import createHistory from 'history/createMemoryHistory';
 import { setMobileDetect, mobileParser } from 'react-responsive-redux';
 import Html from './Html.js';

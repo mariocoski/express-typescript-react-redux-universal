@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ConnectedRouter } from 'react-router-redux';
-import {Route} from 'react-router';
+import { Route } from 'react-router';
 import { Provider } from 'react-redux';
 import Routes from 'universal/routes/Routes.js';
 

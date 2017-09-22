@@ -20,6 +20,7 @@ const validate = values => {
 
 const LoginForm = (props) => {
     const { error, handleSubmit, pristine, reset, submitting } = props
+ 
     return (
         <Form size='large'  onSubmit={handleSubmit}>
             <Segment stacked>
@@ -46,8 +47,7 @@ const LoginForm = (props) => {
             
                 <Link to='/forgotten-password'>Forgotten password?</Link>
             
-                <Button className='button-space-vertical' color='teal' fluid size='large' 
-                    onClick={() => toastr.error('Error', 'Your input is invalid!')}>
+                <Button className='button-space-vertical' color='teal' fluid size='large'>
                     Login
                 </Button>
                 <Divider horizontal>Or</Divider>
