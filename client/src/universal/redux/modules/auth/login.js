@@ -34,7 +34,6 @@ export function loginUser({email, password}){
         dispatch(setLoginPending(true));
         dispatch(setLoginSuccess(false));
         dispatch(setLoginError(false));
-        console.log("HERE");
         return fetch(`${API_URL}/auth/login`,{
             method: "POST",
             headers: {
@@ -44,7 +43,6 @@ export function loginUser({email, password}){
             body: data
         }).then(
             response => {
-                
                 dispatch(setLoginPending(false));
                 dispatch(setLoginSuccess(true));
             },
