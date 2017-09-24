@@ -27,16 +27,16 @@ var localLogin = new passport_local_1.Strategy(localOptions, function (email, pa
     });
 });
 exports.localLogin = localLogin;
-function getEnv(key) {
-    var token = process.env[key];
-    if (!token) {
+function env(key) {
+    var myVal = process.env[key];
+    if (myVal === undefined) {
         throw new Error("No ENV " + key + " not found");
     }
-    return token;
+    return myVal;
 }
 var jwtOptions = {
     jwtFromRequest: passport_jwt_2.ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: getEnv('JWT_SECRET'),
+    secretOrKey: env('JWT_SECRET'),
     session: false
 };
 var jwtLogin = new passport_jwt_1.Strategy(jwtOptions, function (payload, done) {

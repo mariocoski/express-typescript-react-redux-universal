@@ -1,6 +1,5 @@
 import fetch from 'isomorphic-fetch';
 import {API_URL} from '../../../constants';
-
 const SET_LOGIN_PENDING = 'SET_LOGIN_PENDING';
 const SET_LOGIN_SUCCESS = 'SET_LOGIN_SUCCESS';
 const SET_LOGIN_ERROR = 'SET_LOGIN_ERROR';
@@ -14,7 +13,7 @@ function setLoginPending(isLoginPending){
 
 function setLoginSuccess(isLoginSuccess){
     return {
-        type: SET_LOGIN_PENDING,
+        type: SET_LOGIN_SUCCESS,
         payload: isLoginSuccess
     }
 }
@@ -26,32 +25,39 @@ function setLoginError(error){
     }
 }
 
-export function loginUser({email, password}){
-    
+export function loginUser(history,{email, password}){
+   
     return (dispatch) =>  {
-        console.log(dispatch);
-        const data = new FormData();
+
         dispatch(setLoginPending(true));
         dispatch(setLoginSuccess(false));
         dispatch(setLoginError(false));
         return fetch(`${API_URL}/auth/login`,{
             method: "POST",
+            redirect: 'follow',
+            body: JSON.stringify({ email, password }),
             headers: {
-                'Accept': 'application/json, application/xml, text/plain, text/html, *.*',
-                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-            },
-            body: data
-        }).then(
-            response => {
-                dispatch(setLoginPending(false));
-                dispatch(setLoginSuccess(true));
-            },
-            error => {
-              dispatch(setLoginPending(false));
-              dispatch(setLoginError(error));
-              throw error
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
             }
-          )
+        }).then(response => (response.json())).then(response => {
+            console.log("mam",response);
+            dispatch(setLoginPending(false));
+            dispatch(setLoginSuccess(true));
+            //@todo save token
+            history.push('/dashboard');
+        }).catch(error => {
+            console.log(error);
+        });
+    }
+} 
+
+export function logoutUser(history){
+   console.log("what is ",history);
+    return (dispatch) =>  {
+        dispatch(setLoginSuccess(false));
+        //@todo delete token
+        history.push('/dashboard');
     }
 } 
 const INITIAL_STATE = {
@@ -60,7 +66,6 @@ const INITIAL_STATE = {
   error: false
 };
 export function loginReducer(state = INITIAL_STATE, action){
-    console.log(action);
     switch(action.type){
         case SET_LOGIN_ERROR:
           return {...state, pending: action.payload}

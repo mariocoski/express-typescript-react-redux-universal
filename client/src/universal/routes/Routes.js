@@ -1,5 +1,6 @@
 import React, {Component} from  'react';
 import {Route, Switch, Redirect} from 'react-router';
+import PrivateRoute from '../containers/router/PrivateRoute';
 import PropTypes from 'prop-types';
 import * as RouteMap from '../routes/static.js';
 
@@ -23,6 +24,7 @@ class Routes extends Component {
           <Route exact location={location} path='/todos' component={RouteMap.Todos} />
           <Route exact location={location} path='/contact' component={RouteMap.Contact} />
           <Route exact location={location} path='/login' component={RouteMap.Login} />
+          <PrivateRoute exact location={location} path='/dashboard' component={RouteMap.Dashboard} />
           <Route exact location={location} path='/register' component={RouteMap.Register} />
           <Route component={RouteMap.NotFound} />
         </Switch>

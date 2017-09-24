@@ -57,12 +57,10 @@ function register(req, res, next) {
             profile: { firstName: firstName, lastName: lastName }
         });
         user.save(function (err, user) {
-            console.log('before err');
             if (err) {
                 return next(err);
             }
             var userInfo = utils_1.setUserInfo(user);
-            console.log('info', userInfo);
             res.status(201).json({
                 token: "JWT " + generateToken(userInfo),
                 user: userInfo

@@ -3,7 +3,7 @@ import {basename, join} from 'path';
 import React from 'react';
 import {renderToString} from 'react-dom/server';
 import configureStore from 'universal/redux/store';
-import createHistory from 'history/createMemoryHistory';
+import history from '../universal/redux/history';
 import { setMobileDetect, mobileParser } from 'react-responsive-redux';
 import Html from './Html.js';
 
@@ -20,7 +20,7 @@ function renderApp(url, res, store, assets) {
   );
   if (context.url) {
     // Somewhere a `<Redirect>` was rendered
-    redirect(301, context.url)
+    res.redirect(301, context.url)
   } else {
     res.send('<!DOCTYPE html>'+html);
   }
@@ -28,7 +28,7 @@ function renderApp(url, res, store, assets) {
 }
 
 export const renderPage = function (req, res) {
-  const history = createHistory( );
+  
   const store  = configureStore(history);
 
   const assets = require('../../build/assets.json');
@@ -46,7 +46,7 @@ export const renderPage = function (req, res) {
 };
 
 export const renderDevPage = function (req, res) {
-  const history =  createHistory( );
+
   const store   = configureStore(history);
   const { dispatch } = store;
   

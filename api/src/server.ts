@@ -12,9 +12,13 @@ import * as logger from 'morgan';
 import * as passport from 'passport';
 import {AUTH_ROUTE  } from './constants/routes';
 import AuthRouter from './routes/auth';
+import * as cors from 'cors';
+
+process.on('SIGINT', () => {
+  process.exit(0);
+});
 
 const app: express.Application = express();
-
 const portCandidate = process.env.NODE_ENV === 'test' ? 
                         process.env.TEST_PORT : process.env.PORT;
 const port: number = resolvePort(portCandidate);
@@ -22,6 +26,10 @@ const port: number = resolvePort(portCandidate);
 app.use(bodyParser.urlencoded({ extended: false })); // Parses urlencoded bodies
 app.use(bodyParser.json()); // Send JSON responses
 app.use(logger('dev')); 
+
+const corsMiddleware = cors({ origin: '*', preflightContinue: true });
+app.use(corsMiddleware);
+app.options('*', corsMiddleware);
 
 const db_host:string = process.env.DB_HOST || 'localhost';
 mongoose.connect(db_host,{useMongoClient: true});
@@ -31,19 +39,13 @@ app.use(AUTH_ROUTE,AuthRouter);
 
 const server = app.listen(port);
 
-app.use((req:express.Request, res:express.Response, next: express.NextFunction) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
-  res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  next();
-});
-
 server.on('listening', () => {
   console.log(`Listening at http://localhost:${port}`);
 });
 
+
 server.on('error',(error: any)=>{
+
   if (error.syscall !== "listen") {
     throw error;
   }  

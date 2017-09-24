@@ -17,3 +17,5 @@ export const NotFound = loadAsync(() => import('universal/containers/pages/NotFo
 export const Login = loadAsync(() => import('universal/containers/auth/LoginContainer.jsx'));
 
 export const Register = loadAsync(() => import('universal/containers/auth/RegistrationContainer.jsx'));
+
+export const Dashboard = loadAsync(() => import('universal/containers/dashboard/DashboardContainer.jsx'));

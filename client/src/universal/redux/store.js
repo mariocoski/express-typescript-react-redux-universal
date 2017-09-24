@@ -3,13 +3,15 @@ import { ConnectedRouter, routerReducer, routerMiddleware } from 'react-router-r
 import reducers from './reducers';
 import logger from 'redux-logger';
 import thunk from 'redux-thunk';
-
+import { composeWithDevTools } from 'redux-devtools-extension';
   export default (history) => {
-    const middleware = routerMiddleware(history);
+    const historyMiddleware = routerMiddleware(history);
     const store = createStore(combineReducers({
       ...reducers,
       router: routerReducer
-    }), applyMiddleware(middleware,logger,thunk));
+    }), composeWithDevTools(
+      applyMiddleware(historyMiddleware,thunk)
+    ));
 
     if (module.hot) {
        module.hot.accept('./reducers', () => {
