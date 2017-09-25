@@ -2,6 +2,7 @@ import http    from 'http';
 import express from 'express';
 //only for dev then enable gzip compression on nginx
 import compression from 'compression';
+
 // Server Side Rendering
 import {
   renderPage,

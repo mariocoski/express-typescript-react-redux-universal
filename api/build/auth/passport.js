@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var user_1 = require("../models/user");
 var passport_jwt_1 = require("passport-jwt");
 var passport_jwt_2 = require("passport-jwt");
+var utils_1 = require("../utils");
 var passport_local_1 = require("passport-local");
 var localOptions = {
     usernameField: 'email'
@@ -27,16 +28,9 @@ var localLogin = new passport_local_1.Strategy(localOptions, function (email, pa
     });
 });
 exports.localLogin = localLogin;
-function env(key) {
-    var myVal = process.env[key];
-    if (myVal === undefined) {
-        throw new Error("No ENV " + key + " not found");
-    }
-    return myVal;
-}
 var jwtOptions = {
     jwtFromRequest: passport_jwt_2.ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: env('JWT_SECRET'),
+    secretOrKey: utils_1.env('JWT_SECRET'),
     session: false
 };
 var jwtLogin = new passport_jwt_1.Strategy(jwtOptions, function (payload, done) {

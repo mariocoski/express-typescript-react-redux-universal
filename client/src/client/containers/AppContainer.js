@@ -5,6 +5,7 @@ import { Route } from 'react-router';
 import { Provider } from 'react-redux';
 import Routes from 'universal/routes/Routes.js';
 
+
 class AppContainer extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired
@@ -26,3 +27,4 @@ class AppContainer extends Component {
 }
 
 export default AppContainer;
+

@@ -2,8 +2,9 @@ import * as passport from 'passport';
 import {User} from '../models/user';
 import {Strategy as JWTStrategy} from 'passport-jwt';
 import {ExtractJwt} from 'passport-jwt';
-
+import {env} from '../utils';
 import {Strategy as LocalStrategy} from 'passport-local';
+
 
 const localOptions = {
     usernameField: 'email'
@@ -23,16 +24,7 @@ const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
     });
 });
 
-function env(key): string {
-    const myVal: string | undefined = process.env[key];
-    if(myVal === undefined){
-        throw new Error(`No ENV ${key} not found`);
-    }
-    return myVal;
-}
 
-
- 
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: env('JWT_SECRET'),

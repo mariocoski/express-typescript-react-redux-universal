@@ -64,3 +64,12 @@ export function isAuthorized(role: String){
     
   }
 }
+
+
+export function env(key): string {
+  const myVal: string | undefined = process.env[key];
+  if(myVal === undefined){
+      throw new Error(`No ENV ${key} not found`);
+  }
+  return myVal;
+}

@@ -18,13 +18,6 @@ process.on('SIGINT', function () {
     process.exit(0);
 });
 var app = express();
-// app.use((req:express.Request, res:express.Response, next: express.NextFunction) => {
-//   res.header('Access-Control-Allow-Origin', '*');
-//   res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials');
-//   res.header('Access-Control-Allow-Credentials', 'true');
-//   next();
-// });
 var portCandidate = process.env.NODE_ENV === 'test' ?
     process.env.TEST_PORT : process.env.PORT;
 var port = utils_1.resolvePort(portCandidate);
@@ -34,7 +27,7 @@ app.use(logger('dev'));
 var corsMiddleware = cors({ origin: '*', preflightContinue: true });
 app.use(corsMiddleware);
 app.options('*', corsMiddleware);
-var db_host = process.env.DB_HOST || 'localhost';
+var db_host = utils_1.env('DB_HOST');
 mongoose.connect(db_host, { useMongoClient: true });
 app.use(routes_1.API_V1, v1_1.default);
 app.use(routes_2.AUTH_ROUTE, auth_1.default);

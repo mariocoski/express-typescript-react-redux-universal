@@ -11,8 +11,8 @@ passport.use(passport_1.localLogin);
 var requireLogin = passport.authenticate('local', { session: false });
 exports.requireLogin = requireLogin;
 function generateToken(user) {
-    return JWT.sign(user, process.env.JWT_SECRET || '', {
-        expiresIn: 604800 // in seconds
+    return JWT.sign(user, utils_1.env('JWT_SECRET'), {
+        expiresIn: 3600 // in seconds
     });
 }
 function login(req, res, next) {
@@ -151,3 +151,28 @@ function verifyToken(req, res, next) {
 }
 exports.verifyToken = verifyToken;
 ;
+function meFromToken(req, res, next) {
+    var token = req.body.token || req.query.token || req.headers['x-access-token'] || req.headers['authorization'];
+    if (!token) {
+        return res.status(401).json({
+            message: 'Unauthorized'
+        });
+    }
+    token = token.replace('Bearer ', '');
+    JWT.verify(token, utils_1.env('JWT_SECRET'), function (err, user) {
+        if (err)
+            throw err.message;
+        user_1.User.findById({
+            '_id': user._id
+        }, function (err, user) {
+            if (err)
+                throw err;
+            var userInfo = utils_1.setUserInfo(user);
+            res.status(201).json({
+                token: "JWT " + generateToken(userInfo),
+                user: userInfo
+            });
+        });
+    });
+}
+exports.meFromToken = meFromToken;

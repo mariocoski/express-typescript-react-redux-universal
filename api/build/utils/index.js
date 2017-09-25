@@ -59,3 +59,11 @@ function isAuthorized(role) {
     };
 }
 exports.isAuthorized = isAuthorized;
+function env(key) {
+    var myVal = process.env[key];
+    if (myVal === undefined) {
+        throw new Error("No ENV " + key + " not found");
+    }
+    return myVal;
+}
+exports.env = env;

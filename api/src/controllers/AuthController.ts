@@ -1,19 +1,19 @@
 import * as JWT from 'jsonwebtoken';
 import * as crypto from 'crypto';
 import {User} from '../models/user';
-import {setUserInfo,getRole} from '../utils';
+import {setUserInfo,getRole, env} from '../utils';
 import * as passport from 'passport';
 import {localLogin,jwtLogin} from '../auth/passport';
 import {Strategy as LocalStrategy} from 'passport-local';
+
 passport.use(jwtLogin);
 passport.use(localLogin);
  
 const requireLogin = passport.authenticate('local', { session: false });
 
-
 function generateToken(user) {
-  return JWT.sign(user, process.env.JWT_SECRET || '', {
-    expiresIn: 604800 // in seconds
+  return JWT.sign(user, env('JWT_SECRET'), {
+    expiresIn: 3600 // in seconds
   });
 }
 
@@ -140,7 +140,7 @@ function verifyToken(req, res, next) {
       res.status(422).json({ error: 'Your token has expired. Please attempt to reset your password again.' });
     }
 
-      // Otherwise, save new password and clear resetToken from database
+    // Otherwise, save new password and clear resetToken from database
     resetUser.password = req.body.password;
     resetUser.resetPasswordToken = undefined;
     resetUser.resetPasswordExpires = undefined;
@@ -162,11 +162,38 @@ function verifyToken(req, res, next) {
   });
 };
 
+function meFromToken(req,res,next){
+  let token = req.body.token || req.query.token || req.headers['x-access-token'] || req.headers['authorization'];
+
+  if (!token) {
+    return res.status(401).json({
+      message: 'Unauthorized'
+    });
+  }
+  token = token.replace('Bearer ', '');
+  
+  JWT.verify(token, env('JWT_SECRET'), (err, user) => {
+    if(err) throw err.message;
+    User.findById({
+      '_id': user._id
+    }, function(err, user) {
+      if (err) throw err;
+      const userInfo = setUserInfo(user);
+      res.status(201).json({
+        token: `JWT ${generateToken(userInfo)}`,
+        user: userInfo
+      });
+    });
+  });
+}
+
+
 export {
   login,
   register,
   forgotPassword,
   verifyToken,
   roleAuthorization,
-  requireLogin
+  requireLogin,
+  meFromToken
 };

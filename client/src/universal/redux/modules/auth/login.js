@@ -1,24 +1,24 @@
 import fetch from 'isomorphic-fetch';
-import {API_URL} from '../../../constants';
+import {API_URL, JWT_TOKEN} from '../../../constants';
 const SET_LOGIN_PENDING = 'SET_LOGIN_PENDING';
 const SET_LOGIN_SUCCESS = 'SET_LOGIN_SUCCESS';
 const SET_LOGIN_ERROR = 'SET_LOGIN_ERROR';
 
-function setLoginPending(isLoginPending){
+export function setLoginPending(isLoginPending){
     return {
         type: SET_LOGIN_PENDING,
         payload: isLoginPending
     }
 }
 
-function setLoginSuccess(isLoginSuccess){
+export function setLoginSuccess(isLoginSuccess){
     return {
         type: SET_LOGIN_SUCCESS,
         payload: isLoginSuccess
     }
 }
 
-function setLoginError(error){
+export function setLoginError(error){
     return {
         type: SET_LOGIN_PENDING,
         payload: error
@@ -26,9 +26,7 @@ function setLoginError(error){
 }
 
 export function loginUser(history,{email, password}){
-   
-    return (dispatch) =>  {
-
+    return dispatch =>  {
         dispatch(setLoginPending(true));
         dispatch(setLoginSuccess(false));
         dispatch(setLoginError(false));
@@ -40,11 +38,12 @@ export function loginUser(history,{email, password}){
               'Content-Type': 'application/json',
               'Accept': 'application/json'
             }
-        }).then(response => (response.json())).then(response => {
-            console.log("mam",response);
+        })
+        .then(response => (response.json()))
+        .then(response => {
+            localStorage.setItem(JWT_TOKEN, response.token);
             dispatch(setLoginPending(false));
             dispatch(setLoginSuccess(true));
-            //@todo save token
             history.push('/dashboard');
         }).catch(error => {
             console.log(error);
@@ -52,12 +51,28 @@ export function loginUser(history,{email, password}){
     }
 } 
 
+export function meFromToken(token){
+    return dispatch => {
+        return new Promise((resolve,reject)=>{
+            fetch(`${API_URL}/auth/me-from-token`,{
+                method: "POST",
+                headers: {
+                  'authorization': `Bearer ${token}`
+                }
+            }).then(response => {
+                resolve(response);
+            }).catch(error => {
+                reject(error);
+            })
+        });
+    }
+}
+
 export function logoutUser(history){
-   console.log("what is ",history);
     return (dispatch) =>  {
         dispatch(setLoginSuccess(false));
-        //@todo delete token
-        history.push('/dashboard');
+        localStorage.removeItem(JWT_TOKEN);
+        history.push('/login');
     }
 } 
 const INITIAL_STATE = {
@@ -65,6 +80,7 @@ const INITIAL_STATE = {
   pending: false,
   error: false
 };
+
 export function loginReducer(state = INITIAL_STATE, action){
     switch(action.type){
         case SET_LOGIN_ERROR:

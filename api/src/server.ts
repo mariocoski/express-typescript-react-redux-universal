@@ -6,7 +6,7 @@ import * as express from 'express';
 import apiV1Router from './routes/v1';
 import {API_V1} from './constants/routes';
 import * as mongoose from 'mongoose';
-import {resolvePort} from './utils';
+import {resolvePort, env} from './utils';
 import * as bodyParser from 'body-parser';
 import * as logger from 'morgan';
 import * as passport from 'passport';
@@ -31,7 +31,7 @@ const corsMiddleware = cors({ origin: '*', preflightContinue: true });
 app.use(corsMiddleware);
 app.options('*', corsMiddleware);
 
-const db_host:string = process.env.DB_HOST || 'localhost';
+const db_host:string = env('DB_HOST');
 mongoose.connect(db_host,{useMongoClient: true});
 
 app.use(API_V1, apiV1Router);
