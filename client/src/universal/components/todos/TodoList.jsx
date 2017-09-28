@@ -21,12 +21,17 @@ const TodoList = (props) => {
               </Segment>
               }
               <Input
-                  action={{ color: 'teal', labelPosition: 'right', icon: 'send', content: 'Add todo' }}
+                  action={
+                      { 
+                        color: 'teal', labelPosition: 'right', icon: 'send', 
+                        content: 'Add todo', onClick: ()=>{props.add('new one')} 
+                      }
+                    }
                   defaultValue=''
                   fluid
                   placeholder="your todo..."
                 />
-              <button onClick={() => props.add('new one')}>Add todo</button>
+             
             </Grid.Column>
       </Grid>);
 
