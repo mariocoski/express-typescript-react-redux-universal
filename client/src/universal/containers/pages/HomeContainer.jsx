@@ -14,7 +14,6 @@ const HomeContainer = (props) => (<div>
         inverted
         style={{ fontSize: '1.7em', fontWeight: 'normal' }}
     />
-    <p>
         <ul>
             <li>react</li>
             <li>redux</li>
@@ -25,7 +24,6 @@ const HomeContainer = (props) => (<div>
             <li>Node.js</li>
             <li>Express</li>
         </ul>
-    </p>
 </div>);
 
 export default HomeContainer;
