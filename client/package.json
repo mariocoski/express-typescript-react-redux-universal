@@ -36,6 +36,7 @@
     "jest": "^21.1.0",
     "node-sass": "^4.5.3",
     "react-hot-loader": "^3.0.0-beta.6",
+    "react-test-render": "^1.0.3",
     "redux-devtools-extension": "^2.13.2",
     "redux-logger": "^3.0.6",
     "sass-loader": "^6.0.6",

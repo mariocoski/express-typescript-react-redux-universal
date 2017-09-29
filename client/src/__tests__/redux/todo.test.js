@@ -1,6 +1,8 @@
-import { addTodo, removeTodo, toggleTodo, todosReducer,todosFilterReducer, setTodosFilter } from '../../universal/redux/modules/todos/index';
+import { addTodo, removeTodo, toggleTodo, completeTodo,todosReducer,todosFilterReducer, setTodosFilter } from '../../universal/redux/modules/todos/index';
 import { ADD_TODO, REMOVE_TODO, TOGGLE_TODO, SET_TODOS_FILTER } from '../../universal/constants/action_types';
 import {v4} from 'uuid';
+import renderer from 'react-test-renderer';
+import FilteredTodosContainer from '../../universal/containers/todos/FilteredTodosContainer.jsx';
 
 describe('REDUX', () => {
 
@@ -74,7 +76,6 @@ describe('REDUX', () => {
       }];
       expect(todosReducer(initialState, toggleTodo(id))).toEqual(expectedState);
     });
-
   });
 
   describe('FILTERS', () => {
@@ -97,6 +98,17 @@ describe('REDUX', () => {
       const expectedState = text;
       expect(todosFilterReducer(undefined, setTodosFilter(text))).toEqual(expectedState);
     });
+
+    // it('Should render filtered todos lists correctly', () => {
+    //   const tree = renderer.create(
+    //     <FilteredTodosContainer></FilteredTodosContainer>
+    //   ).toJSON();
+    //   expect(tree).toMatchSnapshot();
+    // });
+
+
+
+    
 
   });
 });
