@@ -1,7 +1,7 @@
 import { addTodo, removeTodo, toggleTodo, completeTodo,todosReducer,todosFilterReducer, setTodosFilter } from '../../universal/redux/modules/todos/index';
 import { ADD_TODO, REMOVE_TODO, TOGGLE_TODO, SET_TODOS_FILTER } from '../../universal/constants/action_types';
 import {v4} from 'uuid';
-import renderer from 'react-test-renderer';
+// import renderer from 'react-test-renderer';
 import FilteredTodosContainer from '../../universal/containers/todos/FilteredTodosContainer.jsx';
 
 describe('REDUX', () => {

@@ -17,8 +17,7 @@ class TodosContainer extends Component {
                 inverted
                 style={{ fontSize: '3.5em', fontWeight: 'normal', marginBottom: 0 }}
             />
-            <FilteredTodosContainer></FilteredTodosContainer>
-            
+            <FilteredTodosContainer></FilteredTodosContainer>        
         </div>
     );
   }
