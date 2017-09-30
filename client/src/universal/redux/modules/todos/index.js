@@ -1,4 +1,4 @@
-import { ADD_TODO, REMOVE_TODO, TOGGLE_TODO, SET_TODOS_FILTER } from '../../../constants/action_types';
+import { ADD_TODO, REMOVE_TODO, TOGGLE_TODO, COMPLETE_TODO, SET_TODOS_FILTER } from '../../../constants/action_types';
 import { SHOW_ALL } from '../../../constants';
 import {v4} from 'uuid';
 
@@ -59,4 +59,5 @@ export function toggleTodo(id){
     payload: id
   }
 }
+
 
