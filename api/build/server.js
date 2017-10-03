@@ -14,6 +14,8 @@ var logger = require("morgan");
 var routes_2 = require("./constants/routes");
 var auth_1 = require("./routes/auth");
 var cors = require("cors");
+var socketIO = require("socket.io");
+var http = require("http");
 process.on('SIGINT', function () {
     process.exit(0);
 });
@@ -21,6 +23,8 @@ var app = express();
 var portCandidate = process.env.NODE_ENV === 'test' ?
     process.env.TEST_PORT : process.env.PORT;
 var port = utils_1.resolvePort(portCandidate);
+var server = new http.Server(app);
+var io = new socketIO(server);
 app.use(bodyParser.urlencoded({ extended: false })); // Parses urlencoded bodies
 app.use(bodyParser.json()); // Send JSON responses
 app.use(logger('dev'));
@@ -31,7 +35,7 @@ var db_host = utils_1.env('DB_HOST');
 mongoose.connect(db_host, { useMongoClient: true });
 app.use(routes_1.API_V1, v1_1.default);
 app.use(routes_2.AUTH_ROUTE, auth_1.default);
-var server = app.listen(port);
+server.listen(port);
 server.on('listening', function () {
     console.log("Listening at http://localhost:" + port);
 });
