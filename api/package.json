@@ -7,7 +7,8 @@
   "scripts": {
     "build": "rm -rf ./build && tsc",
     "build:watch": "rm -rf ./build && tsc --watch",
-    "start": "node ./build/server.js"
+    "start": "node ./build/server.js",
+    "postinstall": "cp -n .env.example .env"
   },
   "devDependencies": {
     "@types/bcrypt": "^1.0.0",
