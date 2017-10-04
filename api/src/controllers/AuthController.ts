@@ -24,6 +24,7 @@ function login  (req, res, next) {
     token: `JWT ${generateToken(userInfo)}`,
     user: userInfo
   });
+  
 };
 
 function register(req, res, next) {

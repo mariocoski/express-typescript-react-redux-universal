@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 import InputField  from './InputField.jsx';
 import { Button, Segment, Form, Divider, Icon } from 'semantic-ui-react';
 
-
+import {API_URL} from '../../constants';
 
 const LoginForm = (props) => {
-  const { handleSubmit, pristine, reset, error, InputGenerator } = props
+  const { handleSubmit, pristine, reset, error, InputGenerator } = props;
   return (
-    <Form size='large' onSubmit={handleSubmit}>
+  
+    <Form size='large' onSubmit={handleSubmit} action={`${API_URL}/auth/login`} method="POST">
       <Segment stacked>
-      {error && <strong>{error}</strong>}
  
       <InputGenerator name="email" fluid 
             id="login-email"

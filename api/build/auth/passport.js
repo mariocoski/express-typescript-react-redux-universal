@@ -20,6 +20,7 @@ var localLogin = new passport_local_1.Strategy(localOptions, function (email, pa
             if (err) {
                 return done(err);
             }
+            console.log(isMatch, err);
             if (!isMatch) {
                 return done(null, false, { message: 'Your login details could not be verified. Please try again.' });
             }

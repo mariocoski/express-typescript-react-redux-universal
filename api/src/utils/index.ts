@@ -16,8 +16,6 @@ export function resolvePort(val: any) {
     return 3000;
 }
 
-
-
 export const setUserInfo = (request) => {
   const getUserInfo = {
     _id: request._id,

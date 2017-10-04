@@ -15,15 +15,14 @@ import AuthRouter from './routes/auth';
 import * as cors from 'cors';
 import * as socketIO from 'socket.io';
 import * as http from 'http';
+
 process.on('SIGINT', () => {
   process.exit(0);
 });
 
-
-
 const app: express.Application = express();
 const portCandidate = process.env.NODE_ENV === 'test' ?
-                        process.env.TEST_PORT : process.env.PORT;
+                        env('TEST_PORT') : env('PORT');
 
 const port: number = resolvePort(portCandidate);
 

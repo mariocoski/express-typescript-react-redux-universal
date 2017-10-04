@@ -21,7 +21,7 @@ process.on('SIGINT', function () {
 });
 var app = express();
 var portCandidate = process.env.NODE_ENV === 'test' ?
-    process.env.TEST_PORT : process.env.PORT;
+    utils_1.env('TEST_PORT') : utils_1.env('PORT');
 var port = utils_1.resolvePort(portCandidate);
 var server = new http.Server(app);
 var io = new socketIO(server);
