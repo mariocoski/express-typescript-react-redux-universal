@@ -43,6 +43,6 @@ const jwtLogin = new JWTStrategy(jwtOptions, (payload, done) => {
 });
 
 export {
-  jwtLogin, 
+  jwtLogin,
   localLogin
 }
