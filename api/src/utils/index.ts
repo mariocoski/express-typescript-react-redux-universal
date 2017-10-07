@@ -1,7 +1,7 @@
 import {ROLE_USER, ROLE_PROFESSIONAL, ROLE_ADMIN, ROLE_SUPERADMIN} from '../constants/roles';
 import {Request, Response} from 'express';
-import {User} from '../models/user';
-import {BadRequestError, NotFoundError, ForbiddenError,UnauthorizedError, BaseError } from '../lib/errors';
+// import {User} from '../models/user';
+// import {BadRequestError, NotFoundError, ForbiddenError,UnauthorizedError, BaseError } from '../lib/errors';
 export function resolvePort(val: any) {
     const port = parseInt(val, 10);
 
@@ -40,16 +40,16 @@ export function handleError(res, err){
   console.error(err);
 
   switch (err.constructor) {
-    case BadRequestError:
-      return res.status(400).send(err.message);
-    case NotFoundError:
-      return res.status(404).send(err.message);
-    case ForbiddenError:
-      return res.status(403).send(err.message);
-    case UnauthorizedError:
-      return res.status(401).send(err.message);
-    case BaseError:
-      return res.status(500).send(`${err.message}\n${err.stack}`);
+    // case BadRequestError:
+    //   return res.status(400).send(err.message);
+    // case NotFoundError:
+    //   return res.status(404).send(err.message);
+    // case ForbiddenError:
+    //   return res.status(403).send(err.message);
+    // case UnauthorizedError:
+    //   return res.status(401).send(err.message);
+    // case BaseError:
+    //   return res.status(500).send(`${err.message}\n${err.stack}`);
     default:
       return res.status(500).send(err);
   }
@@ -91,26 +91,26 @@ export const getRole = (checkRole) => {
   return role;
 };
 
-export function isAuthorized(role: String){
-  return function(req: Request,res: Response,next:Function){
-    const user = req.user;
+// export function isAuthorized(role: String){
+//   return function(req: Request,res: Response,next:Function){
+//     const user = req.user;
 
-    User.findById(user._id, (err, foundUser:any)=>{
+//     User.findById(user._id, (err, foundUser:any)=>{
 
-      if(err) {
-        res.status(422).json({error: 'No user found'});
-        return next(err);
-      }
-      if(getRole(foundUser.role) >= getRole(role)){
-        return next();
-      }
-      res.status(401).json({error: "You are not authorized to see the content"});
-      return next(err);
-    });
+//       if(err) {
+//         res.status(422).json({error: 'No user found'});
+//         return next(err);
+//       }
+//       if(getRole(foundUser.role) >= getRole(role)){
+//         return next();
+//       }
+//       res.status(401).json({error: "You are not authorized to see the content"});
+//       return next(err);
+//     });
 
 
-  }
-}
+//   }
+// }
 
 
 export function env(key): string {

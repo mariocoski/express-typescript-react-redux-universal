@@ -4,37 +4,18 @@ var dotenv = require("dotenv");
 if (process.env.NODE_ENV !== 'production') {
     dotenv.config();
 }
-var express = require("express");
-var v1_1 = require("./routes/v1");
-var routes_1 = require("./constants/routes");
-var mongoose = require("mongoose");
+var app = require('./app');
 var utils_1 = require("./utils");
-var bodyParser = require("body-parser");
-var logger = require("morgan");
-var routes_2 = require("./constants/routes");
-var auth_1 = require("./routes/auth");
-var cors = require("cors");
-var socketIO = require("socket.io");
-var http = require("http");
+var socket_io_1 = require("socket.io");
+var http_1 = require("http");
 process.on('SIGINT', function () {
     process.exit(0);
 });
-var app = express();
 var portCandidate = process.env.NODE_ENV === 'test' ?
     utils_1.env('TEST_PORT') : utils_1.env('PORT');
 var port = utils_1.resolvePort(portCandidate);
-var server = new http.Server(app);
-var io = new socketIO(server);
-app.use(bodyParser.urlencoded({ extended: false })); // Parses urlencoded bodies
-app.use(bodyParser.json()); // Send JSON responses
-app.use(logger('dev'));
-var corsMiddleware = cors({ origin: '*', preflightContinue: true });
-app.use(corsMiddleware);
-app.options('*', corsMiddleware);
-var db_host = utils_1.env('DB_HOST');
-mongoose.connect(db_host, { useMongoClient: true });
-app.use(routes_1.API_V1, v1_1.default);
-app.use(routes_2.AUTH_ROUTE, auth_1.default);
+var server = new http_1.default.Server(app);
+var io = new socket_io_1.default(server);
 server.listen(port);
 server.on('listening', function () {
     console.log("Listening at http://localhost:" + port);
@@ -59,4 +40,5 @@ server.on('error', function (error) {
             throw error;
     }
 });
-exports.default = server;
+module.exports = server;
+//# sourceMappingURL=server.js.map
