@@ -1,5 +1,6 @@
 import {ROLE_USER, ROLE_PROFESSIONAL, ROLE_ADMIN, ROLE_SUPERADMIN} from '../constants/roles';
 import {Request, Response} from 'express';
+import { validationResult } from 'express-validator/check'
 // import {User} from '../models/user';
 // import {BadRequestError, NotFoundError, ForbiddenError,UnauthorizedError, BaseError } from '../lib/errors';
 export function resolvePort(val: any) {
@@ -14,6 +15,12 @@ export function resolvePort(val: any) {
     }
 
     return 3000;
+}
+
+export function getErrors(req){
+  return validationResult(req).formatWith(({ location, msg, param, value })=>{
+    return {message:msg};
+  });
 }
 /*
 const generateModelRoutes = (model) => {

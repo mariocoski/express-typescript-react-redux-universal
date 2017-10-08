@@ -1,8 +1,7 @@
 import {Application, Router, Request, Response} from 'express';
 import {register} from '../controllers/AuthController'; 
-import { check, validationResult } from 'express-validator/check';
-import app from '../app';
-import validateRegister from '../middlewares/validateRegister';
+
+import validateRegister from '../validation/validateRegister';
 
 module.exports = (app: Application) => {
 
@@ -10,7 +9,8 @@ module.exports = (app: Application) => {
     const authRoutes: Router = Router();
 
     // authRoutes
-    authRoutes.post('/register',validateRegister, register);
+    authRoutes.post('/register', validateRegister, register);
+        
     // authRoutes.post('/register', validateRegister, register);
     //   .post('login', requireLogin, login)
     //   .post('forgot-password', forgotPassword)

@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`AUTH should fail to create a user when email is invalid 1`] = `"{\\"errors\\":{\\"email\\":{\\"location\\":\\"body\\",\\"param\\":\\"email\\",\\"msg\\":\\"Email is required\\"},\\"password\\":{\\"location\\":\\"body\\",\\"param\\":\\"password\\",\\"msg\\":\\"passwords must be at least 5 chars long and contain one number\\"}}}"`;
-
-exports[`AUTH should fail to create a user without input 1`] = `"{\\"message\\":\\"Email is required\\"}"`;

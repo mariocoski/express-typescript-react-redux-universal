@@ -22,4 +22,3 @@ exports.default = {
     show: show,
     update: update
 };
-//# sourceMappingURL=ProfileController.js.map

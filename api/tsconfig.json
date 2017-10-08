@@ -4,9 +4,7 @@
     "module": "commonjs",                    
     "moduleResolution": "node",           
     "baseUrl": ".",                      
-    "allowSyntheticDefaultImports": true,
-    "outDir": "build",
-    "sourceMap":true
+    "outDir": "build"
   },
   "include": [
     "src/**/*"

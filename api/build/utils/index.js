@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var roles_1 = require("../constants/roles");
+var check_1 = require("express-validator/check");
 // import {User} from '../models/user';
 // import {BadRequestError, NotFoundError, ForbiddenError,UnauthorizedError, BaseError } from '../lib/errors';
 function resolvePort(val) {
@@ -49,6 +50,13 @@ function resolvePort(val) {
     return 3000;
 }
 exports.resolvePort = resolvePort;
+function getErrors(req) {
+    return check_1.validationResult(req).formatWith(function (_a) {
+        var location = _a.location, msg = _a.msg, param = _a.param, value = _a.value;
+        return { message: msg };
+    });
+}
+exports.getErrors = getErrors;
 /*
 const generateModelRoutes = (model) => {
   const routeSuffix = model.modelName.toLowerCase();
@@ -162,4 +170,3 @@ function env(key) {
     return myVal;
 }
 exports.env = env;
-//# sourceMappingURL=index.js.map

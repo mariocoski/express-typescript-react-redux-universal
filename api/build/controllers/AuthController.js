@@ -1,3 +1,26 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var utils_1 = require("../utils");
+var filter_1 = require("express-validator/filter");
+var db = require("../models");
+var errors_1 = require("../constants/errors");
+exports.register = function (req, res) {
+    var errors = utils_1.getErrors(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.mapped() });
+    }
+    var data = filter_1.matchedData(req);
+    var User = db["User"];
+    User.findOne({ where: { email: data.email } }).then(function (user) {
+        if (user) {
+            return res.status(422).json({ message: errors_1.EMAIL_ALREADY_IN_USE });
+        }
+        User.create(data, { fields: ['email', 'password'] }).then(function (model) {
+            var userModel = model.get({ plain: true });
+            res.status(201).json({ user: userModel });
+        });
+    });
+};
 // import * as JWT from 'jsonwebtoken';
 // import * as crypto from 'crypto';
 // // import {User} from '../models/user';
@@ -159,4 +182,3 @@
 //   roleAuthorization,
 //   meFromToken
 // }; 
-//# sourceMappingURL=AuthController.js.map

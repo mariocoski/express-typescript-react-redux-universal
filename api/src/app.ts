@@ -1,22 +1,16 @@
 
-import express from 'express';
-import bodyParser from 'body-parser';
-import logger from 'morgan';
-import passport from 'passport';
-import cors from 'cors';
-import expressValidator from 'express-validator';
+import * as express from 'express';
+import * as bodyParser from 'body-parser';
+import * as logger from 'morgan';
+import * as passport from 'passport';
+import * as cors from 'cors';
+import * as expressValidator from 'express-validator';
+
 const router = require('./routes/router');
 const app: express.Application = express();
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: false })); 
-app.use(expressValidator({
-  errorFormatter (param, msg, value){
-    return {
-      param,
-      msg
-    }
-  }
-}));
+app.use(expressValidator());
 app.use(logger('dev'));
 
 const corsMiddleware = cors({ origin: '*', preflightContinue: true });

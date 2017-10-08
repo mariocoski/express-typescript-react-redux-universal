@@ -1,17 +1,33 @@
-import {Request, Response} from 'express';
-import { check, validationResult } from 'express-validator/check';
-import {EMAIL_IS_REQUIRED} from '../constants/errors';
+import { Request, Response } from 'express';
+import { EMAIL_IS_REQUIRED } from '../constants/errors';
+import { getErrors } from '../utils'
+import { matchedData } from 'express-validator/filter';
+import * as db from '../models';
+import { EMAIL_ALREADY_IN_USE } from '../constants/errors';
 
 export const register = (req: Request, res: Response) => {
-  const errors = validationResult(req);
+
+  const errors = getErrors(req);
+
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.mapped() });
   }
-  res.status(201).json({user:{}});
-  const email = req.body.email;
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
-  const password = req.body.password;
+
+  const data = matchedData(req);
+
+  const User = db["User"];
+  
+  User.findOne({where:{ email: data.email }}).then(user => {
+    if(user){
+      return res.status(422).json({message: EMAIL_ALREADY_IN_USE});
+    }
+
+    User.create(data, { fields: [ 'email','password' ] }).then(model => {
+      const userModel = model.get({ plain: true });
+    
+      res.status(201).json({user:userModel}); 
+    });
+  }); 
 }
 
 

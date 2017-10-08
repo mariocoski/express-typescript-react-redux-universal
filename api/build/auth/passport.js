@@ -37,4 +37,3 @@
 //   jwtLogin,
 //   localLogin
 // }
-//# sourceMappingURL=passport.js.map

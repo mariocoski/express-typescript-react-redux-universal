@@ -1,33 +1,43 @@
-import * as dotenv from 'dotenv';
+import {config} from 'dotenv';
 if(process.env.NODE_ENV !== 'production'){
-  dotenv.config();
+  config();
 }
-const app = require('./app');
 import {resolvePort, env} from './utils';
-import socketIO from 'socket.io';
-import http from 'http';
+import * as socketIO from 'socket.io';
+import * as http from 'http';
+
+const iconvLite = require('iconv-lite');
+iconvLite.encodingExists('foo');
+
+const app = require('./app');
+const models = require('./models');
 
 process.on('SIGINT', () => {
   process.exit(0);
 });
+
 const IS_TEST = process.env.NODE_ENV === 'test';
 const portCandidate = IS_TEST ? env('TEST_PORT') : env('PORT');
 
 const port: number = resolvePort(portCandidate);
 
 const server = new http.Server(app);
-const io = new socketIO(server);
 
-server.listen(port);
+models.sequelize.sync().then(() => {
+  server.listen(port);
+  server.on('error', onError);
+  server.on('listening', onListening);
+});
 
-server.on('listening', () => {
+const io = socketIO(server);
+
+function onListening(){
   if(! IS_TEST){
     console.log(`Listening at http://localhost:${port}`);
   }
-});
+}
 
-server.on('error',(error: any)=>{
-
+function onError(error: any){  
   if (error.syscall !== "listen") {
     throw error;
   }
@@ -47,6 +57,6 @@ server.on('error',(error: any)=>{
     default:
       throw error;
   }
-});
+}
 
 module.exports = server;
