@@ -1,0 +1,18 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var express = require("express");
+var bodyParser = require("body-parser");
+var logger = require("morgan");
+var cors = require("cors");
+var expressValidator = require("express-validator");
+var router = require('./routes/router');
+var app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(expressValidator());
+app.use(logger('dev'));
+var corsMiddleware = cors({ origin: '*', preflightContinue: true });
+app.use(corsMiddleware);
+app.options('*', corsMiddleware);
+router(app);
+module.exports = app;
