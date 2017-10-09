@@ -17,7 +17,8 @@ exports.register = function (req, res) {
         }
         User.create(data, { fields: ['email', 'password'] }).then(function (model) {
             var userModel = model.get({ plain: true });
-            res.status(201).json({ user: userModel });
+            var token = 'token';
+            res.status(201).json({ user: userModel, token: token });
         });
     });
 };

@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`AUTH should create a user with valid input 1`] = `"{\\"user\\":{\\"id\\":1,\\"email\\":\\"valid@email.com\\",\\"password\\":\\"$2a$10$NqCf5Em/tgR.mDuo2MiwLuw2oGjd9Lp.H6Jb/RbRJKW1/xm0Risua\\",\\"updatedAt\\":\\"2017-10-08T21:13:56.778Z\\",\\"createdAt\\":\\"2017-10-08T21:13:56.778Z\\"}}"`;

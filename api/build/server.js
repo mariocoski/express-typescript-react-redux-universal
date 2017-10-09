@@ -1,8 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var dotenv_1 = require("dotenv");
 if (process.env.NODE_ENV !== 'production') {
-    dotenv_1.config();
+    require('dotenv').config();
 }
 var utils_1 = require("./utils");
 var socketIO = require("socket.io");
@@ -49,4 +48,13 @@ function onError(error) {
             throw error;
     }
 }
+if (process.env.NODE_ENV === 'production') {
+    app.use(function (err, req, res, next) {
+        res.status(err.status || 500);
+    });
+}
+app.use(function (err, req, res, next) {
+    console.error('error : ', err);
+    res.status(err.status || 500);
+});
 module.exports = server;

@@ -36,7 +36,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
+require('dotenv').config();
 var errors_1 = require("../../constants/errors");
+var db = require("../../models");
 function expectError(response, error) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -49,7 +51,8 @@ function expectError(response, error) {
 describe('AUTH', function () {
     var request = require('supertest');
     var app;
-    beforeEach(function () {
+    beforeEach(function (done) {
+        db['sequelize'].sync({ force: true });
         app = require('../../server');
     });
     afterEach(function () {
@@ -134,25 +137,22 @@ describe('AUTH', function () {
         });
     }); });
     it('should create a user with valid input', function () { return __awaiter(_this, void 0, void 0, function () {
-        var response;
+        var response, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    expect.assertions(2);
+                    expect.assertions(3);
                     return [4 /*yield*/, request(app).post('/auth/register')
                             .type('form')
                             .send({ email: 'valid@email.com', password: 'longenough' })];
                 case 1:
                     response = _a.sent();
+                    data = JSON.parse(response.text);
                     expect(response.statusCode).toBe(201);
-                    expect(response.text).toMatchSnapshot();
+                    expect(data.token).toEqual(expect.any(String));
+                    expect(data.user).toEqual(expect.any(Object));
                     return [2 /*return*/];
             }
         });
     }); });
-    //   .post('register', register)
-    //   .post('login', requireLogin, login)
-    //   .post('forgot-password', forgotPassword)
-    //   .post('reset-password/:token', verifyToken)
-    //   .post('me-from-token', meFromToken);
 });

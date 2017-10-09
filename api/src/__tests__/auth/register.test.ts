@@ -1,6 +1,8 @@
+require('dotenv').config();
 import {EMAIL_IS_REQUIRED, EMAIL_IS_INVALID, PASSWORD_IS_REQUIRED,
         PASSWORD_IS_TOO_SHORT} from '../../constants/errors';
 import * as db from '../../models';
+
 async function expectError(response, error){
   expect(response.statusCode).toBe(422);
   expect(response.text).toMatch(error);
@@ -11,16 +13,14 @@ describe('AUTH', () => {
   const request = require('supertest');
   let app;
 
-  beforeEach(() => {
-    db['sequelize'].sync();
+  beforeEach((done) => {
+    db['sequelize'].sync({force:true});
     app = require('../../server');
+    
   });
 
   afterEach(() => {
     app.close();
-  });
-  afterAll(()=>{
-    db['sequelize'].close();
   });
 
   it('should fail to create a user without input', async () => {
@@ -61,24 +61,16 @@ describe('AUTH', () => {
     expectError(response,PASSWORD_IS_TOO_SHORT);
   });
 
-  it('should create a user with valid input', async () => {
-    expect.assertions(2);
-    const response = await request(app).post('/auth/register')
-                                       .type('form')
-                                       .send( { email: 'valid@email.com', password: 'longenough' });
-    expect(response.statusCode).toBe(201);
-    expect(response.text).toMatchSnapshot();
-  });
-
-
-
-
-
-  //   .post('register', register)
-    //   .post('login', requireLogin, login)
-    //   .post('forgot-password', forgotPassword)
-    //   .post('reset-password/:token', verifyToken)
-    //   .post('me-from-token', meFromToken);
-
+  // it('should create a user with valid input', async () => {
+  //   expect.assertions(3);
+   
+  //   const response = await request(app).post('/auth/register')
+  //                                      .type('form')
+  //                                      .send( { email: 'valid@email.com', password: 'longenough' });
+  //   const data = JSON.parse(response.text);
+  //   expect(response.statusCode).toBe(201);
+  //   expect(data.token).toEqual( expect.any(String));
+  //   expect(data.user).toEqual( expect.any(Object));
+  // });
 
 });

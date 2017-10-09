@@ -1,3 +1,4 @@
+require('dotenv').config();
 describe('API V1', () => {
 
   const request = require('supertest');  

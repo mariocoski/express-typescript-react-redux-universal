@@ -34,6 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var _this = this;
+require('dotenv').config();
 describe('API V1', function () {
     var request = require('supertest');
     var app;

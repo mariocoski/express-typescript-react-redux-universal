@@ -24,9 +24,11 @@ export const register = (req: Request, res: Response) => {
 
     User.create(data, { fields: [ 'email','password' ] }).then(model => {
       const userModel = model.get({ plain: true });
-    
-      res.status(201).json({user:userModel}); 
+      const token = 'token';
+      res.status(201).json({user:userModel, token}); 
     });
+    
+
   }); 
 }
 
