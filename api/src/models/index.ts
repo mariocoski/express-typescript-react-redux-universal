@@ -1,23 +1,19 @@
-// const Sequelize = require('sequelize');
-const Sequelize = require('sequelize');
-import { env } from '../utils'; 
+
 import * as fs from 'fs';
 import * as path from 'path';
+const Sequelize = require('sequelize');
+const basename  = path.basename(__filename);
+const env       = process.env.NODE_ENV || 'development';
+const config    = require(path.resolve(__dirname,'../config/database'))[env];
 
-const sequelize = new Sequelize('test', env('DB_USER'), env('DB_PASS'), {
-  host: env('DB_HOST'),
-  port: parseInt(env('DB_PORT')),
-  dialect: env('DB_TYPE'),
-  operatorsAliases: false
-});
+const sequelize  = new Sequelize(config.database, config.username, config.password, {...config, operatorsAliases: false, logging: false});
 
 let db: any = {};
 
-const files= fs.readdirSync(__dirname)
-  .filter(file => {
-    return (file.indexOf(".") !== 0) && (file !== "index.js")  && (file !== "index.ts");
-  });
-  files.forEach(file  => {
+const files= fs.readdirSync(__dirname);
+  files.filter(file => {
+    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js' || file.slice(-3) === '.ts');
+  }).forEach(file  => {
     const model: any = sequelize.import(path.join(__dirname, file));
     db[model.name] = model;
   });

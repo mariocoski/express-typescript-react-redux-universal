@@ -1,7 +1,7 @@
-import {config} from 'dotenv';
 if(process.env.NODE_ENV !== 'production'){
-  config();
+  require('dotenv').config();
 }
+
 import {resolvePort, env} from './utils';
 import * as socketIO from 'socket.io';
 import * as http from 'http';
@@ -58,5 +58,16 @@ function onError(error: any){
       throw error;
   }
 }
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+  });
+}
+
+app.use(function(err, req, res, next) {
+  console.error('error : ', err);
+  res.status(err.status || 500);
+});
 
 module.exports = server;

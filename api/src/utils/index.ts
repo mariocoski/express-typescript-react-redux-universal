@@ -1,3 +1,7 @@
+import {config} from 'dotenv';
+if(process.env.NODE_ENV !== 'production'){
+  config();
+}
 import {ROLE_USER, ROLE_PROFESSIONAL, ROLE_ADMIN, ROLE_SUPERADMIN} from '../constants/roles';
 import {Request, Response} from 'express';
 import { validationResult } from 'express-validator/check'

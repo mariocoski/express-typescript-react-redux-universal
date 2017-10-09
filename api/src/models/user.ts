@@ -1,8 +1,23 @@
 import * as bcrypt from 'bcrypt';
-module.exports = function(sequelize, DataTypes) {
-  const User = sequelize.define("User", {
-    email: DataTypes.STRING,
-    password: DataTypes.STRING
+
+module.exports = (sequelize, DataTypes) => {
+  const User = sequelize.define('User', {
+    email: {
+      type: DataTypes.STRING,
+      validate: {
+        isEmail: true
+      }
+    },
+    password: DataTypes.STRING,
+    first_name: DataTypes.STRING,
+    last_name: DataTypes.STRING,
+    bio: DataTypes.TEXT
+  }, {
+    classMethods: {
+      associate(models) {
+        // associations can be defined here
+      }
+    }
   });
 
   User.beforeCreate((user, options) => {
@@ -12,6 +27,6 @@ module.exports = function(sequelize, DataTypes) {
                   })
                   .catch(err => { throw new Error(); });
   });
-  
+
   return User;
 };

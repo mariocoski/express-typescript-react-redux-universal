@@ -35,6 +35,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var dotenv_1 = require("dotenv");
+if (process.env.NODE_ENV !== 'production') {
+    dotenv_1.config();
+}
 var roles_1 = require("../constants/roles");
 var check_1 = require("express-validator/check");
 // import {User} from '../models/user';

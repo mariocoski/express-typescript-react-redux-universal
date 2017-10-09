@@ -8,23 +8,18 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// const Sequelize = require('sequelize');
-var Sequelize = require('sequelize');
-var utils_1 = require("../utils");
 var fs = require("fs");
 var path = require("path");
-var sequelize = new Sequelize(utils_1.env('DB_NAME'), utils_1.env('DB_USER'), utils_1.env('DB_PASS'), {
-    host: utils_1.env('DB_HOST'),
-    port: parseInt(utils_1.env('DB_PORT')),
-    dialect: utils_1.env('DB_TYPE'),
-    operatorsAliases: false
-});
+var Sequelize = require('sequelize');
+var basename = path.basename(__filename);
+var env = process.env.NODE_ENV || 'development';
+var config = require(path.resolve(__dirname, '../config/database'))[env];
+var sequelize = new Sequelize(config.database, config.username, config.password, __assign({}, config, { operatorsAliases: false, logging: false }));
 var db = {};
-var files = fs.readdirSync(__dirname)
-    .filter(function (file) {
-    return (file.indexOf(".") !== 0) && (file !== "index.js") && (file !== "index.ts");
-});
-files.forEach(function (file) {
+var files = fs.readdirSync(__dirname);
+files.filter(function (file) {
+    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js' || file.slice(-3) === '.ts');
+}).forEach(function (file) {
     var model = sequelize.import(path.join(__dirname, file));
     db[model.name] = model;
 });

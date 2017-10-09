@@ -34,6 +34,8 @@
     "babel-cli": "^6.26.0",
     "dotenv": "^4.0.0",
     "jest": "^21.2.1",
+    "sequelize-cli": "^3.0.0",
+    "sqlite3": "^3.1.13",
     "superagent": "^3.6.3",
     "supertest": "^3.0.0",
     "ts-jest": "^21.0.1",
@@ -43,6 +45,7 @@
     "bcrypt": "^1.0.3",
     "bluebird": "^3.5.0",
     "body-parser": "^1.18.0",
+    "compression": "^1.7.1",
     "cors": "^2.8.4",
     "express": "^4.15.4",
     "express-validator": "^4.2.1",
@@ -53,7 +56,7 @@
     "passport": "^0.4.0",
     "passport-jwt": "^3.0.0",
     "passport-local": "^1.0.0",
-    "sequelize": "^4.13.5",
+    "sequelize": "^4.13.6",
     "socket.io": "^2.0.3"
   },
   "jest": {
