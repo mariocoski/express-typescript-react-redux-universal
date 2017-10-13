@@ -2,7 +2,9 @@ import {config} from 'dotenv';
 if(process.env.NODE_ENV !== 'production'){
   config();
 }
-import {ROLE_USER, ROLE_PROFESSIONAL, ROLE_ADMIN, ROLE_SUPERADMIN} from '../constants/roles';
+import * as JWT from 'jsonwebtoken';
+import * as crypto from 'crypto';
+import {USER_ROLE} from '../constants/roles';
 import {Request, Response} from 'express';
 import { validationResult } from 'express-validator/check'
 // import {User} from '../models/user';
@@ -19,6 +21,12 @@ export function resolvePort(val: any) {
     }
 
     return 3000;
+}
+
+export function generateToken(user) {
+  return JWT.sign(user, env('JWT_SECRET'), {
+    expiresIn: env('JWT_EXPIRATION_TIME')
+  });
 }
 
 export function getErrors(req){
@@ -92,10 +100,10 @@ export const getRole = (checkRole) => {
   let role;
 
   switch (checkRole) {
-    case ROLE_SUPERADMIN: role = 4; break;
-    case ROLE_ADMIN: role = 3; break;
-    case ROLE_PROFESSIONAL: role = 2; break;
-    case ROLE_USER: role = 1; break;
+    // case ROLE_SUPERADMIN: role = 4; break;
+    // case ROLE_ADMIN: role = 3; break;
+    // case ROLE_PROFESSIONAL: role = 2; break;
+    // case ROLE_USER: role = 1; break;
     default: role = 1;
   }
 
@@ -103,7 +111,7 @@ export const getRole = (checkRole) => {
 };
 
 // export function isAuthorized(role: String){
-//   return function(req: Request,res: Response,next:Function){
+//   return function(req: Request,res: ResponssetUserInfoe,next:Function){
 //     const user = req.user;
 
 //     User.findById(user._id, (err, foundUser:any)=>{

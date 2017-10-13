@@ -7,7 +7,7 @@
   "scripts": {
     "build": "rm -rf ./build && tsc",
     "build:watch": "rm -rf ./build && tsc --watch",
-    "start": "node ./build/server.js",
+    "start": "NODE_ENV=development && node ./build/server.js",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "postinstall": "cp -n .env.example .env"
@@ -67,6 +67,7 @@
       "ts",
       "js"
     ],
+    "mapCoverage": true,
     "testMatch": [
       "<rootDir>/src/__tests__/**/*.test.(ts|js)"
     ]

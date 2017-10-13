@@ -1,9 +1,13 @@
 import { Request, Response } from 'express';
 import { EMAIL_IS_REQUIRED } from '../constants/errors';
+import { USER_ROLE } from '../constants/roles';
 import { getErrors } from '../utils'
 import { matchedData } from 'express-validator/filter';
 import * as db from '../models';
+import { env, generateToken, setUserInfo } from '../utils';
 import { EMAIL_ALREADY_IN_USE } from '../constants/errors';
+
+
 
 export const register = (req: Request, res: Response) => {
 
@@ -21,14 +25,22 @@ export const register = (req: Request, res: Response) => {
     if(user){
       return res.status(422).json({message: EMAIL_ALREADY_IN_USE});
     }
-
     User.create(data, { fields: [ 'email','password' ] }).then(model => {
       const userModel = model.get({ plain: true });
-      const token = 'token';
-      res.status(201).json({user:userModel, token}); 
-    });
-    
+      
+      const userInfo = {
+        _id: userModel.id,
+        first_name: userModel.first_name,
+        last_name: userModel.last_name,
+        email: userModel.email,
+        roles: [USER_ROLE]
+      }
 
+      res.status(201).json({
+        token: `JWT ${generateToken(userInfo)}`,
+        user: userInfo
+      });
+    });
   }); 
 }
 
@@ -48,11 +60,7 @@ export const register = (req: Request, res: Response) => {
  
 // // const requireLogin = passport.authenticate('local', { session: false });
 
-// function generateToken(user) {
-//   return JWT.sign(user, env('JWT_SECRET'), {
-//     expiresIn: 3600 // in seconds
-//   });
-// }
+
 
 // function login  (req, res, next) {
 //   const userInfo = setUserInfo(req.user);

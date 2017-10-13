@@ -1,8 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var roles_1 = require("../constants/roles");
 var utils_1 = require("../utils");
 var filter_1 = require("express-validator/filter");
 var db = require("../models");
+var utils_2 = require("../utils");
 var errors_1 = require("../constants/errors");
 exports.register = function (req, res) {
     var errors = utils_1.getErrors(req);
@@ -17,8 +19,17 @@ exports.register = function (req, res) {
         }
         User.create(data, { fields: ['email', 'password'] }).then(function (model) {
             var userModel = model.get({ plain: true });
-            var token = 'token';
-            res.status(201).json({ user: userModel, token: token });
+            var userInfo = {
+                _id: userModel.id,
+                first_name: userModel.first_name,
+                last_name: userModel.last_name,
+                email: userModel.email,
+                roles: [roles_1.USER_ROLE]
+            };
+            res.status(201).json({
+                token: "JWT " + utils_2.generateToken(userInfo),
+                user: userInfo
+            });
         });
     });
 };
@@ -32,11 +43,6 @@ exports.register = function (req, res) {
 // // passport.use(jwtLogin);
 // // passport.use(localLogin);
 // // const requireLogin = passport.authenticate('local', { session: false });
-// function generateToken(user) {
-//   return JWT.sign(user, env('JWT_SECRET'), {
-//     expiresIn: 3600 // in seconds
-//   });
-// }
 // function login  (req, res, next) {
 //   const userInfo = setUserInfo(req.user);
 //   res.status(200).json({
@@ -183,3 +189,4 @@ exports.register = function (req, res) {
 //   roleAuthorization,
 //   meFromToken
 // }; 
+//# sourceMappingURL=AuthController.js.map
