@@ -21,13 +21,19 @@ const portCandidate = IS_TEST ? env('TEST_PORT') : env('PORT');
 
 const port: number = resolvePort(portCandidate);
 
-const server = new http.Server(app);
+async function dbInit(){
+  await models.sequelize.sync();
+}
 
-models.sequelize.sync().then(() => {
-  server.listen(port);
-  server.on('error', onError);
-  server.on('listening', onListening);
-});
+const server = new http.Server(app);
+if(process.env.NODE_ENV !== 'test'){
+  dbInit();
+}
+server.listen(port);
+
+server.on('error', onError);
+server.on('listening', onListening);
+
 
 const io = socketIO(server);
 

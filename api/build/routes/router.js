@@ -23,3 +23,4 @@ module.exports = function (app) {
     app.use('/auth', authRoutes);
     return app;
 };
+//# sourceMappingURL=router.js.map

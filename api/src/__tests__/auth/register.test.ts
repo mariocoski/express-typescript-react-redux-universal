@@ -13,13 +13,12 @@ describe('AUTH', () => {
   const request = require('supertest');
   let app;
 
-  beforeEach((done) => {
-    db['sequelize'].sync({force:true});
+  beforeEach(async() => {
+    await db['sequelize'].sync({force:true});
     app = require('../../server');
-    
   });
 
-  afterEach(() => {
+  afterEach(async() => {
     app.close();
   });
 
@@ -61,16 +60,15 @@ describe('AUTH', () => {
     expectError(response,PASSWORD_IS_TOO_SHORT);
   });
 
-  // it('should create a user with valid input', async () => {
-  //   expect.assertions(3);
-   
-  //   const response = await request(app).post('/auth/register')
-  //                                      .type('form')
-  //                                      .send( { email: 'valid@email.com', password: 'longenough' });
-  //   const data = JSON.parse(response.text);
-  //   expect(response.statusCode).toBe(201);
-  //   expect(data.token).toEqual( expect.any(String));
-  //   expect(data.user).toEqual( expect.any(Object));
-  // });
+  it('should create a user with valid input', async () => {
+    expect.assertions(3);
+    const response = await request(app).post('/auth/register')
+                                       .type('form')
+                                       .send( { email: 'valid@email.com', password: 'longenough' });
+    const data = JSON.parse(response.text);
+    expect(response.statusCode).toBe(201);
+    expect(data.token).toMatch(/JWT/);
+    expect(data.user).toEqual( expect.any(Object));
+  });
 
 });

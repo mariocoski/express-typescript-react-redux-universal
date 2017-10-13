@@ -8,3 +8,4 @@ exports.default = [
     check_1.check('password', errors_1.PASSWORD_IS_REQUIRED).exists(),
     check_1.check('password', errors_1.PASSWORD_IS_TOO_SHORT).isLength({ min: 6 })
 ];
+//# sourceMappingURL=validateRegister.js.map

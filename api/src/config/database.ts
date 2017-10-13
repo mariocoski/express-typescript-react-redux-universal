@@ -1,5 +1,5 @@
 const env = require('../utils').env; 
-
+const path = require('path');
 module.exports = {
   development: {
     username: 'root',
@@ -12,7 +12,8 @@ module.exports = {
     username: env('TEST_DB_USERNAME'),
     password: env('TEST_DB_PASSWORD'),
     database: env('TEST_DB_NAME'),
-    dialect: 'sqlite'
+    dialect: 'mysql',
+    // storage: path.resolve('../database/database.sqlite')
   },
   production: {
     username: process.env.PROD_DB_USERNAME,

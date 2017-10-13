@@ -18,3 +18,4 @@ app.use(corsMiddleware);
 app.options('*', corsMiddleware);
 router(app);
 module.exports = app;
+//# sourceMappingURL=app.js.map

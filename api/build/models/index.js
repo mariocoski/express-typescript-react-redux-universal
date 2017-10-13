@@ -29,3 +29,4 @@ Object.keys(db).forEach(function (modelName) {
     }
 });
 module.exports = __assign({ sequelize: sequelize, Sequelize: Sequelize }, db);
+//# sourceMappingURL=index.js.map

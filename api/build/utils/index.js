@@ -39,7 +39,7 @@ var dotenv_1 = require("dotenv");
 if (process.env.NODE_ENV !== 'production') {
     dotenv_1.config();
 }
-var roles_1 = require("../constants/roles");
+var JWT = require("jsonwebtoken");
 var check_1 = require("express-validator/check");
 // import {User} from '../models/user';
 // import {BadRequestError, NotFoundError, ForbiddenError,UnauthorizedError, BaseError } from '../lib/errors';
@@ -54,6 +54,12 @@ function resolvePort(val) {
     return 3000;
 }
 exports.resolvePort = resolvePort;
+function generateToken(user) {
+    return JWT.sign(user, env('JWT_SECRET'), {
+        expiresIn: env('JWT_EXPIRATION_TIME')
+    });
+}
+exports.generateToken = generateToken;
 function getErrors(req) {
     return check_1.validationResult(req).formatWith(function (_a) {
         var location = _a.location, msg = _a.msg, param = _a.param, value = _a.value;
@@ -134,24 +140,16 @@ exports.setUserInfo = function (request) {
 exports.getRole = function (checkRole) {
     var role;
     switch (checkRole) {
-        case roles_1.ROLE_SUPERADMIN:
-            role = 4;
-            break;
-        case roles_1.ROLE_ADMIN:
-            role = 3;
-            break;
-        case roles_1.ROLE_PROFESSIONAL:
-            role = 2;
-            break;
-        case roles_1.ROLE_USER:
-            role = 1;
-            break;
+        // case ROLE_SUPERADMIN: role = 4; break;
+        // case ROLE_ADMIN: role = 3; break;
+        // case ROLE_PROFESSIONAL: role = 2; break;
+        // case ROLE_USER: role = 1; break;
         default: role = 1;
     }
     return role;
 };
 // export function isAuthorized(role: String){
-//   return function(req: Request,res: Response,next:Function){
+//   return function(req: Request,res: ResponssetUserInfoe,next:Function){
 //     const user = req.user;
 //     User.findById(user._id, (err, foundUser:any)=>{
 //       if(err) {
@@ -174,3 +172,4 @@ function env(key) {
     return myVal;
 }
 exports.env = env;
+//# sourceMappingURL=index.js.map

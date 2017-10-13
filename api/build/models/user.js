@@ -16,7 +16,7 @@ module.exports = function (sequelize, DataTypes) {
     }, {
         classMethods: {
             associate: function (models) {
-                // associations can be defined here
+                User.hasMany(models.Role);
             }
         }
     });
@@ -29,3 +29,4 @@ module.exports = function (sequelize, DataTypes) {
     });
     return User;
 };
+//# sourceMappingURL=user.js.map

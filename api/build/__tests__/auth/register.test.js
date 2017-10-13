@@ -51,13 +51,23 @@ function expectError(response, error) {
 describe('AUTH', function () {
     var request = require('supertest');
     var app;
-    beforeEach(function (done) {
-        db['sequelize'].sync({ force: true });
-        app = require('../../server');
-    });
-    afterEach(function () {
-        app.close();
-    });
+    beforeEach(function () { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, db['sequelize'].sync({ force: true })];
+                case 1:
+                    _a.sent();
+                    app = require('../../server');
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    afterEach(function () { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            app.close();
+            return [2 /*return*/];
+        });
+    }); });
     it('should fail to create a user without input', function () { return __awaiter(_this, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
@@ -149,10 +159,11 @@ describe('AUTH', function () {
                     response = _a.sent();
                     data = JSON.parse(response.text);
                     expect(response.statusCode).toBe(201);
-                    expect(data.token).toEqual(expect.any(String));
+                    expect(data.token).toMatch(/JWT/);
                     expect(data.user).toEqual(expect.any(Object));
                     return [2 /*return*/];
             }
         });
     }); });
 });
+//# sourceMappingURL=register.test.js.map
