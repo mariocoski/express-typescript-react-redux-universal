@@ -1,14 +1,15 @@
 module.exports = function (sequelize, DataTypes) {
-    var Role = sequelize.define('Role', {
+    var Permission = sequelize.define('Permission', {
         name: DataTypes.STRING,
         description: DataTypes.STRING
     }, {
-        classMethods: {
-            associate: function (models) {
-                Role.hasMany(models.Permission);
-            }
-        }
+        tableName: 'permissions'
     });
-    return Role;
+    Permission.associate = function (models) {
+        Permission.belongsToMany(models.Role, {
+            through: 'roles_permissions', foreignKey: 'permission_id'
+        });
+    };
+    return Permission;
 };
 //# sourceMappingURL=permission.js.map

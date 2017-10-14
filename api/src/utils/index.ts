@@ -7,6 +7,7 @@ import * as crypto from 'crypto';
 import {USER_ROLE} from '../constants/roles';
 import {Request, Response} from 'express';
 import { validationResult } from 'express-validator/check'
+import * as bcrypt from 'bcrypt';
 // import {User} from '../models/user';
 // import {BadRequestError, NotFoundError, ForbiddenError,UnauthorizedError, BaseError } from '../lib/errors';
 export function resolvePort(val: any) {
@@ -138,4 +139,12 @@ export function env(key): string {
       throw new Error(`No ENV ${key} not found`);
   }
   return myVal;
+}
+
+export async function generateHash(password){
+  return bcrypt.hash(password, 10);
+}
+
+export async function comparePassword(password, hashedPassword){
+  return bcrypt.compare(password, hashedPassword);
 }

@@ -1,4 +1,3 @@
-var env = require('../utils').env;
 var path = require('path');
 module.exports = {
     development: {
@@ -6,19 +5,23 @@ module.exports = {
         password: 'root',
         database: 'database_dev',
         host: '127.0.0.1',
-        dialect: 'mysql'
+        dialect: 'mysql',
+        operatorsAliases: false
     },
     test: {
-        username: env('TEST_DB_USERNAME'),
-        password: env('TEST_DB_PASSWORD'),
-        database: env('TEST_DB_NAME'),
+        username: process.env.TEST_DB_USERNAME,
+        password: process.env.TEST_DB_PASSWORD,
+        database: process.env.TEST_DB_NAME,
         dialect: 'mysql',
+        operatorsAliases: false
+        // storage: path.resolve('../database/database.sqlite')
     },
     production: {
         username: process.env.PROD_DB_USERNAME,
         password: process.env.PROD_DB_PASSWORD,
         database: process.env.PROD_DB_NAME,
         host: process.env.PROD_DB_HOSTNAME,
+        operatorsAliases: false,
         dialect: 'mysql'
     }
 };

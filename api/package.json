@@ -5,6 +5,12 @@
   "author": "Mariusz Rajczakowski",
   "license": "MIT",
   "scripts": {
+    "db:create":"NODE_ENV=development && sequelize db:create",
+    "db:drop" :"NODE_ENV=development && sequelize db:drop",
+    "db:recreate": "yarn db:drop && yarn db:create",
+    "db:restart" : "yarn db:recreate && yarn db:install", 
+    "db:start" : "yarn db:create && yarn db:install", 
+    "db:install": "NODE_ENV=development && sequelize db:migrate && sequelize db:seed:all",
     "build": "rm -rf ./build && tsc",
     "build:watch": "rm -rf ./build && tsc --watch",
     "start": "NODE_ENV=development && node ./build/server.js",

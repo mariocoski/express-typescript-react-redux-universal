@@ -16,6 +16,7 @@ describe('AUTH', () => {
   beforeEach(async() => {
     await db['sequelize'].sync({force:true});
     app = require('../../server');
+   
   });
 
   afterEach(async() => {
@@ -60,6 +61,7 @@ describe('AUTH', () => {
     expectError(response,PASSWORD_IS_TOO_SHORT);
   });
 
+
   it('should create a user with valid input', async () => {
     expect.assertions(3);
     const response = await request(app).post('/auth/register')
@@ -68,6 +70,7 @@ describe('AUTH', () => {
     const data = JSON.parse(response.text);
     expect(response.statusCode).toBe(201);
     expect(data.token).toMatch(/JWT/);
+
     expect(data.user).toEqual( expect.any(Object));
   });
 
