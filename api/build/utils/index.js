@@ -41,6 +41,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 var JWT = require("jsonwebtoken");
 var check_1 = require("express-validator/check");
+var bcrypt = require("bcrypt");
 // import {User} from '../models/user';
 // import {BadRequestError, NotFoundError, ForbiddenError,UnauthorizedError, BaseError } from '../lib/errors';
 function resolvePort(val) {
@@ -172,4 +173,20 @@ function env(key) {
     return myVal;
 }
 exports.env = env;
+function generateHash(password) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, bcrypt.hash(password, 10)];
+        });
+    });
+}
+exports.generateHash = generateHash;
+function comparePassword(password, hashedPassword) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, bcrypt.compare(password, hashedPassword)];
+        });
+    });
+}
+exports.comparePassword = comparePassword;
 //# sourceMappingURL=index.js.map

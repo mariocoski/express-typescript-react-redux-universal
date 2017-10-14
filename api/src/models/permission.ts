@@ -1,15 +1,16 @@
 module.exports = (sequelize, DataTypes) => {
-  const Role = sequelize.define('Role', {
+  const Permission = sequelize.define('Permission', {
     name: DataTypes.STRING,
     description: DataTypes.STRING
   }, {
-    classMethods: {
-      associate(models) {
-        Role.hasMany(models.Permission)
-      }
-    }
+    tableName: 'permissions'
   });
 
+  Permission.associate = (models) => {
+    Permission.belongsToMany(models.Role, {
+      through: 'roles_permissions', foreignKey: 'permission_id'
+    });
+  }
 
-  return Role;
+  return Permission;
 };
