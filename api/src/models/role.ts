@@ -1,13 +1,13 @@
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize: any, DataTypes: any) => {
   const Role = sequelize.define('Role', {
     name: DataTypes.STRING,
     description: DataTypes.STRING,
-    created_at: {
+    createdAt: {
       type: DataTypes.DATE,
       field: 'created_at',
       defaultValue: DataTypes.NOW 
     },
-    updated_at: {
+    updatedAt: {
       type: DataTypes.DATE,
       field: 'updated_at',
       allowNull: true
@@ -16,13 +16,17 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'roles'
   });
 
-  Role.associate = (models) => {
+  Role.associate = (models: any) => {
     Role.belongsToMany(models.User, { 
-      through: 'users_roles', foreignKey: 'role_id'
+      through: 'users_roles',  foreignKey: {
+        unique: false
+      }
     });
-    Role.belongsToMany(models.Permission, { 
-      through: 'roles_permissions', foreignKey: 'role_id'
-    });
+    // Role.belongsToMany(models.Permission, { 
+    //   through: 'roles_permissions',  foreignKey: {
+    //     unique: false
+    //   }
+    // });
   };
 
   return Role;

@@ -1,1 +1,1 @@
-{"version":3,"file":"UnauthorizedError.js","sourceRoot":"","sources":["../../../src/lib/errors/UnauthorizedError.js"],"names":[],"mappings":";;;;;;;;;;;;AAAA,yCAAoC;AAEpC;IAA6B,6BAAS;IACpC;eACE,kBAAM,WAAW,CAAC;IACpB,CAAC;IACH,gBAAC;AAAD,CAAC,AAJD,CAA6B,mBAAS,GAIrC"}
+{"version":3,"file":"UnauthorizedError.js","sourceRoot":"","sources":["../../../src/lib/errors/UnauthorizedError.js"],"names":[],"mappings":";;;;;;;;;;;;AAAA,yCAAoC;AAEpC;IAA6B,6BAAS;IACpC;eACE,kBAAM,cAAc,CAAC;IACvB,CAAC;IACH,gBAAC;AAAD,CAAC,AAJD,CAA6B,mBAAS,GAIrC"}

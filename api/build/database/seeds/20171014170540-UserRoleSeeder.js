@@ -1,32 +1,9 @@
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
+var utils_1 = require("../../utils");
 module.exports = {
     up: function (queryInterface, Sequelize) {
-        return queryInterface.bulkInsert('users_roles', [
-            {
-                user_id: 1,
-                role_id: 1
-            },
-            {
-                user_id: 2,
-                role_id: 1
-            },
-            {
-                user_id: 2,
-                role_id: 2
-            },
-            {
-                user_id: 3,
-                role_id: 1
-            },
-            {
-                user_id: 3,
-                role_id: 2
-            },
-            {
-                user_id: 3,
-                role_id: 3
-            },
-        ], {});
+        return utils_1.seedUsersRoles(queryInterface);
         /*
           Add altering commands here.
           Return a promise to correctly handle asynchronicity.
@@ -39,6 +16,7 @@ module.exports = {
         */
     },
     down: function (queryInterface, Sequelize) {
+        return queryInterface.bulkDelete('users_roles', null, {});
         /*
           Add reverting commands here.
           Return a promise to correctly handle asynchronicity.

@@ -1,24 +1,7 @@
 'use strict';
 
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert('roles', [
-      {
-        id: 1,
-        name: 'user',
-        description: 'user role'
-      },
-      {
-        id: 2,
-        name: 'admin',
-        description: 'admin role'
-      },
-      {
-        id: 3,
-        name: 'superadmin',
-        description: 'superadmin role'
-      }
-    ], {});
+  up: (queryInterface: any, Sequelize: any) => {
     /*
       Add altering commands here.
       Return a promise to correctly handle asynchronicity.
@@ -31,7 +14,7 @@ module.exports = {
     */
   },
 
-  down: (queryInterface, Sequelize) => {
+  down: (queryInterface: any, Sequelize: any) => {
     /*
       Add reverting commands here.
       Return a promise to correctly handle asynchronicity.

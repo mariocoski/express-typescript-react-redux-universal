@@ -1,13 +1,14 @@
+"use strict";
 module.exports = function (sequelize, DataTypes) {
     var Role = sequelize.define('Role', {
         name: DataTypes.STRING,
         description: DataTypes.STRING,
-        created_at: {
+        createdAt: {
             type: DataTypes.DATE,
             field: 'created_at',
             defaultValue: DataTypes.NOW
         },
-        updated_at: {
+        updatedAt: {
             type: DataTypes.DATE,
             field: 'updated_at',
             allowNull: true
@@ -17,11 +18,15 @@ module.exports = function (sequelize, DataTypes) {
     });
     Role.associate = function (models) {
         Role.belongsToMany(models.User, {
-            through: 'users_roles', foreignKey: 'role_id'
+            through: 'users_roles', foreignKey: {
+                unique: false
+            }
         });
-        Role.belongsToMany(models.Permission, {
-            through: 'roles_permissions', foreignKey: 'role_id'
-        });
+        // Role.belongsToMany(models.Permission, { 
+        //   through: 'roles_permissions',  foreignKey: {
+        //     unique: false
+        //   }
+        // });
     };
     return Role;
 };

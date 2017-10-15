@@ -1,5 +1,6 @@
+"use strict";
 module.exports = function (sequelize, DataTypes) {
-    var RolePermission = sequelize.define('RolesPermissions', {
+    var RolePermission = sequelize.define('roles_permissions', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,

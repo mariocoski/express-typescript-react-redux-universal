@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { generateHash } from '../utils';
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize: any, DataTypes: any) => {
   const User = sequelize.define('User', {
     email: {
       type: DataTypes.STRING,
@@ -12,39 +12,33 @@ module.exports = (sequelize, DataTypes) => {
     first_name: DataTypes.STRING,
     last_name: DataTypes.STRING,
     bio: DataTypes.TEXT,
-    created_at: {
+    createdAt: {
       type: DataTypes.DATE,
       field: 'created_at',
       defaultValue: DataTypes.NOW 
     },
-    updated_at: {
+    updatedAt: {
       type: DataTypes.DATE,
       field: 'updated_at'
     },
-    deleted_at: {
+    deletedAt: {
       type: DataTypes.DATE,
-      field: 'updated_at'
+      field: 'deleted_at'
     }
   }, {
-    tableName: 'users',
+    tableName: 'users'
   });
 
-  User.associate = (models) => {
+  User.associate = (models: any) => {
     User.belongsToMany(models.Role,{
       through: 'users_roles',
       foreignKey: 'user_id'
     });
   }
   
-
-  User.beforeCreate(async (user, options) => {
-   user.password = await generateHash(user.password);
-    // return User;
-    // return bcrypt.hash(user.password, 10)
-    //               .then(hash => {
-    //                   user.password = hash;
-    //               })
-    //               .catch(err => { throw new Error(); });
+  User.beforeCreate(async (user: any, options: object) => {
+    user.password = await generateHash(user.password);
+    return user;
   });
 
   return User;

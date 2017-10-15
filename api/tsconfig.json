@@ -6,7 +6,8 @@
     "baseUrl": ".",   
     "allowJs": true,                   
     "outDir": "build",
-    "sourceMap": true
+    "sourceMap": true,
+    "strict" : true
   },
   "include": [
     "src/**/*"

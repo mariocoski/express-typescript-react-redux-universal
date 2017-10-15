@@ -14,7 +14,7 @@ var BaseError_1 = require("./BaseError");
 var default_1 = /** @class */ (function (_super) {
     __extends(default_1, _super);
     function default_1() {
-        return _super.call(this, 'Forbidden') || this;
+        return _super.call(this, 'Unauthorized') || this;
     }
     return default_1;
 }(BaseError_1.default));

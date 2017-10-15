@@ -34,25 +34,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var dotenv_1 = require("dotenv");
-if (process.env.NODE_ENV !== 'production') {
-    dotenv_1.config();
-}
 var JWT = require("jsonwebtoken");
+var roles_1 = require("../constants/roles");
 var check_1 = require("express-validator/check");
 var bcrypt = require("bcrypt");
-// import {User} from '../models/user';
-// import {BadRequestError, NotFoundError, ForbiddenError,UnauthorizedError, BaseError } from '../lib/errors';
-function resolvePort(val) {
-    var port = parseInt(val, 10);
+var errors_1 = require("../lib/errors");
+function resolvePort(portCandidate) {
+    if (portCandidate === undefined) {
+        throw new Error("Port " + portCandidate + " is not numeric");
+    }
+    var port = parseInt(portCandidate, 10);
     if (isNaN(port)) {
-        return val;
+        throw new Error("Port " + portCandidate + " is not numeric");
     }
     if (port >= 0) {
         return port;
     }
-    return 3000;
+    throw new Error("Port " + portCandidate + " is not numeric");
 }
 exports.resolvePort = resolvePort;
 function generateToken(user) {
@@ -68,109 +68,74 @@ function getErrors(req) {
     });
 }
 exports.getErrors = getErrors;
-/*
-const generateModelRoutes = (model) => {
-  const routeSuffix = model.modelName.toLowerCase();
-  const authentication = (req, res, next) =>
-    passport.authenticate(
-      ['jwt', 'clientBasic'],
-      DEFAULT_PASSPORT_OPTIONS,
-      (err, user) => {
-        if (err) {
-          return handleError(res, err);
-        }
-        req.user = user;
-        return next();
-      }
-    )(req, res, next);
-  generateConnectionsRoute(model, routeSuffix, authentication);
-  generateIndexesRoute(model, routeSuffix, authentication);
-};
-
-*/
+function formatError(message, stack) {
+    if (stack === void 0) { stack = undefined; }
+    return (stack !== undefined) ? { error: message, stack: stack } : { error: message };
+}
+exports.formatError = formatError;
 function handleError(res, err) {
     console.error(err);
+    var IS_PROD = process.env.NODE_ENV === 'production';
     switch (err.constructor) {
-        // case BadRequestError:
-        //   return res.status(400).send(err.message);
-        // case NotFoundError:
-        //   return res.status(404).send(err.message);
-        // case ForbiddenError:
-        //   return res.status(403).send(err.message);
-        // case UnauthorizedError:
-        //   return res.status(401).send(err.message);
-        // case BaseError:
-        //   return res.status(500).send(`${err.message}\n${err.stack}`);
+        case errors_1.BadRequestError:
+            return res.status(400).json(formatError(err.message));
+        case errors_1.NotFoundError:
+            return res.status(404).json(formatError(err.message));
+        case errors_1.ForbiddenError:
+            return res.status(403).json(formatError(err.message));
+        case errors_1.UnauthorizedError:
+            return res.status(401).json(formatError(err.message));
+        case errors_1.BaseError:
+            var errObj = (IS_PROD) ? formatError(err.message) : formatError(err.message.err.stack);
+            return res.status(500).json(errObj);
         default:
-            return res.status(500).send(err);
+            return res.status(500).json(err.message);
     }
 }
 exports.handleError = handleError;
 ;
-function catchErrors(req, res) {
-    return __awaiter(this, void 0, void 0, function () {
-        var err_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, catchErrors(req, res)];
-                case 1:
-                    _a.sent();
-                    return [3 /*break*/, 3];
-                case 2:
-                    err_1 = _a.sent();
-                    return [2 /*return*/, handleError(res, err_1)];
-                case 3: return [2 /*return*/];
-            }
-        });
+exports.catchErrors = function (handler) { return function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var err_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, handler(req, res)];
+            case 1:
+                _a.sent();
+                return [3 /*break*/, 3];
+            case 2:
+                err_1 = _a.sent();
+                return [2 /*return*/, handleError(res, err_1)];
+            case 3: return [2 /*return*/];
+        }
     });
-}
-exports.catchErrors = catchErrors;
-;
-exports.setUserInfo = function (request) {
-    var getUserInfo = {
-        _id: request._id,
-        firstName: request.profile.firstName,
-        lastName: request.profile.lastName,
-        email: request.email,
-        role: request.role
-    };
-    return getUserInfo;
-};
-exports.getRole = function (checkRole) {
-    var role;
-    switch (checkRole) {
-        // case ROLE_SUPERADMIN: role = 4; break;
-        // case ROLE_ADMIN: role = 3; break;
-        // case ROLE_PROFESSIONAL: role = 2; break;
-        // case ROLE_USER: role = 1; break;
-        default: role = 1;
+}); }; };
+exports.getRoleId = function (role) {
+    switch (role) {
+        case roles_1.USER_ROLE:
+            return 1;
+        case roles_1.ADMIN_ROLE:
+            return 2;
+        case roles_1.SUPERADMIN_ROLE:
+            return 3;
+        default:
+            throw new Error("Role " + role + " is not defined");
     }
-    return role;
 };
-// export function isAuthorized(role: String){
-//   return function(req: Request,res: ResponssetUserInfoe,next:Function){
-//     const user = req.user;
-//     User.findById(user._id, (err, foundUser:any)=>{
-//       if(err) {
-//         res.status(422).json({error: 'No user found'});
-//         return next(err);
-//       }
-//       if(getRole(foundUser.role) >= getRole(role)){
-//         return next();
-//       }
-//       res.status(401).json({error: "You are not authorized to see the content"});
-//       return next(err);
-//     });
-//   }
-// }
-function env(key) {
+function env(key, defaultVal) {
+    if (defaultVal === void 0) { defaultVal = undefined; }
     var myVal = process.env[key];
-    if (myVal === undefined) {
-        throw new Error("No ENV " + key + " not found");
+    if (typeof myVal === 'undefined' && defaultVal === undefined) {
+        throw new Error("No ENV " + key + " was found");
     }
-    return myVal;
+    if (typeof myVal === 'string') {
+        return myVal;
+    }
+    if (typeof defaultVal === 'string') {
+        return defaultVal;
+    }
+    throw new Error("No ENV " + key + " was found");
 }
 exports.env = env;
 function generateHash(password) {
@@ -189,4 +154,167 @@ function comparePassword(password, hashedPassword) {
     });
 }
 exports.comparePassword = comparePassword;
+function seedUsers(queryInterface) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a, _b, _c, _d, _e, _f, _g;
+        return __generator(this, function (_h) {
+            switch (_h.label) {
+                case 0:
+                    _b = (_a = queryInterface).bulkInsert;
+                    _c = ['users'];
+                    _d = {
+                        id: 1,
+                        email: 'user@test.com'
+                    };
+                    return [4 /*yield*/, generateHash('password')];
+                case 1:
+                    _e = [
+                        (_d.password = _h.sent(),
+                            _d.first_name = 'Joe',
+                            _d.last_name = 'Doe',
+                            _d.bio = 'Joe is a user',
+                            _d.created_at = new Date(),
+                            _d.updated_at = new Date(),
+                            _d)
+                    ];
+                    _f = {
+                        id: 2,
+                        email: 'admin@test.com'
+                    };
+                    return [4 /*yield*/, generateHash('password')];
+                case 2:
+                    _e = _e.concat([
+                        (_f.password = _h.sent(),
+                            _f.first_name = 'John',
+                            _f.last_name = 'Doe',
+                            _f.bio = 'John is an admin',
+                            _f.created_at = new Date(),
+                            _f.updated_at = new Date(),
+                            _f)
+                    ]);
+                    _g = {
+                        id: 3,
+                        email: 'superadmin@test.com'
+                    };
+                    return [4 /*yield*/, generateHash('password')];
+                case 3: return [2 /*return*/, _b.apply(_a, _c.concat([_e.concat([
+                            (_g.password = _h.sent(),
+                                _g.first_name = 'Jane',
+                                _g.last_name = 'Doe',
+                                _g.bio = 'Jane is a superadmin',
+                                _g.created_at = new Date(),
+                                _g.updated_at = new Date(),
+                                _g)
+                        ]), {}]))];
+            }
+        });
+    });
+}
+exports.seedUsers = seedUsers;
+function seedRoles(queryInterface) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, queryInterface.bulkInsert('roles', [
+                    {
+                        id: 1,
+                        name: roles_1.USER_ROLE,
+                        description: 'user role'
+                    },
+                    {
+                        id: 2,
+                        name: roles_1.ADMIN_ROLE,
+                        description: 'admin role'
+                    },
+                    {
+                        id: 3,
+                        name: roles_1.SUPERADMIN_ROLE,
+                        description: 'superadmin role'
+                    }
+                ], {})];
+        });
+    });
+}
+exports.seedRoles = seedRoles;
+function seedUsersRoles(queryInterface) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, queryInterface.bulkInsert('users_roles', [
+                    {
+                        user_id: 1,
+                        role_id: exports.getRoleId(roles_1.USER_ROLE)
+                    },
+                    {
+                        user_id: 2,
+                        role_id: exports.getRoleId(roles_1.USER_ROLE)
+                    },
+                    {
+                        user_id: 2,
+                        role_id: exports.getRoleId(roles_1.ADMIN_ROLE)
+                    },
+                    {
+                        user_id: 3,
+                        role_id: exports.getRoleId(roles_1.USER_ROLE)
+                    },
+                    {
+                        user_id: 3,
+                        role_id: exports.getRoleId(roles_1.ADMIN_ROLE)
+                    },
+                    {
+                        user_id: 3,
+                        role_id: exports.getRoleId(roles_1.SUPERADMIN_ROLE)
+                    },
+                ], {})];
+        });
+    });
+}
+exports.seedUsersRoles = seedUsersRoles;
+function seedDb(queryInterface) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _this = this;
+        return __generator(this, function (_a) {
+            return [2 /*return*/, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+                    var e_1;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                _a.trys.push([0, 4, , 5]);
+                                return [4 /*yield*/, seedUsers(queryInterface)];
+                            case 1:
+                                _a.sent();
+                                return [4 /*yield*/, seedRoles(queryInterface)];
+                            case 2:
+                                _a.sent();
+                                return [4 /*yield*/, seedUsersRoles(queryInterface)];
+                            case 3:
+                                _a.sent();
+                                resolve();
+                                return [3 /*break*/, 5];
+                            case 4:
+                                e_1 = _a.sent();
+                                reject(e_1);
+                                return [3 /*break*/, 5];
+                            case 5: return [2 /*return*/];
+                        }
+                    });
+                }); })];
+        });
+    });
+}
+exports.seedDb = seedDb;
+// export function isAuthorized(role: String){
+//   return function(req: Request,res: ResponssetUserInfoe,next:Function){
+//     const user = req.user;
+//     User.findById(user._id, (err, foundUser:any)=>{
+//       if(err) {
+//         res.status(422).json({error: 'No user found'});
+//         return next(err);
+//       }
+//       if(getRole(foundUser.role) >= getRole(role)){
+//         return next();
+//       }
+//       res.status(401).json({error: "You are not authorized to see the content"});
+//       return next(err);
+//     });
+//   }
+// }
 //# sourceMappingURL=index.js.map
