@@ -1,3 +1,4 @@
+"use strict";
 // import * as passport from 'passport';
 // // import {User} from '../models/user';
 // import {Strategy as JWTStrategy} from 'passport-jwt';

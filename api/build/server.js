@@ -67,15 +67,13 @@ var server = new http.Server(app);
 if (process.env.NODE_ENV !== 'test') {
     dbInit();
 }
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
-var io = socketIO(server);
-function onListening() {
+server.listen(port, function () {
     if (!IS_TEST) {
         console.log("Listening at http://localhost:" + port);
     }
-}
+});
+server.on('error', onError);
+var io = socketIO(server);
 function onError(error) {
     if (error.syscall !== "listen") {
         throw error;
@@ -96,14 +94,5 @@ function onError(error) {
             throw error;
     }
 }
-if (process.env.NODE_ENV === 'production') {
-    app.use(function (err, req, res, next) {
-        res.status(err.status || 500);
-    });
-}
-app.use(function (err, req, res, next) {
-    console.error('error : ', err);
-    res.status(err.status || 500);
-});
 module.exports = server;
 //# sourceMappingURL=server.js.map

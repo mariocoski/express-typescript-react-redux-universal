@@ -1,7 +1,7 @@
-'use strict';
-
+import { generateHash, seedUsers } from '../../utils';
 module.exports = {
-  up: (queryInterface, Sequelize) => {
+  up: async (queryInterface: any, Sequelize: any) => {
+    return seedUsers(queryInterface)
     /*
       Add altering commands here.
       Return a promise to correctly handle asynchronicity.
@@ -14,7 +14,8 @@ module.exports = {
     */
   },
 
-  down: (queryInterface, Sequelize) => {
+  down: (queryInterface: any, Sequelize: any) => {
+    return queryInterface.bulkDelete('users', null, {});
     /*
       Add reverting commands here.
       Return a promise to correctly handle asynchronicity.

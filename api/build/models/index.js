@@ -28,5 +28,6 @@ Object.keys(db).forEach(function (modelName) {
         db[modelName].associate(db);
     }
 });
-module.exports = __assign({ sequelize: sequelize, Sequelize: Sequelize }, db);
+var database = __assign({ sequelize: sequelize, Sequelize: Sequelize }, db);
+module.exports = database;
 //# sourceMappingURL=index.js.map

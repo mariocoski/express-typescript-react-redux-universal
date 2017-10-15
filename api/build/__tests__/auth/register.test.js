@@ -38,7 +38,8 @@ var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 require('dotenv').config();
 var errors_1 = require("../../constants/errors");
-var db = require("../../models");
+var db = require('../../models');
+var utils_1 = require("../../utils");
 function expectError(response, error) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -54,8 +55,11 @@ describe('AUTH', function () {
     beforeEach(function () { return __awaiter(_this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, db['sequelize'].sync({ force: true })];
+                case 0: return [4 /*yield*/, db.sequelize.sync({ force: true })];
                 case 1:
+                    _a.sent();
+                    return [4 /*yield*/, utils_1.seedDb(db.sequelize.queryInterface)];
+                case 2:
                     _a.sent();
                     app = require('../../server');
                     return [2 /*return*/];
@@ -146,6 +150,26 @@ describe('AUTH', function () {
             }
         });
     }); });
+    it('should fail to create a user with the same email address', function () { return __awaiter(_this, void 0, void 0, function () {
+        var validUser, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    expect.assertions(2);
+                    validUser = { email: 'valid@email.com', password: 'password' };
+                    return [4 /*yield*/, db.User.create(validUser)];
+                case 1:
+                    _a.sent();
+                    return [4 /*yield*/, request(app).post('/auth/register')
+                            .type('form')
+                            .send(validUser)];
+                case 2:
+                    response = _a.sent();
+                    expectError(response, errors_1.EMAIL_ALREADY_IN_USE);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
     it('should create a user with valid input', function () { return __awaiter(_this, void 0, void 0, function () {
         var response, data;
         return __generator(this, function (_a) {
@@ -160,7 +184,7 @@ describe('AUTH', function () {
                     data = JSON.parse(response.text);
                     expect(response.statusCode).toBe(201);
                     expect(data.token).toMatch(/JWT/);
-                    expect(data.user).toEqual(expect.any(Object));
+                    expect(data.user).toMatchSnapshot();
                     return [2 /*return*/];
             }
         });

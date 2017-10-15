@@ -49,21 +49,21 @@ module.exports = function (sequelize, DataTypes) {
         first_name: DataTypes.STRING,
         last_name: DataTypes.STRING,
         bio: DataTypes.TEXT,
-        created_at: {
+        createdAt: {
             type: DataTypes.DATE,
             field: 'created_at',
             defaultValue: DataTypes.NOW
         },
-        updated_at: {
+        updatedAt: {
             type: DataTypes.DATE,
             field: 'updated_at'
         },
-        deleted_at: {
+        deletedAt: {
             type: DataTypes.DATE,
-            field: 'updated_at'
+            field: 'deleted_at'
         }
     }, {
-        tableName: 'users',
+        tableName: 'users'
     });
     User.associate = function (models) {
         User.belongsToMany(models.Role, {
@@ -80,7 +80,7 @@ module.exports = function (sequelize, DataTypes) {
                     return [4 /*yield*/, utils_1.generateHash(user.password)];
                 case 1:
                     _a.password = _b.sent();
-                    return [2 /*return*/];
+                    return [2 /*return*/, user];
             }
         });
     }); });

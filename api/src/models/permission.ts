@@ -1,4 +1,4 @@
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize: any, DataTypes: any) => {
   const Permission = sequelize.define('Permission', {
     name: DataTypes.STRING,
     description: DataTypes.STRING
@@ -6,9 +6,11 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'permissions'
   });
 
-  Permission.associate = (models) => {
+  Permission.associate = (models: any) => {
     Permission.belongsToMany(models.Role, {
-      through: 'roles_permissions', foreignKey: 'permission_id'
+      through: 'roles_permissions',  foreignKey: {
+        unique: false
+      }
     });
   }
 

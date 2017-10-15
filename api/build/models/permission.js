@@ -1,3 +1,4 @@
+"use strict";
 module.exports = function (sequelize, DataTypes) {
     var Permission = sequelize.define('Permission', {
         name: DataTypes.STRING,
@@ -7,7 +8,9 @@ module.exports = function (sequelize, DataTypes) {
     });
     Permission.associate = function (models) {
         Permission.belongsToMany(models.Role, {
-            through: 'roles_permissions', foreignKey: 'permission_id'
+            through: 'roles_permissions', foreignKey: {
+                unique: false
+            }
         });
     };
     return Permission;

@@ -1,7 +1,6 @@
 if(process.env.NODE_ENV !== 'production'){
   require('dotenv').config();
 }
-
 import {resolvePort, env} from './utils';
 import * as socketIO from 'socket.io';
 import * as http from 'http';
@@ -29,19 +28,15 @@ const server = new http.Server(app);
 if(process.env.NODE_ENV !== 'test'){
   dbInit();
 }
-server.listen(port);
-
-server.on('error', onError);
-server.on('listening', onListening);
-
-
-const io = socketIO(server);
-
-function onListening(){
+server.listen(port, () => {
   if(! IS_TEST){
     console.log(`Listening at http://localhost:${port}`);
   }
-}
+});
+server.on('error', onError);
+
+
+const io = socketIO(server);
 
 function onError(error: any){  
   if (error.syscall !== "listen") {
@@ -64,16 +59,5 @@ function onError(error: any){
       throw error;
   }
 }
-
-if (process.env.NODE_ENV === 'production') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-  });
-}
-
-app.use(function(err, req, res, next) {
-  console.error('error : ', err);
-  res.status(err.status || 500);
-});
 
 module.exports = server;

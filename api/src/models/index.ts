@@ -24,4 +24,10 @@ Object.keys(db).forEach(function(modelName) {
   }
 });
 
-module.exports = {sequelize, Sequelize, ...db};
+interface databaseInterface {
+  sequelize: Object,
+  Sequelize: Object, 
+  User: Object
+}
+const database:databaseInterface = {sequelize, Sequelize, ...db};
+module.exports = database;

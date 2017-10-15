@@ -1,49 +1,50 @@
 import { Request, Response } from 'express';
 import { EMAIL_IS_REQUIRED } from '../constants/errors';
 import { USER_ROLE } from '../constants/roles';
-import { getErrors } from '../utils'
+import { getErrors, formatError } from '../utils'
 import { matchedData } from 'express-validator/filter';
 import * as db from '../models';
-import { env, generateToken, setUserInfo } from '../utils';
+import { env, generateToken, catchErrors, getRoleId } from '../utils';
 import { EMAIL_ALREADY_IN_USE } from '../constants/errors';
+import { findUserByEmail, createUser } from '../repositories/userRepo'; 
+import { associateRole } from '../repositories/roleRepo';
 
-
-
-export const register = (req: Request, res: Response) => {
+const register = catchErrors(async (req: Request, res: Response) => {
 
   const errors = getErrors(req);
-
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.mapped() });
   }
 
-  const data = matchedData(req);
+  const data: any = matchedData(req);
 
-  const User = db["User"];
-  
-  User.findOne({where:{ email: data.email }}).then(user => {
-    if(user){
-      return res.status(422).json({message: EMAIL_ALREADY_IN_USE});
-    }
-    User.create(data, { fields: [ 'email','password' ] }).then(model => {
-      const userModel = model.get({ plain: true });
-      
-      const userInfo = {
-        _id: userModel.id,
-        first_name: userModel.first_name,
-        last_name: userModel.last_name,
-        email: userModel.email,
-        roles: [USER_ROLE]
-      }
+  const user = await findUserByEmail(data.email);
 
-      res.status(201).json({
-        token: `JWT ${generateToken(userInfo)}`,
-        user: userInfo
-      });
-    });
-  }); 
-}
+  if(user){  
+    return res.status(422).json(formatError(EMAIL_ALREADY_IN_USE));
+  }
 
+  const createdUser = await createUser(data);
+  const userModel = createdUser.get({ plain: true });
+  await associateRole(userModel.id, getRoleId(USER_ROLE));
+
+  const userInfo = {
+    id: userModel.id,
+    first_name: userModel.first_name,
+    last_name: userModel.last_name,
+    email: userModel.email,
+    roles: [USER_ROLE]
+  }
+
+  res.status(201).json({
+    token: `JWT ${generateToken(userInfo)}`,
+    user: userInfo
+  });
+});
+
+export {
+  register
+};
 
 
 

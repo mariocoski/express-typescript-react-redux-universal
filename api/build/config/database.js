@@ -1,3 +1,4 @@
+"use strict";
 var path = require('path');
 module.exports = {
     development: {
@@ -12,9 +13,9 @@ module.exports = {
         username: process.env.TEST_DB_USERNAME,
         password: process.env.TEST_DB_PASSWORD,
         database: process.env.TEST_DB_NAME,
-        dialect: 'mysql',
+        dialect: 'sqlite',
+        storage: ':memory:',
         operatorsAliases: false
-        // storage: path.resolve('../database/database.sqlite')
     },
     production: {
         username: process.env.PROD_DB_USERNAME,

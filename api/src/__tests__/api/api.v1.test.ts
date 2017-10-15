@@ -2,7 +2,7 @@ require('dotenv').config();
 describe('API V1', () => {
 
   const request = require('supertest');  
-  let app;
+  let app: any;
 
   beforeEach(() => {
     app = require('../../server');
@@ -17,6 +17,8 @@ describe('API V1', () => {
     const response = await request(app).get('/api/v1');
     expect(response.statusCode).toBe(200);
   });
+
+
 
 
 
