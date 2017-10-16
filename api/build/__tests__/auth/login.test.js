@@ -64,11 +64,13 @@ describe('LOGIN', function () {
             return [2 /*return*/];
         });
     }); });
-    it('should fail to create a user without input', function () { return __awaiter(_this, void 0, void 0, function () {
+    it('should fail to log in without input', function () { return __awaiter(_this, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request(app).post('/auth/register')];
+                case 0:
+                    expect.assertions(2);
+                    return [4 /*yield*/, request(app).post('/auth/login')];
                 case 1:
                     response = _a.sent();
                     helpers_1.expectError(response, errors_1.EMAIL_IS_REQUIRED);
@@ -76,11 +78,11 @@ describe('LOGIN', function () {
             }
         });
     }); });
-    it('should fail to create a user when email is invalid', function () { return __awaiter(_this, void 0, void 0, function () {
+    it('should fail to log in when email is invalid', function () { return __awaiter(_this, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request(app).post('/auth/register')
+                case 0: return [4 /*yield*/, request(app).post('/auth/login')
                         .type('form')
                         .send({ email: 'invalid@email' })];
                 case 1:
@@ -90,11 +92,11 @@ describe('LOGIN', function () {
             }
         });
     }); });
-    it('should fail to create a user without password', function () { return __awaiter(_this, void 0, void 0, function () {
+    it('should fail to log in without password', function () { return __awaiter(_this, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request(app).post('/auth/register')
+                case 0: return [4 /*yield*/, request(app).post('/auth/login')
                         .type('form')
                         .send({ email: 'valid@email.com' })];
                 case 1:
@@ -104,66 +106,60 @@ describe('LOGIN', function () {
             }
         });
     }); });
-    it('should fail to create a user without password', function () { return __awaiter(_this, void 0, void 0, function () {
+    it('should fail to log in when user does not exist', function () { return __awaiter(_this, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request(app).post('/auth/register')
+                case 0: return [4 /*yield*/, request(app).post('/auth/login')
                         .type('form')
-                        .send({ email: 'valid@email.com', password: 'short' })];
+                        .send({
+                        email: 'user_does_not_exist@email.com',
+                        password: 'password'
+                    })];
                 case 1:
                     response = _a.sent();
-                    helpers_1.expectError(response, errors_1.PASSWORD_IS_TOO_SHORT);
+                    helpers_1.expectError(response, errors_1.INVALID_CREDENTIALS);
                     return [2 /*return*/];
             }
         });
     }); });
-    it('should fail to create a user without password', function () { return __awaiter(_this, void 0, void 0, function () {
+    it('should fail to log in when user provided wrong password', function () { return __awaiter(_this, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request(app).post('/auth/register')
-                        .type('form')
-                        .send({ email: 'valid@email.com', password: 'short' })];
-                case 1:
-                    response = _a.sent();
-                    helpers_1.expectError(response, errors_1.PASSWORD_IS_TOO_SHORT);
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it('should fail to create a user with the same email address', function () { return __awaiter(_this, void 0, void 0, function () {
-        var validUser, response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    validUser = { email: 'valid@email.com', password: 'password' };
-                    return [4 /*yield*/, db.User.create(validUser)];
+                case 0: return [4 /*yield*/, db.User.create({ email: 'valid@email.com', password: 'password' })];
                 case 1:
                     _a.sent();
-                    return [4 /*yield*/, request(app).post('/auth/register')
+                    return [4 /*yield*/, request(app).post('/auth/login')
                             .type('form')
-                            .send(validUser)];
+                            .send({
+                            email: 'valid@email.com',
+                            password: 'wrong_password'
+                        })];
                 case 2:
                     response = _a.sent();
-                    helpers_1.expectError(response, errors_1.EMAIL_ALREADY_IN_USE);
+                    helpers_1.expectError(response, errors_1.INVALID_CREDENTIALS);
                     return [2 /*return*/];
             }
         });
     }); });
-    it('should create a user with valid input', function () { return __awaiter(_this, void 0, void 0, function () {
-        var response, data;
+    it('should login user with valid credentials', function () { return __awaiter(_this, void 0, void 0, function () {
+        var validCredentials, response, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     expect.assertions(3);
-                    return [4 /*yield*/, request(app).post('/auth/register')
-                            .type('form')
-                            .send({ email: 'valid@email.com', password: 'longenough' })];
+                    validCredentials = { email: 'valid@email.com', password: 'password' };
+                    return [4 /*yield*/, db.User.create(validCredentials)];
                 case 1:
+                    _a.sent();
+                    return [4 /*yield*/, request(app).post('/auth/login')
+                            .type('form')
+                            .send(validCredentials)];
+                case 2:
                     response = _a.sent();
                     data = JSON.parse(response.text);
-                    expect(response.statusCode).toBe(201);
+                    expect(response.statusCode).toBe(200);
                     expect(data.token).toMatch(/JWT/);
                     expect(data.user).toMatchSnapshot();
                     return [2 /*return*/];
@@ -171,4 +167,4 @@ describe('LOGIN', function () {
         });
     }); });
 });
-//# sourceMappingURL=register.test.js.map
+//# sourceMappingURL=login.test.js.map

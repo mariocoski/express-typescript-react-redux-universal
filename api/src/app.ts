@@ -22,7 +22,8 @@ app.use(corsMiddleware);
 app.options('*', corsMiddleware);
 
 router(app);
-app.use(function (req, res, next) {
+
+app.use((req, res, next) => {
   next(new NotFoundError());
 });
 

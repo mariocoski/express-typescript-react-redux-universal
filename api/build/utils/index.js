@@ -36,6 +36,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
+var dotenv_1 = require("dotenv");
+if (process.env.NODE_ENV !== 'production') {
+    dotenv_1.config();
+}
 var JWT = require("jsonwebtoken");
 var roles_1 = require("../constants/roles");
 var check_1 = require("express-validator/check");
@@ -74,7 +78,9 @@ function formatError(message, stack) {
 }
 exports.formatError = formatError;
 function handleError(res, err) {
-    console.error(err);
+    if (process.env.NODE_ENV !== 'test') {
+        console.error(err);
+    }
     var IS_PROD = process.env.NODE_ENV === 'production';
     switch (err.constructor) {
         case errors_1.BadRequestError:
@@ -94,23 +100,26 @@ function handleError(res, err) {
 }
 exports.handleError = handleError;
 ;
-exports.catchErrors = function (handler) { return function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var err_1;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, handler(req, res)];
-            case 1:
-                _a.sent();
-                return [3 /*break*/, 3];
-            case 2:
-                err_1 = _a.sent();
-                return [2 /*return*/, handleError(res, err_1)];
-            case 3: return [2 /*return*/];
-        }
-    });
-}); }; };
+exports.catchErrors = function (handler, catcher) {
+    if (catcher === void 0) { catcher = handleError; }
+    return function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+        var err_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, handler(req, res)];
+                case 1:
+                    _a.sent();
+                    return [3 /*break*/, 3];
+                case 2:
+                    err_1 = _a.sent();
+                    return [2 /*return*/, catcher(res, err_1)];
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); };
+};
 exports.getRoleId = function (role) {
     switch (role) {
         case roles_1.USER_ROLE:
@@ -291,7 +300,7 @@ function seedDb(queryInterface) {
                                 return [3 /*break*/, 5];
                             case 4:
                                 e_1 = _a.sent();
-                                reject(e_1);
+                                console.log(e_1);
                                 return [3 /*break*/, 5];
                             case 5: return [2 /*return*/];
                         }
@@ -301,6 +310,28 @@ function seedDb(queryInterface) {
     });
 }
 exports.seedDb = seedDb;
+function onError(error, port) {
+    if (error.syscall !== "listen") {
+        throw error;
+    }
+    switch (error.code) {
+        case "EACCES":
+            if (process.env.NODE_ENV !== 'test') {
+                console.log(port + " requires elevated privileges");
+            }
+            process.exit(1);
+            break;
+        case "EADDRINUSE":
+            if (process.env.NODE_ENV !== 'test') {
+                console.log(port + " is already in use");
+            }
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
+}
+exports.onError = onError;
 // export function isAuthorized(role: String){
 //   return function(req: Request,res: ResponssetUserInfoe,next:Function){
 //     const user = req.user;
