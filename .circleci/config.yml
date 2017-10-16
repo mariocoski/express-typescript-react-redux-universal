@@ -16,7 +16,7 @@ jobs:
           command: sudo npm install
       - run:
           name: tests
-          command: sudo yarn test
+          command: sudo npm run test
   test:
     docker:
       - image: circleci/node:4.8.2
