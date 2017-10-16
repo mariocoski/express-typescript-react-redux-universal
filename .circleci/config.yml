@@ -1,4 +1,6 @@
 version: 2
+# general: 
+#   build_dir: api
 jobs:
   build:
     working_directory: ~/express-typescript-react-redux-universal/api
@@ -24,7 +26,7 @@ jobs:
       - checkout
       - run:
           name: Test
-          command: yarn test
+          command: cd api; npm run test
 
 workflows:
   version: 2
