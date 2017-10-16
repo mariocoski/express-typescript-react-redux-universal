@@ -13,6 +13,7 @@ jobs:
 
     steps:
       - checkout
+          path: ~/express-typescript-react-redux-universal
       - run:
           name: Update npm
           command: 'sudo npm install -g npm@latest'
@@ -21,5 +22,5 @@ jobs:
           command: sudo npm install
       - run:
           name: tests
-          command: npm run test
+          command: sudo npm run test
  
