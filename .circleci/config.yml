@@ -18,8 +18,7 @@ jobs:
     working_directory: ~/repo/api
 
     steps:
-      - checkout 
-          path: ~/repo
+      - checkout
       # Download and cache dependencies
       - restore_cache:
           keys:
