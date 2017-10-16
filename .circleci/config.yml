@@ -6,7 +6,6 @@ jobs:
     docker:
       - image: circleci/node:4.8.2
     # The secondary container is an instance of the second listed image which is run in a common network where ports exposed on the primary container are available on localhost.
-      - image: mongo:3.4.4
     steps:
       - checkout
       - run:
@@ -26,7 +25,21 @@ jobs:
       - image: circleci/node:4.8.2
     overrides:
       - cd api; npm run test
-    
+    steps:
+      - checkout
+      - run:
+          name: Test
+          command: cd api; npm run test
+      - run:
+          name: Generate code coverage
+          command: './node_modules/.bin/nyc report --reporter=text-lcov'
+      - store_artifacts:
+          path: test-results.xml
+          prefix: tests
+      - store_artifacts:
+          path: coverage
+          prefix: coverage
+
 workflows:
   version: 2
   build_and_test:
@@ -37,4 +50,4 @@ workflows:
             - build
           filters:
             branches:
-              only: master
+              only: develop
