@@ -18,6 +18,13 @@ describe('API V1', () => {
     expect(response.statusCode).toBe(200);
   });
 
+  it('should respond with 404', async () => {
+    expect.assertions(2);
+    const response = await request(app).get('/not-existing-router');
+    expect(response.statusCode).toBe(404);
+    expect(response.text).toMatch('Not found');
+  });
+
 
 
 

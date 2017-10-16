@@ -1,7 +1,7 @@
 if(process.env.NODE_ENV !== 'production'){
   require('dotenv').config();
 }
-import {resolvePort, env} from './utils';
+import {resolvePort, env, onError} from './utils';
 import * as socketIO from 'socket.io';
 import * as http from 'http';
 
@@ -33,31 +33,8 @@ server.listen(port, () => {
     console.log(`Listening at http://localhost:${port}`);
   }
 });
-server.on('error', onError);
-
+server.on('error', onError.bind(port));
 
 const io = socketIO(server);
-
-function onError(error: any){  
-  if (error.syscall !== "listen") {
-    throw error;
-  }
-  const bind = typeof port === "string"
-      ? "Pipe " + port
-      : "Port " + port;
-
-  switch (error.code) {
-    case "EACCES":
-      console.error(bind + " requires elevated privileges");
-      process.exit(1);
-      break;
-    case "EADDRINUSE":
-      console.error(bind + " is already in use");
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-}
 
 module.exports = server;

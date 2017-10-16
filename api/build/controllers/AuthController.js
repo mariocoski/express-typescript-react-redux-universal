@@ -82,6 +82,24 @@ var register = utils_2.catchErrors(function (req, res) { return __awaiter(_this,
     });
 }); });
 exports.register = register;
+var login = utils_2.catchErrors(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var userInfo;
+    return __generator(this, function (_a) {
+        userInfo = {
+            id: req.user.id,
+            first_name: req.user.first_name,
+            last_name: req.user.last_name,
+            email: req.user.email,
+            roles: [roles_1.USER_ROLE]
+        };
+        res.status(200).json({
+            token: "JWT " + utils_2.generateToken(userInfo),
+            user: userInfo
+        });
+        return [2 /*return*/];
+    });
+}); });
+exports.login = login;
 // import * as JWT from 'jsonwebtoken';
 // import * as crypto from 'crypto';
 // // import {User} from '../models/user';

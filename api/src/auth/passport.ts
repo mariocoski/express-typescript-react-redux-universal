@@ -1,27 +1,34 @@
-// import * as passport from 'passport';
-// // import {User} from '../models/user';
-// import {Strategy as JWTStrategy} from 'passport-jwt';
-// import {ExtractJwt} from 'passport-jwt';
-// import {env} from '../utils';
-// import {Strategy as LocalStrategy} from 'passport-local';
+import * as passport from 'passport';
+// import {User} from '../models/user';
+import {Strategy as JWTStrategy} from 'passport-jwt';
+import {ExtractJwt} from 'passport-jwt';
+import {env, comparePassword, formatError, getErrors} from '../utils';
+import {Strategy as LocalStrategy} from 'passport-local';
+import { findUserByEmail } from '../repositories/userRepo';
+import { INVALID_CREDENTIALS } from '../constants/errors';
+import { Request, Response, NextFunction} from 'express';
 
+const localOptions = {
+  usernameField: 'email'
+};
 
-// const localOptions = {
-//     usernameField: 'email'
-// };
+const localLogin = new LocalStrategy(localOptions, async (email, password, done) => {
+    try{
+      const user = await findUserByEmail(email);  
+      if(! user){
+        return done(null, false);
+      }
+      const userModel = user.get({ plain: true });
 
-// const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
-//     User.findOne({ email }, (err, user:any) => {
-//     if (err) { return done(err); }
-//     if (!user) { return done(null, false, { message: 'Your login details could not be verified. Please try again.' }); }
-
-//     user.comparePassword(password, (err, isMatch) => {
-//         if (err) { return done(err); }
-//         if (!isMatch) { return done(null, false, { message: 'Your login details could not be verified. Please try again.' }); }
-//         return done(null, user);
-//     });
-//     });
-// });
+      const isMatch: boolean =  await comparePassword(password,userModel.password);
+      if(! isMatch){
+        return done(null, false);
+      }
+      return done(null, user);
+    }catch(e){
+      return done(e);
+    }
+});
 
 
 // const jwtOptions = {
@@ -41,8 +48,28 @@
 //     }
 //     });
 // });
+passport.use(localLogin);
 
-// export {
-//   jwtLogin,
-//   localLogin
-// }
+const requireLogin =  (req:Request , res: Response, next: NextFunction) => {
+
+  const errors = getErrors(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.mapped() });
+  }
+
+  passport.authenticate('local', function(err:any, user: any, info: any) {
+    if (err) { return next(err); }
+    if (!user) { 
+        res.status(422);
+        res.json(formatError(INVALID_CREDENTIALS));
+        return;
+    }
+    req.user = user;
+    next();
+  })(req, res, next);
+};
+
+export {
+  // jwtLogin,
+  requireLogin
+}

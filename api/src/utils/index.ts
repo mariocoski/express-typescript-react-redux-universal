@@ -1,4 +1,7 @@
 import {config} from 'dotenv';
+if(process.env.NODE_ENV !== 'production'){
+  config();
+}
 import * as JWT from 'jsonwebtoken';
 import * as crypto from 'crypto';
 import * as db from '../models';
@@ -43,7 +46,9 @@ export function formatError(message: string, stack: string|undefined = undefined
 }
 
 export function handleError(res: Response, err: any){
-  console.error(err);
+  if(process.env.NODE_ENV !== 'test'){
+    console.error(err);
+  }
   const IS_PROD = process.env.NODE_ENV === 'production';
   switch (err.constructor) {
     case BadRequestError:
@@ -62,11 +67,11 @@ export function handleError(res: Response, err: any){
   }
 };
 
-export const catchErrors = (handler: any) => async (req: Request, res: Response) => {
+export const catchErrors = (handler: any, catcher = handleError) => async (req: Request, res: Response) => {
   try {
     await handler(req, res);
   } catch (err) {
-    return handleError(res, err);
+    return catcher(res, err);
   }
 };
 
@@ -202,9 +207,32 @@ export async function seedDb(queryInterface: any): Promise<any>{
         await seedUsersRoles(queryInterface)
         resolve();
       }catch(e){
-        reject(e);
+       console.log(e);
       }
     });
+}
+
+export function onError(error: any, port: number){  
+  if (error.syscall !== "listen") {
+    throw error;
+  }
+
+  switch (error.code) {
+    case "EACCES":
+      if(process.env.NODE_ENV !== 'test'){
+        console.log(port + " requires elevated privileges");
+      }
+      process.exit(1);
+      break;
+    case "EADDRINUSE":
+      if(process.env.NODE_ENV !== 'test'){
+        console.log(port + " is already in use");
+      }
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
 }
 
 

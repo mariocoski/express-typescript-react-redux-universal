@@ -42,7 +42,24 @@ const register = catchErrors(async (req: Request, res: Response) => {
   });
 });
 
+const login =  catchErrors(async (req: Request, res: Response) => {
+
+  const userInfo = {
+    id: req.user.id,
+    first_name: req.user.first_name,
+    last_name: req.user.last_name,
+    email: req.user.email,
+    roles: [USER_ROLE]
+  }
+
+  res.status(200).json({
+    token: `JWT ${generateToken(userInfo)}`,
+    user: userInfo
+  });
+});
+
 export {
+  login,
   register
 };
 

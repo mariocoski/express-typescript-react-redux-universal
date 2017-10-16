@@ -34,45 +34,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var _this = this;
-require('dotenv').config();
-describe('API V1', function () {
-    var request = require('supertest');
-    var app;
-    beforeEach(function () {
-        app = require('../../server');
-    });
-    afterEach(function () {
-        app.close();
-    });
-    it('should respond with 200 for health check', function () { return __awaiter(_this, void 0, void 0, function () {
-        var response;
+Object.defineProperty(exports, "__esModule", { value: true });
+function expectError(response, error) {
+    return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    expect.assertions(1);
-                    return [4 /*yield*/, request(app).get('/api/v1')];
-                case 1:
-                    response = _a.sent();
-                    expect(response.statusCode).toBe(200);
-                    return [2 /*return*/];
-            }
+            expect.assertions(2);
+            expect(response.statusCode).toBe(422);
+            expect(response.text).toMatch(error);
+            return [2 /*return*/];
         });
-    }); });
-    it('should respond with 404', function () { return __awaiter(_this, void 0, void 0, function () {
-        var response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    expect.assertions(2);
-                    return [4 /*yield*/, request(app).get('/not-existing-router')];
-                case 1:
-                    response = _a.sent();
-                    expect(response.statusCode).toBe(404);
-                    expect(response.text).toMatch('Not found');
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-});
-//# sourceMappingURL=api.v1.test.js.map
+    });
+}
+exports.expectError = expectError;
+//# sourceMappingURL=index.js.map
