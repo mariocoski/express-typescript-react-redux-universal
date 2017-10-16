@@ -1,31 +1,36 @@
 version: 2
-general:
-  branches:
-    only:
-     - master
-     - develop 
 jobs:
   build:
+    working_directory: ~/express-typescript-react-redux-universal/api
+    # The primary container is an instance of the first list image listed. Your build commands run in this container.
     docker:
-      # specify the version you desire here
-      - image: circleci/node:7.10
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
-    working_directory: ~/repo
+      - image: circleci/node:4.8.2
 
     steps:
       - checkout
+      - run:
+          name: Update npm
+          command: 'sudo npm install -g npm@latest'
+      - run:
+          name: Install npm wee
+          command: sudo npm install
+  test:
+    docker:
+      - image: circleci/node:4.8.2
+    steps:
+      - checkout
+      - run:
+          name: Test
+          command: yarn test
 
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-      - run: cd ~/repo/api
-      - run: yarn install 
-      - run: yarn test
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master, develop
