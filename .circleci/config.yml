@@ -1,9 +1,4 @@
 version: 2
-eneral:
-  branches:
-    only:
-      - master
-      - develop
 jobs:
   build:
     working_directory: ~/express-typescript-react-redux-universal/api
@@ -13,7 +8,7 @@ jobs:
 
     steps:
       - checkout
-          path: ~/express-typescript-react-redux-universal
+          path: ~/express-typescript-react-redux-universal/api
       - run:
           name: Update npm
           command: 'sudo npm install -g npm@latest'
@@ -22,5 +17,24 @@ jobs:
           command: sudo npm install
       - run:
           name: tests
-          command: sudo npm run test
- 
+          command: sudo yarn test
+  test:
+    docker:
+      - image: circleci/node:4.8.2
+    steps:
+      - checkout
+      - run:
+          name: Test
+          command: yarn test
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+          filters:
+            branches:
+              only: develop
