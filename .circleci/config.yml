@@ -1,4 +1,9 @@
 version: 2
+eneral:
+  branches:
+    only:
+      - master
+      - develop
 jobs:
   build:
     working_directory: ~/express-typescript-react-redux-universal/api
@@ -14,23 +19,7 @@ jobs:
       - run:
           name: Install npm wee
           command: sudo npm install
-  test:
-    docker:
-      - image: circleci/node:4.8.2
-    steps:
-      - checkout
       - run:
-          name: Test
+          name: tests
           command: yarn test
-
-workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
-          filters:
-            branches:
-              only: master, develop
+ 
