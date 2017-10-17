@@ -14,9 +14,12 @@ jobs:
       - run:
           name: Install npm 
           command: sudo npm install
-  test:
-    overrides:
-      - cd api; npm run test
+      - run:
+          name: tests
+          command: 'cd api; npm run test'
+  # test:
+  #   overrides:
+  #     - cd api; npm run test
 #     working_directory: ~/express-typescript-react-redux-universal/api
 #     docker:
 #       - image: circleci/node:4.8.2
