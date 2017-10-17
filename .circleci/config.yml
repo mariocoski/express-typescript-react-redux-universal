@@ -20,7 +20,7 @@ jobs:
       - image: circleci/node:4.8.2
     steps:
       - checkout
-       - run:
+      - run:
           name: Install npm 
           command: sudo npm install
       - run:
