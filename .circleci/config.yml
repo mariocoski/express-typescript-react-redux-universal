@@ -16,7 +16,7 @@ jobs:
           command: sudo npm install
       - run:
           name: tests
-          command: 'cd api; npm run test'
+          command: 'npm run test'
   # test:
   #   overrides:
   #     - cd api; npm run test
