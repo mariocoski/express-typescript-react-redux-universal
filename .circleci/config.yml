@@ -20,9 +20,12 @@ jobs:
       - image: circleci/node:4.8.2
     steps:
       - checkout
+       - run:
+          name: Install npm 
+          command: sudo npm install
       - run:
           name: Test
-          command: 'cd api; npm run test'
+          command: 'sudo npm run test'
       - run:
           name: Generate code coverage
           command: './node_modules/.bin/nyc report --reporter=text-lcov'
