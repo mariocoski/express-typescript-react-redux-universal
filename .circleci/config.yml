@@ -15,35 +15,37 @@ jobs:
           name: Install npm 
           command: sudo npm install
   test:
-    working_directory: ~/express-typescript-react-redux-universal/api
-    docker:
-      - image: circleci/node:4.8.2
-    steps:
-      - checkout
-      - run:
-          name: Install npm 
-          command: sudo npm install
-      - run:
-          name: Test
-          command: 'sudo npm run test'
-      - run:
-          name: Generate code coverage
-          command: './node_modules/.bin/nyc report --reporter=text-lcov'
-      - store_artifacts:
-          path: test-results.xml
-          prefix: tests
-      - store_artifacts:
-          path: coverage
-          prefix: coverage
+    overrides:
+      - cd api; npm run test
+#     working_directory: ~/express-typescript-react-redux-universal/api
+#     docker:
+#       - image: circleci/node:4.8.2
+#     steps:
+#       - checkout
+#       - run:
+#           name: Install npm 
+#           command: sudo npm install
+#       - run:
+#           name: Test
+#           command: 'sudo npm run test'
+#       - run:
+#           name: Generate code coverage
+#           command: './node_modules/.bin/nyc report --reporter=text-lcov'
+#       - store_artifacts:
+#           path: test-results.xml
+#           prefix: tests
+#       - store_artifacts:
+#           path: coverage
+#           prefix: coverage
 
-workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
-          filters:
-            branches:
-              only: develop
+# workflows:
+#   version: 2
+#   build_and_test:
+#     jobs:
+#       - build
+#       - test:
+#           requires:
+#             - build
+#           filters:
+#             branches:
+#               only: develop
