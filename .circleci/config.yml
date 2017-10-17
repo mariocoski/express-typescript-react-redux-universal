@@ -15,6 +15,7 @@ jobs:
           name: Install npm 
           command: sudo npm install
   test:
+    working_directory: ~/express-typescript-react-redux-universal/api
     docker:
       - image: circleci/node:4.8.2
     overrides:
@@ -23,7 +24,7 @@ jobs:
       - checkout
       - run:
           name: Test
-          command: cd api; npm run test
+          command: npm run test
       - run:
           name: Generate code coverage
           command: './node_modules/.bin/nyc report --reporter=text-lcov'
