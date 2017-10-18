@@ -6,35 +6,23 @@ jobs:
     docker:
       - image: circleci/node:4.8.2
     # The secondary container is an instance of the second listed image which is run in a common network where ports exposed on the primary container are available on localhost.
+      - image: mongo:3.4.4
     steps:
       - checkout
       - run:
           name: Update npm
           command: 'sudo npm install -g npm@latest'
       - run:
-          name: Install npm 
-          command: sudo npm install
+          name: Install npm we
+          command: npm install
   test:
-    working_directory: ~/express-typescript-react-redux-universal/api
     docker:
       - image: circleci/node:4.8.2
     steps:
       - checkout
       - run:
-          name: Install npm 
-          command: sudo npm install
-      - run:
           name: Test
-          command: 'sudo npm run test'
-      - run:
-          name: Generate code coverage
-          command: './node_modules/.bin/nyc report --reporter=text-lcov'
-      - store_artifacts:
-          path: test-results.xml
-          prefix: tests
-      - store_artifacts:
-          path: coverage
-          prefix: coverage
+          command: npm test
 
 workflows:
   version: 2
@@ -44,6 +32,5 @@ workflows:
       - test:
           requires:
             - build
-          filters:
-            branches:
-              only: develop
+
+
