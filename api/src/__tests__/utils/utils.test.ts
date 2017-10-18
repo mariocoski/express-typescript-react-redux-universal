@@ -6,12 +6,15 @@ const seedDb = require('../../utils').seedDb;
 // import {USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE} from '../../constants/roles.js';
 describe('UTILS', () => {
 
-  it('can seed database', async function(){
+  it('can seed database',  function(done){
     expect.assertions(1);
      const queryInterface:any = {};
      const mock = queryInterface.bulkInsert = jest.fn();
-    await seedDb(queryInterface);
-    expect(true).toBeTruthy();
+    seedDb(queryInterface).then(() => {
+      expect(true).toBeTruthy();
+      done();
+    });
+    
     // expect(mock.mock.calls.length).toBe(3);
     // expect(mock.mock.calls[0][0]).toBe('users');
     // expect(mock.mock.calls[1][0]).toBe('roles');

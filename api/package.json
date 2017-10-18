@@ -86,6 +86,7 @@
         }
       }
     },
+    "moduleDirectories": ["node_modules", "src"],
     "moduleFileExtensions": [
       "ts",
       "js"
