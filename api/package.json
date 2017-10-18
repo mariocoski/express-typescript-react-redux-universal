@@ -51,6 +51,7 @@
     "typescript": "^2.5.2"
   },
   "dependencies": {
+    "babel-preset-env": "^1.6.1",
     "bcrypt": "^1.0.3",
     "bluebird": "^3.5.0",
     "body-parser": "^1.18.0",
