@@ -11,9 +11,12 @@ jobs:
       - run:
           name: Update npm
           command: 'sudo npm install -g npm@latest'
+      - run: 
+          name: Where am I
+          command: 'pwd; ls'
       - run:
           name: Install npm 
-          command: sudo npm install
+          command: 'cd api; sudo npm install'
       - run: 
           name: Where am I
           command: 'pwd; ls'
