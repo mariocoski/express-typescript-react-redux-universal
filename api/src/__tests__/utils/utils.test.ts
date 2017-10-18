@@ -1,8 +1,23 @@
-import {env, seedDb, generateHash, getRoleId, formatError, catchErrors,
-        comparePassword, generateToken, resolvePort, handleError} from '../../utils';
-import {UnauthorizedError, BadRequestError, ForbiddenError, 
-        NotFoundError, BaseError} from '../../lib/errors';
-import {USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE} from '../../constants/roles.js';
+const env = require('../../utils').env;
+const seedDb = require('../../utils').seedDb;
+const generateHash = require('../../utils').generateHash;
+const getRoleId = require('../../utils').getRoleId;
+const formatError = require('../../utils').formatError;
+const catchErrors = require('../../utils').catchErrors;
+const comparePassword = require('../../utils').comparePassword;
+const generateToken = require('../../utils').generateToken;
+const resolvePort = require('../../utils').resolvePort;
+const handleError = require('../../utils').handleError;
+    
+const UnauthorizedError = require('../../lib/errors').UnauthorizedError;
+const BadRequestError = require('../../lib/errors').BadRequestError;
+const ForbiddenError = require('../../lib/errors').ForbiddenError;
+ 
+const NotFoundError = require('../../lib/errors').NotFoundError;
+const BaseError = require('../../lib/errors').BaseError;
+const USER_ROLE = require('../../constants/roles').USER_ROLE;
+const ADMIN_ROLE = require('../../constants/roles').ADMIN_ROLE;
+const SUPERADMIN_ROLE = require('../../constants/roles').SUPERADMIN_ROLE;
 describe('UTILS', () => {
 
   it('should throw an error when no default value provided for env variable', () =>{
