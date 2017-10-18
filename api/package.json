@@ -80,12 +80,8 @@
     "globals": {
       "ts-jest": {
         "babelConfig": {
-          "presets": [
-            "env"
-          ],
-          "plugins": [
-            "transform-async-to-generator"
-          ]
+          "presets": [ "env" ],
+          "plugins": [ "transform-async-to-generator"  ]
         }
       }
     },
