@@ -1,9 +1,3 @@
-// const seedDb = require('../../utils').seedDb;
-// import {env, seedDb, generateHash, getRoleId, formatError, catchErrors,
-//         comparePassword, generateToken, resolvePort, handleError} from '../../utils';
-// import {UnauthorizedError, BadRequestError, ForbiddenError, 
-//         NotFoundError, BaseError} from '../../lib/errors';
-// import {USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE} from '../../constants/roles.js';
 
 function tescik(){
   return new Promise((resolve,reject)=>{
@@ -17,7 +11,7 @@ describe('UTILS', () => {
 
   it('can seed database',  async() => { 
     expect.assertions(1);
-     const queryInterface = {};
+     const queryInterface: any = {};
      const mock = queryInterface.bulkInsert = jest.fn();
      const data = await tescik();
      console.log(data);
