@@ -16,6 +16,7 @@ jobs:
           name: Install npm we
           command: npm install
   test:
+    working_directory: ~/express-typescript-react-redux-universal/api
     docker:
       - image: circleci/node:4.8.2
     steps:
