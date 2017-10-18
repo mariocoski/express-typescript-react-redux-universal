@@ -16,7 +16,7 @@ jobs:
           command: sudo npm install
       - run: 
           name: Where am I
-          comman: 'pwd; ls'
+          command: 'pwd; ls'
       - run:
           name: tests
           command: 'npm run test'
