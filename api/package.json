@@ -41,6 +41,10 @@
     "@types/superagent": "^3.5.6",
     "@types/supertest": "^2.0.3",
     "babel-cli": "^6.26.0",
+    "babel-jest": "^21.2.0",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
     "dotenv": "^4.0.0",
     "jest": "^21.2.1",
     "sequelize-cli": "^3.0.0",
@@ -71,7 +75,16 @@
   },
   "jest": {
     "transform": {
-      ".(ts|tsx|js|jsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+      "^.+\\.jsx?$": "<rootDir>/node_modules/babel-jest",
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "globals": {
+      "ts-jest": {
+        "babelConfig": {
+          "presets": [ "env" ],
+          "plugins": [ "transform-async-to-generator"  ]
+        }
+      }
     },
     "moduleFileExtensions": [
       "ts",

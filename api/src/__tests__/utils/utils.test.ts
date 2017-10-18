@@ -1,14 +1,12 @@
+
 import {env, seedDb, generateHash, getRoleId, formatError, catchErrors,
-  comparePassword, generateToken, resolvePort, handleError} from '../../utils';
+        comparePassword, generateToken, resolvePort, handleError} from '../../utils';
+
 import {UnauthorizedError, BadRequestError, ForbiddenError, 
   NotFoundError, BaseError} from '../../lib/errors';
 import {USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE} from '../../constants/roles.js';
 describe('UTILS', () => {
 
-  it('should throw an error when no default value provided for env variable', () =>{
-    expect.assertions(1);
-    expect(true).toBe(true);
-  });
 
   it('can seed database', async ()=>{
     expect.assertions(4);
