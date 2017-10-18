@@ -72,7 +72,7 @@
   },
   "jest": {
     "transform": {
-      ".(ts|tsx|js|jsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
     "globals": {
       "ts-jest": {
