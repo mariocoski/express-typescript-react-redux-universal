@@ -4,13 +4,13 @@ const seedDb = require('../../utils').seedDb;
 // import {UnauthorizedError, BadRequestError, ForbiddenError, 
 //         NotFoundError, BaseError} from '../../lib/errors';
 // import {USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE} from '../../constants/roles.js';
-describe('UTILS', () => {
+describe('UTILS', function(){
 
   it('can seed database',  function(done){
     expect.assertions(1);
      const queryInterface:any = {};
      const mock = queryInterface.bulkInsert = jest.fn();
-    seedDb(queryInterface).then(() => {
+    seedDb(queryInterface).then(function(){
       expect(true).toBeTruthy();
       done();
     });
