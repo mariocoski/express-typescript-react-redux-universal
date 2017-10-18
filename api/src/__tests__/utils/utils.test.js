@@ -8,7 +8,7 @@ describe('UTILS', function(){
 
   it('can seed database',  function(done){
     expect.assertions(1);
-     const queryInterface:any = {};
+     const queryInterface = {};
      const mock = queryInterface.bulkInsert = jest.fn();
     seedDb(queryInterface).then(function(){
       expect(true).toBeTruthy();
