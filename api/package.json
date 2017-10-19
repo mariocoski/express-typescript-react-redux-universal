@@ -60,6 +60,7 @@
     "typescript": "^2.5.2"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "bcrypt": "^1.0.3",
     "bluebird": "^3.5.0",
     "body-parser": "^1.18.0",
