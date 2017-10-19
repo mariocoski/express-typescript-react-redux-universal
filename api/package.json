@@ -91,6 +91,9 @@
     "bail":true,
     "moduleFileExtensions": ["js", "jsx", "json", "ts", "tsx"],
     "mapCoverage": true,
+    "transformIgnorePatterns": [
+      "node_modules/(?!(express-validator)/)"
+    ],
     "testMatch": [
       "<rootDir>/src/__tests__/**/*.test.(ts|js)"
     ]
