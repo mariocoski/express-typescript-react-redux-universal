@@ -87,6 +87,9 @@
         "useBabelrc": true
       }
     },
+    "transformIgnorePatterns": [
+      "!node_modules/express-validator"
+    ],
     "moduleFileExtensions": [
       "ts",
       "js"
