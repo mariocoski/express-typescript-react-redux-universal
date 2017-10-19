@@ -80,10 +80,7 @@
     },
     "globals": {
       "ts-jest": {
-        "babelConfig": {
-          "presets": [ "env",  "stage-0" ],
-          "plugins": [ "transform-async-to-generator"  ]
-        }
+        "useBabelrc": true
       }
     },
     "moduleFileExtensions": [
