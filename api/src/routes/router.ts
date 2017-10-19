@@ -1,8 +1,8 @@
 import {Application, Router, Request, Response, NextFunction} from 'express';
 import {register, login} from '../controllers/AuthController'; 
 import { getErrors, catchErrors } from '../utils';
-// import validateRegister from '../validation/validateRegister';
-// import validateLogin from '../validation/validateLogin';
+import validateRegister from '../validation/validateRegister';
+import validateLogin from '../validation/validateLogin';
 import * as passport from 'passport';
 import { requireLogin } from '../auth/passport';
 
@@ -12,8 +12,8 @@ module.exports = (app: Application) => {
     const authRoutes: Router = Router();
 
     // authRoutes
-    authRoutes.post('/register', register)
-              .post('/login', requireLogin, login)
+    authRoutes.post('/register', validateRegister, register)
+              .post('/login', validateLogin, requireLogin, login)
     //   .post('forgot-password', forgotPassword)
     //   .post('reset-password/:token', verifyToken)
     //   .post('me-from-token', meFromToken);
