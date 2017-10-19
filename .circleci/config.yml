@@ -2,6 +2,7 @@ version: 2
 jobs:
   build:
     working_directory: ~/express-typescript-react-redux-universal/api
+    working_directory: ~/express-typescript-react-redux-universal
     # The primary container is an instance of the first list image listed. Your build commands run in this container.
     docker:
       - image: circleci/node:4.8.2
@@ -23,3 +24,4 @@ jobs:
       - run:
           name: tests
           command: 'cd api; npm run test'
+

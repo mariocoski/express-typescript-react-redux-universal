@@ -14,7 +14,7 @@
     "build": "rm -rf ./build && tsc",
     "build:watch": "rm -rf ./build && tsc --watch",
     "start": "NODE_ENV=development && node ./build/server.js",
-    "test": "jest --coverage",
+    "test": "./node_modules/.bin/jest --coverage",
     "test:watch": "jest --coverage --watch",
     "postinstall": "cp -n .env.example .env"
   },
@@ -41,6 +41,10 @@
     "@types/superagent": "^3.5.6",
     "@types/supertest": "^2.0.3",
     "babel-cli": "^6.26.0",
+    "babel-jest": "^21.2.0",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
     "dotenv": "^4.0.0",
     "jest": "^21.2.1",
     "sequelize-cli": "^3.0.0",
@@ -51,6 +55,7 @@
     "typescript": "^2.5.2"
   },
   "dependencies": {
+    "babel-preset-env": "^1.6.1",
     "bcrypt": "^1.0.3",
     "bluebird": "^3.5.0",
     "body-parser": "^1.18.0",
@@ -70,7 +75,16 @@
   },
   "jest": {
     "transform": {
-      ".(ts|tsx|js|jsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+      "^.+\\.jsx?$": "<rootDir>/node_modules/babel-jest",
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "globals": {
+      "ts-jest": {
+        "babelConfig": {
+          "presets": [ "env" ],
+          "plugins": [ "transform-async-to-generator"  ]
+        }
+      }
     },
     "moduleFileExtensions": [
       "ts",
