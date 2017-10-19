@@ -1,9 +1,19 @@
 {
-  "presets": [
-    "env"
-  ],
-  "plugins": [
-    "transform-runtime",
-    "transform-async-to-generator"
-  ]
+  
+  "env": {
+    "test": {
+      "presets": [  
+          ["env",
+            {
+                "modules": "commonjs",
+                "useBuiltIns": "usage",
+                "debug": false
+            }
+          ],
+          "stage-0"
+      ],
+      "plugins":["transform-runtime"]
+    }
+  }
+  
 }

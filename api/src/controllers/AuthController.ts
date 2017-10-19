@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { EMAIL_IS_REQUIRED } from '../constants/errors';
 import { USER_ROLE } from '../constants/roles';
 import { getErrors, formatError } from '../utils'
-import { matchedData } from 'express-validator/filter';
+import * as filter from 'express-validator/filter';
 import * as db from '../models';
 import { env, generateToken, catchErrors, getRoleId } from '../utils';
 import { EMAIL_ALREADY_IN_USE } from '../constants/errors';
@@ -16,7 +16,7 @@ const register = catchErrors(async (req: Request, res: Response) => {
     return res.status(422).json({ errors: errors.mapped() });
   }
 
-  const data: any = matchedData(req);
+  const data: any = filter.matchedData(req);
 
   const user = await findUserByEmail(data.email);
 
