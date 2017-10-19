@@ -14,7 +14,7 @@
     "build": "rm -rf ./build && tsc",
     "build:watch": "rm -rf ./build && tsc --watch",
     "start": "NODE_ENV=development && node ./build/server.js",
-    "test": "./node_modules/.bin/jest --coverage --no-cache --debug",
+    "test": "./node_modules/.bin/jest --coverage --debug",
     "test:watch": "jest --coverage --watch",
     "postinstall": "cp -n .env.example .env"
   },
@@ -82,16 +82,14 @@
       "^.+\\.jsx?$": "<rootDir>/node_modules/babel-jest",
       ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
+    "testEnvironment": "node",
     "globals": {
       "ts-jest": {
         "useBabelrc": true
       }
     },
-    "transformIgnorePatterns": ["/node_modules/(?!(express-validator?\\.js$))"],
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ],
+    "bail":true,
+    "moduleFileExtensions": ["js", "jsx", "json", "ts", "tsx"],
     "mapCoverage": true,
     "testMatch": [
       "<rootDir>/src/__tests__/**/*.test.(ts|js)"

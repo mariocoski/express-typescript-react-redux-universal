@@ -10,8 +10,7 @@
       }
   ], "stage-0"
   ],
-  "plugins": [ "transform-object-rest-spread", "transform-es2015-modules-commonjs",
-    "transform-export-extensions", "transform-async-to-generator", "transform-runtime"],
+  "plugins": ["transform-es2015-modules-commonjs"],
 
   "env": {
     "test": {
@@ -22,9 +21,7 @@
             "useBuiltIns": "usage",
             "debug": false
         }
-    ], "stage-0"],
-      "plugins": [ "transform-object-rest-spread", "transform-es2015-modules-commonjs",
-        "transform-export-extensions", "transform-async-to-generator", "transform-runtime"]
+    ], "stage-0"]
     }
   }
   
