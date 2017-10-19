@@ -1,12 +1,17 @@
 {
+  "presets": [
+    ["es2015", {"modules": false}]
+  ],
+
   "env": {
     "test": {
-      "presets": ["env", "react", "stage-2"],
-      "plugins": ["transform-export-extensions"],
+      "presets": [ ["es2015", {"modules": false}], "stage-0"],
+      "plugins": ["transform-es2015-modules-commonjs","transform-export-extensions", "transform-async-to-generator", "transform-runtime"],
       "only": [
         "./**/*.js",
         "node_modules/jest-runtime"
       ]
     }
   }
+  
 }
