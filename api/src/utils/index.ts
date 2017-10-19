@@ -7,7 +7,7 @@ import * as crypto from 'crypto';
 import * as db from '../models';
 import { USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE } from '../constants/roles';
 import {Request, Response} from 'express';
-import { validationResult } from 'express-validator/check'
+import * as check from 'express-validator/check';
 import * as bcrypt from 'bcrypt';
 import {BadRequestError, NotFoundError, ForbiddenError,UnauthorizedError, BaseError } from '../lib/errors';
 
@@ -36,7 +36,7 @@ export function generateToken(user: any) {
 }
 
 export function getErrors(req: Request){
-  return validationResult(req).formatWith(({ location, msg, param, value })=>{
+  return check.validationResult(req).formatWith(({ location, msg, param, value })=>{
     return {message:msg};
   });
 }
