@@ -87,9 +87,7 @@
         "useBabelrc": true
       }
     },
-    "transformIgnorePatterns": [
-      "!node_modules/express-validator"
-    ],
+    "transformIgnorePatterns": ["/node_modules/(?!(express-validator?\\.js$))"],
     "moduleFileExtensions": [
       "ts",
       "js"
