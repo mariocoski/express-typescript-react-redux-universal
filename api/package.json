@@ -45,6 +45,7 @@
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-0": "^6.24.1",
     "dotenv": "^4.0.0",
     "jest": "^21.2.1",
     "sequelize-cli": "^3.0.0",
@@ -55,7 +56,6 @@
     "typescript": "^2.5.2"
   },
   "dependencies": {
-    "babel-preset-env": "^1.6.1",
     "bcrypt": "^1.0.3",
     "bluebird": "^3.5.0",
     "body-parser": "^1.18.0",
