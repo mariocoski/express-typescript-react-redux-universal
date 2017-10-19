@@ -1,13 +1,28 @@
 {
   "presets": [
-    ["es2015", {"modules": false}], "stage-0"
+    
+    [
+      "env",
+      {
+          "modules": "commonjs",
+          "useBuiltIns": "usage",
+          "debug": false
+      }
+  ], "stage-0"
   ],
   "plugins": [ "transform-object-rest-spread", "transform-es2015-modules-commonjs",
     "transform-export-extensions", "transform-async-to-generator", "transform-runtime"],
 
   "env": {
     "test": {
-      "presets": [ ["es2015", {"modules": false}], "stage-0"],
+      "presets": [  [
+        "env",
+        {
+            "modules": "commonjs",
+            "useBuiltIns": "usage",
+            "debug": false
+        }
+    ], "stage-0"],
       "plugins": [ "transform-object-rest-spread", "transform-es2015-modules-commonjs",
         "transform-export-extensions", "transform-async-to-generator", "transform-runtime"]
     }
