@@ -1,23 +1,17 @@
-{"presets": [  "es2015",
-  ["env",
-  {
-      "modules": "commonjs",
-      "useBuiltIns": "usage",
-      "debug": false
-  }
-], "stage-0"],
-"plugins":["transform-runtime"],
+{
+  
   "env": {
     "test": {
-      "presets": [  "es2015",
-        ["env",
-        {
-            "modules": "commonjs",
-            "useBuiltIns": "usage",
-            "debug": false
-        }
-    ], "stage-0"],
-    "plugins":["transform-runtime"]
+      "presets": [  
+        "es2015",
+          ["env",
+          {
+              "modules": "commonjs",
+              "useBuiltIns": "usage",
+              "debug": false
+          }
+      ], "stage-0"],
+      "plugins":["transform-runtime"]
     }
   }
   
