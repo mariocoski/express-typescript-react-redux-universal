@@ -1,21 +1,8 @@
 {
-  "presets": [
-    
-    [
-      "env",
-      {
-          "modules": "commonjs",
-          "useBuiltIns": "usage",
-          "debug": false
-      }
-  ], "stage-0"
-  ],
-  "plugins": ["transform-es2015-modules-commonjs"],
-
   "env": {
     "test": {
-      "presets": [  [
-        "env",
+      "presets": [  "es2015",
+        ["env",
         {
             "modules": "commonjs",
             "useBuiltIns": "usage",
