@@ -2,8 +2,9 @@
 ## Api and Client
 
 ### Api
-https://circleci.com/gh/mariocoski/express-typescript-react-redux-universal/tree/master.svg?style=shield&circle-token=88e32946d9aeadd3a9aacb7871a857355da29cb6
 
+
+[![Build Status](https://circleci.com/gh/mariocoski/express-typescript-react-redux-universal/tree/master.svg?style=shield&circle-token=88e32946d9aeadd3a9aacb7871a857355da29cb6)
 
 https://circleci.com/gh/circleci/mongofinil/tree/master.svg?style=shield&circle-token=b14acf911433d315298235b0c2fbf7b2670a92a8
 
