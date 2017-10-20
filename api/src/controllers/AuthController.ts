@@ -1,13 +1,14 @@
 import { Request, Response } from 'express';
 import { EMAIL_IS_REQUIRED } from '../constants/errors';
 import { USER_ROLE } from '../constants/roles';
-import { getErrors, formatError } from '../utils'
+import { getErrors, formatError, generateResetPasswordToken } from '../utils'
 import * as filter from 'express-validator/filter';
 import * as db from '../models';
 import { env, generateToken, catchErrors, getRoleId } from '../utils';
-import { EMAIL_ALREADY_IN_USE } from '../constants/errors';
+import { EMAIL_ALREADY_IN_USE,USER_NOT_FOUND } from '../constants/errors';
 import { findUserByEmail, createUser } from '../repositories/userRepo'; 
 import { associateRole } from '../repositories/roleRepo';
+import * as crypto from 'crypto';
 
 const register = catchErrors(async (req: Request, res: Response) => {
 
@@ -58,9 +59,35 @@ const login =  catchErrors(async (req: Request, res: Response) => {
   });
 });
 
+const forgotPassword = catchErrors(async (req: Request, res: Response) => {
+
+  const errors = getErrors(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.mapped() });
+  }
+
+  const data: any = filter.matchedData(req);
+
+  const user = await findUserByEmail(data.email);
+  
+  if(! user){  
+    return res.status(422).json(formatError(USER_NOT_FOUND));
+  }
+
+  const token: string = await generateResetPasswordToken();
+  
+  user.update({
+    password_reset_token: token,
+    password_reset_token_expired_at: Date.now() + 3600000
+  });
+  
+  res.json({message: 'Please check your email for the link to reset your password'});
+});  
+
 export {
   login,
-  register
+  register,
+  forgotPassword
 };
 
 

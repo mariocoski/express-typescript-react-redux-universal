@@ -42,7 +42,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 var JWT = require("jsonwebtoken");
 var roles_1 = require("../constants/roles");
-var check_1 = require("express-validator/check");
+var check = require("express-validator/check");
 var bcrypt = require("bcrypt");
 var errors_1 = require("../lib/errors");
 function resolvePort(portCandidate) {
@@ -66,7 +66,7 @@ function generateToken(user) {
 }
 exports.generateToken = generateToken;
 function getErrors(req) {
-    return check_1.validationResult(req).formatWith(function (_a) {
+    return check.validationResult(req).formatWith(function (_a) {
         var location = _a.location, msg = _a.msg, param = _a.param, value = _a.value;
         return { message: msg };
     });

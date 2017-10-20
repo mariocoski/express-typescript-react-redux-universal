@@ -35,6 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+require("babel-polyfill");
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }

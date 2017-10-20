@@ -40,10 +40,6 @@ var utils_1 = require("../../utils");
 var errors_1 = require("../../lib/errors");
 var roles_js_1 = require("../../constants/roles.js");
 describe('UTILS', function () {
-    it('should throw an error when no default value provided for env variable', function () {
-        expect.assertions(1);
-        expect(true).toBe(true);
-    });
     it('can seed database', function () { return __awaiter(_this, void 0, void 0, function () {
         var queryInterface, mock;
         return __generator(this, function (_a) {

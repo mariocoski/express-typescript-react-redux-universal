@@ -4,3 +4,4 @@ export const PASSWORD_IS_REQUIRED = 'Password is required';
 export const PASSWORD_IS_TOO_SHORT = 'Password must be at least 6 characters long';
 export const EMAIL_ALREADY_IN_USE = 'That email address is already in use';
 export const INVALID_CREDENTIALS = 'Wrong email and/or password';
+export const USER_NOT_FOUND = 'We could not find your email address';

@@ -1,7 +1,6 @@
 
 import {env, seedDb, generateHash, getRoleId, formatError, catchErrors,
         comparePassword, generateToken, resolvePort, handleError} from '../../utils';
-
 import {UnauthorizedError, BadRequestError, ForbiddenError, 
   NotFoundError, BaseError} from '../../lib/errors';
 import {USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE} from '../../constants/roles.js';
