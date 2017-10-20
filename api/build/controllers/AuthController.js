@@ -38,7 +38,7 @@ var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var roles_1 = require("../constants/roles");
 var utils_1 = require("../utils");
-var filter_1 = require("express-validator/filter");
+var filter = require("express-validator/filter");
 var utils_2 = require("../utils");
 var errors_1 = require("../constants/errors");
 var userRepo_1 = require("../repositories/userRepo");
@@ -52,7 +52,7 @@ var register = utils_2.catchErrors(function (req, res) { return __awaiter(_this,
                 if (!errors.isEmpty()) {
                     return [2 /*return*/, res.status(422).json({ errors: errors.mapped() })];
                 }
-                data = filter_1.matchedData(req);
+                data = filter.matchedData(req);
                 return [4 /*yield*/, userRepo_1.findUserByEmail(data.email)];
             case 1:
                 user = _a.sent();

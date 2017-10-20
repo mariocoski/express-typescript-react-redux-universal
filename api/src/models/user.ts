@@ -12,6 +12,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
     first_name: DataTypes.STRING,
     last_name: DataTypes.STRING,
     bio: DataTypes.TEXT,
+    verified: DataTypes.BOOLEAN,
+    verify_token: DataTypes.STRING,
+    password_reset_token: DataTypes.STRING,
+    password_reset_token_expired_at:  DataTypes.DATE,
     createdAt: {
       type: DataTypes.DATE,
       field: 'created_at',

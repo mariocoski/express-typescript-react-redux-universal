@@ -35,6 +35,11 @@ export function generateToken(user: any) {
   });
 }
 
+export async function generateResetPasswordToken(){
+  const buffer = crypto.randomBytes(24);
+  return buffer.toString('hex');
+}
+
 export function getErrors(req: Request){
   return check.validationResult(req).formatWith(({ location, msg, param, value })=>{
     return {message:msg};
