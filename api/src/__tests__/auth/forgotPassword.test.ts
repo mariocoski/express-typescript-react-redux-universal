@@ -51,7 +51,6 @@ describe('LOGIN', () => {
 
     const user = await findUserByEmail('valid@email.com');
     expect(response.statusCode).toBe(200);
-    expect(user.password_reset_token).toBeDefined();
     expect(user.password_reset_token).toBeTruthy();
     expect(user.password_reset_token_expired_at).toBeTruthy();
   });
