@@ -9,7 +9,7 @@ import { USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE } from '../constants/roles';
 import {Request, Response} from 'express';
 import * as check from 'express-validator/check';
 import * as bcrypt from 'bcrypt';
-import {BadRequestError, NotFoundError, ForbiddenError,UnauthorizedError, BaseError } from '../lib/errors';
+import {BadRequestError, NotFoundError, ForbiddenError,UnauthorizedError, BaseError, RoleError } from '../lib/errors';
 
 export function resolvePort(portCandidate: string|undefined):number{
 
@@ -89,7 +89,7 @@ export const getRoleId = (role: string): number => {
     case SUPERADMIN_ROLE:
       return 3;
     default:
-      throw new Error(`Role ${role} is not defined`);
+      throw new RoleError(role);
   }
 };
 

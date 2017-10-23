@@ -84,7 +84,7 @@ describe('UTILS', () => {
     expect(getRoleId(USER_ROLE)).toBe(1);
     expect(getRoleId(ADMIN_ROLE)).toBe(2);
     expect(getRoleId(SUPERADMIN_ROLE)).toBe(3);
-    expect(shouldThrowError).toThrowError('Role DOES_NOT_EXIST is not defined');
+    expect(shouldThrowError).toThrow();
   });
 
   it('can format an error response', () => {
