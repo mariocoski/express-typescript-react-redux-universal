@@ -7,7 +7,6 @@ import {findUserByEmail} from '../../repositories/userRepo';
 import {USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE} from '../../constants/roles';
 import {expectError} from '../helpers';
 
-
 describe('LOGIN', () => {
   const request = require('supertest');
   let app: any;
@@ -53,5 +52,6 @@ describe('LOGIN', () => {
     expect(response.statusCode).toBe(200);
     expect(user.password_reset_token).toBeTruthy();
     expect(user.password_reset_token_expired_at).toBeTruthy();
+    //@todo should check if email being sent
   });
 });
