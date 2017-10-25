@@ -4,6 +4,8 @@ import {env, seedDb, generateHash, getRoleId, formatError, catchErrors,
 import {UnauthorizedError, BadRequestError, ForbiddenError, 
   NotFoundError, BaseError} from '../../lib/errors';
 import {USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE} from '../../constants/roles.js';
+import {sendEmail} from '../../utils/mail';
+
 describe('UTILS', () => {
 
 

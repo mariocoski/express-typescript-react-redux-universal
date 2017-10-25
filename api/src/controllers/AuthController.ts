@@ -5,6 +5,7 @@ import { getErrors, formatError, generateResetPasswordToken } from '../utils'
 import * as filter from 'express-validator/filter';
 import * as db from '../models';
 import { env, generateToken, catchErrors, getRoleId } from '../utils';
+import { sendEmail } from '../utils/mail';
 import { EMAIL_ALREADY_IN_USE,USER_NOT_FOUND } from '../constants/errors';
 import { findUserByEmail, createUser } from '../repositories/userRepo'; 
 import { associateRole } from '../repositories/roleRepo';
@@ -80,6 +81,17 @@ const forgotPassword = catchErrors(async (req: Request, res: Response) => {
     password_reset_token: token,
     password_reset_token_expired_at: Date.now() + 3600000
   });
+
+  const mailData = {
+    from: 'NoReply<user@smtp.mailgun.org>',
+    to: user.email,
+    subject: 'Reset Password',
+    text: `${'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+    'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+    'http://'}${req.headers.host}/reset-password/${token}\n\n` +
+    `If you did not request this, please ignore this email and your password will remain unchanged.\n`
+  };
+  // await sendEmail(mailData);
   
   res.json({message: 'Please check your email for the link to reset your password'});
 });  

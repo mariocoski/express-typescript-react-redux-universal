@@ -6,6 +6,7 @@ import {seedDb} from '../../utils';
 import {findUserByEmail} from '../../repositories/userRepo';
 import {USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE} from '../../constants/roles';
 import {expectError} from '../helpers';
+import * as mailgunService from 'mailgun-js';
 
 describe('LOGIN', () => {
   const request = require('supertest');
@@ -42,6 +43,7 @@ describe('LOGIN', () => {
     expectError(response,USER_NOT_FOUND);
   });
 
+  
   it('should send an email with link when email exists', async () => {
     await db.User.create({email:'valid@email.com', password: 'password'});
     const response = await request(app).post('/auth/forgot-password')
@@ -52,6 +54,5 @@ describe('LOGIN', () => {
     expect(response.statusCode).toBe(200);
     expect(user.password_reset_token).toBeTruthy();
     expect(user.password_reset_token_expired_at).toBeTruthy();
-    //@todo should check if email being sent
   });
 });
