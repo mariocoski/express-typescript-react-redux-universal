@@ -10,6 +10,9 @@ import { EMAIL_ALREADY_IN_USE,USER_NOT_FOUND } from '../constants/errors';
 import { findUserByEmail, createUser } from '../repositories/userRepo'; 
 import { associateRole } from '../repositories/roleRepo';
 import * as crypto from 'crypto';
+import config from '../config/main';
+import * as mailgunService from "mailgun-js";
+const mailgun: Mailgun.Mailgun = mailgunService({apiKey: config.mailgun_api_key, domain: config.mailgun_domain});
 
 const register = catchErrors(async (req: Request, res: Response) => {
 
@@ -46,11 +49,16 @@ const register = catchErrors(async (req: Request, res: Response) => {
 
 const login =  catchErrors(async (req: Request, res: Response) => {
 
+  const user = req.user;
+  user.password_reset_token = null;
+  user.password_reset_token_expired_at = null;
+  user.save();
+
   const userInfo = {
-    id: req.user.id,
-    first_name: req.user.first_name,
-    last_name: req.user.last_name,
-    email: req.user.email,
+    id: user.id,
+    first_name: user.first_name,
+    last_name: user.last_name,
+    email: user.email,
     roles: [USER_ROLE]
   }
 
@@ -81,18 +89,18 @@ const forgotPassword = catchErrors(async (req: Request, res: Response) => {
     password_reset_token: token,
     password_reset_token_expired_at: Date.now() + 3600000
   });
-
-  const mailData = {
+  const mailData:Mailgun.messages.SendData= {
     from: 'NoReply<user@smtp.mailgun.org>',
     to: user.email,
     subject: 'Reset Password',
     text: `${'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
     'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-    'http://'}${req.headers.host}/reset-password/${token}\n\n` +
+    'http://'}${req.headers.host}/reset-password/${token}/${user.email}\n\n` +
     `If you did not request this, please ignore this email and your password will remain unchanged.\n`
   };
-  // await sendEmail(mailData);
-  
+
+  await sendEmail(mailData,mailgun);
+
   res.json({message: 'Please check your email for the link to reset your password'});
 });  
 

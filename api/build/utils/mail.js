@@ -34,60 +34,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var utils_1 = require("../utils");
-module.exports = function (sequelize, DataTypes) {
-    var User = sequelize.define('User', {
-        email: {
-            type: DataTypes.STRING,
-            validate: {
-                isEmail: true
-            }
-        },
-        password: DataTypes.STRING,
-        first_name: DataTypes.STRING,
-        last_name: DataTypes.STRING,
-        bio: DataTypes.TEXT,
-        verified: DataTypes.BOOLEAN,
-        verify_token: DataTypes.STRING,
-        password_reset_token: DataTypes.STRING,
-        password_reset_token_expired_at: DataTypes.DATE,
-        createdAt: {
-            type: DataTypes.DATE,
-            field: 'created_at',
-            defaultValue: DataTypes.NOW
-        },
-        updatedAt: {
-            type: DataTypes.DATE,
-            field: 'updated_at'
-        },
-        deletedAt: {
-            type: DataTypes.DATE,
-            field: 'deleted_at'
-        }
-    }, {
-        tableName: 'users'
+function sendEmail(data, mailgun) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, mailgun.messages().send(data)];
+        });
     });
-    User.associate = function (models) {
-        User.belongsToMany(models.Role, {
-            through: 'users_roles',
-            foreignKey: 'user_id'
-        });
-    };
-    User.beforeCreate(function (user, options) { return __awaiter(_this, void 0, void 0, function () {
-        var _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    _a = user;
-                    return [4 /*yield*/, utils_1.generateHash(user.password)];
-                case 1:
-                    _a.password = _b.sent();
-                    return [2 /*return*/, user];
-            }
-        });
-    }); });
-    return User;
-};
-//# sourceMappingURL=user.js.map
+}
+exports.sendEmail = sendEmail;
+//# sourceMappingURL=mail.js.map

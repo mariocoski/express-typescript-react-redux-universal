@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-// import { check, validationResult } from 'express-validator/check';
 var validator = require("express-validator/check");
 var errors_1 = require("../constants/errors");
 exports.default = [

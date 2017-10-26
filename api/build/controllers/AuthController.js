@@ -40,9 +40,13 @@ var roles_1 = require("../constants/roles");
 var utils_1 = require("../utils");
 var filter = require("express-validator/filter");
 var utils_2 = require("../utils");
+var mail_1 = require("../utils/mail");
 var errors_1 = require("../constants/errors");
 var userRepo_1 = require("../repositories/userRepo");
 var roleRepo_1 = require("../repositories/roleRepo");
+var main_1 = require("../config/main");
+var mailgunService = require("mailgun-js");
+var mailgun = mailgunService({ apiKey: main_1.default.mailgun_api_key, domain: main_1.default.mailgun_domain });
 var register = utils_2.catchErrors(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var errors, data, user, createdUser, userModel, userInfo;
     return __generator(this, function (_a) {
@@ -100,6 +104,56 @@ var login = utils_2.catchErrors(function (req, res) { return __awaiter(_this, vo
     });
 }); });
 exports.login = login;
+var forgotPassword = utils_2.catchErrors(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var errors, data, user, token, mailData, e_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                errors = utils_1.getErrors(req);
+                if (!errors.isEmpty()) {
+                    return [2 /*return*/, res.status(422).json({ errors: errors.mapped() })];
+                }
+                data = filter.matchedData(req);
+                return [4 /*yield*/, userRepo_1.findUserByEmail(data.email)];
+            case 1:
+                user = _a.sent();
+                if (!user) {
+                    return [2 /*return*/, res.status(422).json(utils_1.formatError(errors_1.USER_NOT_FOUND))];
+                }
+                return [4 /*yield*/, utils_1.generateResetPasswordToken()];
+            case 2:
+                token = _a.sent();
+                user.update({
+                    password_reset_token: token,
+                    password_reset_token_expired_at: Date.now() + 3600000
+                });
+                mailData = {
+                    from: 'NoReply<user@smtp.mailgun.org>',
+                    to: user.email,
+                    subject: 'Reset Password',
+                    text: "" + 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+                        'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+                        'http://' + req.headers.host + "/reset-password/" + token + "\n\n" +
+                        "If you did not request this, please ignore this email and your password will remain unchanged.\n"
+                };
+                _a.label = 3;
+            case 3:
+                _a.trys.push([3, 5, , 6]);
+                return [4 /*yield*/, mail_1.sendEmail(mailData, mailgun)];
+            case 4:
+                _a.sent();
+                return [3 /*break*/, 6];
+            case 5:
+                e_1 = _a.sent();
+                console.log(e_1);
+                return [3 /*break*/, 6];
+            case 6:
+                res.json({ message: 'Please check your email for the link to reset your password' });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.forgotPassword = forgotPassword;
 // import * as JWT from 'jsonwebtoken';
 // import * as crypto from 'crypto';
 // // import {User} from '../models/user';

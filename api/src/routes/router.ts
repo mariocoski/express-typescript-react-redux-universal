@@ -14,7 +14,7 @@ module.exports = (app: Application) => {
     authRoutes.post('/register', validateRegister, register)
               .post('/login', validateLogin, requireLogin, login)
               .post('/forgot-password', validateForgotPassword, forgotPassword);
-    //   .post('reset-password/:token', verifyToken)
+              // .post('reset-password/:token', verifyToken);
     //   .post('me-from-token', meFromToken);
 
   /*** API ***/

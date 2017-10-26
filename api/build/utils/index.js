@@ -41,6 +41,7 @@ if (process.env.NODE_ENV !== 'production') {
     dotenv_1.config();
 }
 var JWT = require("jsonwebtoken");
+var crypto = require("crypto");
 var roles_1 = require("../constants/roles");
 var check = require("express-validator/check");
 var bcrypt = require("bcrypt");
@@ -65,6 +66,16 @@ function generateToken(user) {
     });
 }
 exports.generateToken = generateToken;
+function generateResetPasswordToken() {
+    return __awaiter(this, void 0, void 0, function () {
+        var buffer;
+        return __generator(this, function (_a) {
+            buffer = crypto.randomBytes(24);
+            return [2 /*return*/, buffer.toString('hex')];
+        });
+    });
+}
+exports.generateResetPasswordToken = generateResetPasswordToken;
 function getErrors(req) {
     return check.validationResult(req).formatWith(function (_a) {
         var location = _a.location, msg = _a.msg, param = _a.param, value = _a.value;
@@ -129,7 +140,7 @@ exports.getRoleId = function (role) {
         case roles_1.SUPERADMIN_ROLE:
             return 3;
         default:
-            throw new Error("Role " + role + " is not defined");
+            throw new errors_1.RoleError(role);
     }
 };
 function env(key, defaultVal) {
