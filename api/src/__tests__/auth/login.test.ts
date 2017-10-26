@@ -5,7 +5,8 @@ const db = require('../../models');
 import {seedDb} from '../../utils';
 import {USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE} from '../../constants/roles';
 import {expectError} from '../helpers';
-
+import config from '../../config/main';
+import {findUserByEmail} from '../../repositories/userRepo';
 
 describe('LOGIN', () => {
   const request = require('supertest');
@@ -37,7 +38,7 @@ describe('LOGIN', () => {
   it('should fail to log in without password', async () => {
     const response = await request(app).post('/auth/login')
                                        .type('form')
-                                       .send( { email: 'valid@email.com' });
+                                       .send( { email: config.mailgun_test_recipient });
     expectError(response,PASSWORD_IS_REQUIRED);
   });
 
@@ -52,27 +53,36 @@ describe('LOGIN', () => {
   });
 
   it('should fail to log in when user provided wrong password', async () => {
-    await db.User.create({email:'valid@email.com', password: 'password'});
+    await db.User.create({email:config.mailgun_test_recipient, password: 'password'});
     const response = await request(app).post('/auth/login')
                                        .type('form')
                                        .send( { 
-                                         email: 'valid@email.com',
+                                         email: config.mailgun_test_recipient,
                                          password: 'wrong_password'
                                        });
     expectError(response,INVALID_CREDENTIALS);
   });
 
   it('should login user with valid credentials', async () => {
-    expect.assertions(3);
-    const validCredentials = {email:'valid@email.com', password: 'password'};
-    await db.User.create(validCredentials);
+    expect.assertions(5);
+    const validCredentials = {
+       email:config.mailgun_test_recipient, 
+       password: 'password', 
+       password_reset_token: 'not null - clear up when user know password',
+       password_reset_token_expired_at: Date.now()
+    };
+    const user = await db.User.create(validCredentials);
     const response = await request(app).post('/auth/login')
                                        .type('form')
                                        .send(validCredentials);
     const data = JSON.parse(response.text);
+    const loggedInUser = await findUserByEmail(config.mailgun_test_recipient);
+ 
     expect(response.statusCode).toBe(200);
     expect(data.token).toMatch(/JWT/);
     expect(data.user).toMatchSnapshot();
+    expect(loggedInUser.password_reset_token).toBeNull();
+    expect(loggedInUser.password_reset_token_expired_at).toBeNull();
   });
 
 

@@ -23,6 +23,13 @@ module.exports = {
             bio: {
                 type: Sequelize.TEXT
             },
+            verified: Sequelize.BOOLEAN,
+            verify_token: Sequelize.STRING,
+            password_reset_token: Sequelize.STRING,
+            password_reset_token_expired_at: {
+                allowNull: true,
+                type: Sequelize.DATE
+            },
             created_at: {
                 allowNull: false,
                 type: Sequelize.DATE

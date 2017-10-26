@@ -2,16 +2,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
 var AuthController_1 = require("../controllers/AuthController");
-var validateRegister_1 = require("../validation/validateRegister");
-var validateLogin_1 = require("../validation/validateLogin");
+var index_1 = require("../validation/index");
 var passport_1 = require("../auth/passport");
 module.exports = function (app) {
     /*** AUTH ***/
     var authRoutes = express_1.Router();
     // authRoutes
-    authRoutes.post('/register', validateRegister_1.default, AuthController_1.register)
-        .post('/login', validateLogin_1.default, passport_1.requireLogin, AuthController_1.login);
-    //   .post('forgot-password', forgotPassword)
+    authRoutes.post('/register', index_1.validateRegister, AuthController_1.register)
+        .post('/login', index_1.validateLogin, passport_1.requireLogin, AuthController_1.login)
+        .post('/forgot-password', index_1.validateForgotPassword, AuthController_1.forgotPassword);
     //   .post('reset-password/:token', verifyToken)
     //   .post('me-from-token', meFromToken);
     /*** API ***/

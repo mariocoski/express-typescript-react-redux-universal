@@ -3,9 +3,11 @@ import {EMAIL_IS_REQUIRED, EMAIL_IS_INVALID, PASSWORD_IS_REQUIRED, USER_NOT_FOUN
         PASSWORD_IS_TOO_SHORT, EMAIL_ALREADY_IN_USE, INVALID_CREDENTIALS} from '../../constants/errors';
 const db = require('../../models');
 import {seedDb} from '../../utils';
+import {sendEmail} from '../../utils/mail';
 import {findUserByEmail} from '../../repositories/userRepo';
 import {USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE} from '../../constants/roles';
 import {expectError} from '../helpers';
+import config from '../../config/main';
 import * as mailgunService from 'mailgun-js';
 
 describe('LOGIN', () => {
@@ -38,19 +40,18 @@ describe('LOGIN', () => {
   it('should fail to send reminder link when email does not match any user', async () => {
     const response = await request(app).post('/auth/forgot-password')
                                        .type('form')
-                                       .send( { email: 'valid@email.com' });
+                                       .send( { email: config.mailgun_test_recipient });
 
     expectError(response,USER_NOT_FOUND);
   });
 
-  
+  jest.mock('mailgun-js');
   it('should send an email with link when email exists', async () => {
-    await db.User.create({email:'valid@email.com', password: 'password'});
+    await db.User.create({email:config.mailgun_test_recipient, password: 'password'});
     const response = await request(app).post('/auth/forgot-password')
                                        .type('form')
-                                       .send( { email: 'valid@email.com' });
-
-    const user = await findUserByEmail('valid@email.com');
+                                       .send( { email: config.mailgun_test_recipient });
+    const user = await findUserByEmail(config.mailgun_test_recipient);
     expect(response.statusCode).toBe(200);
     expect(user.password_reset_token).toBeTruthy();
     expect(user.password_reset_token_expired_at).toBeTruthy();
