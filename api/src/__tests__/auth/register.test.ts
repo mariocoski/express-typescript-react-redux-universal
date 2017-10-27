@@ -6,7 +6,7 @@ import {seedDb} from '../../utils';
 import {expectError} from '../helpers';
 import {USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE} from '../../constants/roles';
 
-describe('LOGIN', () => {
+describe('REGISTER', () => {
   const request = require('supertest');
   let app: any;
 

@@ -1,16 +1,13 @@
 require('dotenv').config();
-import {EMAIL_IS_REQUIRED, EMAIL_IS_INVALID, PASSWORD_IS_REQUIRED, USER_NOT_FOUND,
-        PASSWORD_IS_TOO_SHORT, EMAIL_ALREADY_IN_USE, INVALID_CREDENTIALS} from '../../constants/errors';
+import {EMAIL_IS_REQUIRED, EMAIL_IS_INVALID, USER_NOT_FOUND} from '../../constants/errors';
 const db = require('../../models');
 import {seedDb} from '../../utils';
 import {sendEmail} from '../../utils/mail';
 import {findUserByEmail} from '../../repositories/userRepo';
-import {USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE} from '../../constants/roles';
 import {expectError} from '../helpers';
 import config from '../../config/main';
-import * as mailgunService from 'mailgun-js';
 
-describe('LOGIN', () => {
+describe('FORGOT PASSWORD', () => {
   const request = require('supertest');
   let app: any;
 

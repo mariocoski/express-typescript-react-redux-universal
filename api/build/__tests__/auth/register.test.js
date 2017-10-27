@@ -41,7 +41,7 @@ var errors_1 = require("../../constants/errors");
 var db = require('../../models');
 var utils_1 = require("../../utils");
 var helpers_1 = require("../helpers");
-describe('LOGIN', function () {
+describe('REGISTER', function () {
     var request = require('supertest');
     var app;
     beforeEach(function () { return __awaiter(_this, void 0, void 0, function () {

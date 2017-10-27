@@ -4,6 +4,10 @@ export async function findUserByEmail(email: string) {
   return db.User.findOne({ where: { email } });
 }
 
+export async function findUserByToken(token: string){
+  return db.User.findOne({ where: { password_reset_token: token } });
+}
+
 export async function createUser(values: Object, settings: Object = {}) {
   const options = { fields: 
     ['email','password', 'first_name', 'last_name', 'bio'],
@@ -13,6 +17,7 @@ export async function createUser(values: Object, settings: Object = {}) {
 }
 
 export default {
+  findUserByToken,
   findUserByEmail,
   createUser
 }
