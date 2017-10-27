@@ -40,10 +40,8 @@ require('dotenv').config();
 var errors_1 = require("../../constants/errors");
 var db = require('../../models');
 var utils_1 = require("../../utils");
-var userRepo_1 = require("../../repositories/userRepo");
 var helpers_1 = require("../helpers");
-var main_1 = require("../../config/main");
-describe('FORGOT PASSWORD', function () {
+describe('RESET PASSWORD', function () {
     var request = require('supertest');
     var app;
     beforeEach(function () { return __awaiter(_this, void 0, void 0, function () {
@@ -66,70 +64,19 @@ describe('FORGOT PASSWORD', function () {
             return [2 /*return*/];
         });
     }); });
-    it('should fail to send reminder link without email', function () { return __awaiter(_this, void 0, void 0, function () {
+    it('should fail ', function () { return __awaiter(_this, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     expect.assertions(2);
-                    return [4 /*yield*/, request(app).post('/auth/forgot-password')];
+                    return [4 /*yield*/, request(app).post('/auth/reset-password')];
                 case 1:
                     response = _a.sent();
-                    helpers_1.expectError(response, errors_1.EMAIL_IS_REQUIRED);
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it('should fail to send reminder link valid email', function () { return __awaiter(_this, void 0, void 0, function () {
-        var response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, request(app).post('/auth/forgot-password')
-                        .type('form')
-                        .send({ email: 'invalid@email' })];
-                case 1:
-                    response = _a.sent();
-                    helpers_1.expectError(response, errors_1.EMAIL_IS_INVALID);
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it('should fail to send reminder link when email does not match any user', function () { return __awaiter(_this, void 0, void 0, function () {
-        var response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, request(app).post('/auth/forgot-password')
-                        .type('form')
-                        .send({ email: main_1.default.mailgun_test_recipient })];
-                case 1:
-                    response = _a.sent();
-                    helpers_1.expectError(response, errors_1.USER_NOT_FOUND);
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    jest.mock('mailgun-js');
-    it('should send an email with link when email exists', function () { return __awaiter(_this, void 0, void 0, function () {
-        var response, user;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, db.User.create({ email: main_1.default.mailgun_test_recipient, password: 'password' })];
-                case 1:
-                    _a.sent();
-                    return [4 /*yield*/, request(app).post('/auth/forgot-password')
-                            .type('form')
-                            .send({ email: main_1.default.mailgun_test_recipient })];
-                case 2:
-                    response = _a.sent();
-                    return [4 /*yield*/, userRepo_1.findUserByEmail(main_1.default.mailgun_test_recipient)];
-                case 3:
-                    user = _a.sent();
-                    expect(response.statusCode).toBe(200);
-                    expect(user.password_reset_token).toBeTruthy();
-                    expect(user.password_reset_token_expired_at).toBeTruthy();
+                    helpers_1.expectError(response, errors_1.TOKEN_IS_REQUIRED);
                     return [2 /*return*/];
             }
         });
     }); });
 });
-//# sourceMappingURL=forgotPassword.test.js.map
+//# sourceMappingURL=resetPassword.js.map

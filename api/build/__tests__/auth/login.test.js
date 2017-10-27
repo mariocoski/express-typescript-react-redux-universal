@@ -41,6 +41,8 @@ var errors_1 = require("../../constants/errors");
 var db = require('../../models');
 var utils_1 = require("../../utils");
 var helpers_1 = require("../helpers");
+var main_1 = require("../../config/main");
+var userRepo_1 = require("../../repositories/userRepo");
 describe('LOGIN', function () {
     var request = require('supertest');
     var app;
@@ -98,7 +100,7 @@ describe('LOGIN', function () {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, request(app).post('/auth/login')
                         .type('form')
-                        .send({ email: 'valid@email.com' })];
+                        .send({ email: main_1.default.mailgun_test_recipient })];
                 case 1:
                     response = _a.sent();
                     helpers_1.expectError(response, errors_1.PASSWORD_IS_REQUIRED);
@@ -127,13 +129,13 @@ describe('LOGIN', function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, db.User.create({ email: 'valid@email.com', password: 'password' })];
+                case 0: return [4 /*yield*/, db.User.create({ email: main_1.default.mailgun_test_recipient, password: 'password' })];
                 case 1:
                     _a.sent();
                     return [4 /*yield*/, request(app).post('/auth/login')
                             .type('form')
                             .send({
-                            email: 'valid@email.com',
+                            email: main_1.default.mailgun_test_recipient,
                             password: 'wrong_password'
                         })];
                 case 2:
@@ -144,24 +146,34 @@ describe('LOGIN', function () {
         });
     }); });
     it('should login user with valid credentials', function () { return __awaiter(_this, void 0, void 0, function () {
-        var validCredentials, response, data;
+        var validCredentials, user, response, data, loggedInUser;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    expect.assertions(3);
-                    validCredentials = { email: 'valid@email.com', password: 'password' };
+                    expect.assertions(5);
+                    validCredentials = {
+                        email: main_1.default.mailgun_test_recipient,
+                        password: 'password',
+                        password_reset_token: 'not null - clear up when user know password',
+                        password_reset_token_expired_at: Date.now()
+                    };
                     return [4 /*yield*/, db.User.create(validCredentials)];
                 case 1:
-                    _a.sent();
+                    user = _a.sent();
                     return [4 /*yield*/, request(app).post('/auth/login')
                             .type('form')
                             .send(validCredentials)];
                 case 2:
                     response = _a.sent();
                     data = JSON.parse(response.text);
+                    return [4 /*yield*/, userRepo_1.findUserByEmail(main_1.default.mailgun_test_recipient)];
+                case 3:
+                    loggedInUser = _a.sent();
                     expect(response.statusCode).toBe(200);
                     expect(data.token).toMatch(/JWT/);
                     expect(data.user).toMatchSnapshot();
+                    expect(loggedInUser.password_reset_token).toBeNull();
+                    expect(loggedInUser.password_reset_token_expired_at).toBeNull();
                     return [2 /*return*/];
             }
         });

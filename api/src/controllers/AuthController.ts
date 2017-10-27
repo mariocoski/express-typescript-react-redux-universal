@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { EMAIL_IS_REQUIRED } from '../constants/errors';
+import { EMAIL_IS_REQUIRED, INVALID_PASSWORD_RESET_TOKEN, EXPIRED_PASSWORD_RESET_TOKEN } from '../constants/errors';
 import { USER_ROLE } from '../constants/roles';
 import { getErrors, formatError, generateResetPasswordToken } from '../utils'
 import * as filter from 'express-validator/filter';
@@ -7,7 +7,8 @@ import * as db from '../models';
 import { env, generateToken, catchErrors, getRoleId } from '../utils';
 import { sendEmail } from '../utils/mail';
 import { EMAIL_ALREADY_IN_USE,USER_NOT_FOUND } from '../constants/errors';
-import { findUserByEmail, createUser } from '../repositories/userRepo'; 
+import { ONE_HOUR } from '../constants';
+import { findUserByEmail, createUser, findUserByToken } from '../repositories/userRepo'; 
 import { associateRole } from '../repositories/roleRepo';
 import * as crypto from 'crypto';
 import config from '../config/main';
@@ -87,7 +88,7 @@ const forgotPassword = catchErrors(async (req: Request, res: Response) => {
   
   user.update({
     password_reset_token: token,
-    password_reset_token_expired_at: Date.now() + 3600000
+    password_reset_token_expired_at: Date.now() + ONE_HOUR
   });
   const mailData:Mailgun.messages.SendData= {
     from: 'NoReply<user@smtp.mailgun.org>',
@@ -95,7 +96,7 @@ const forgotPassword = catchErrors(async (req: Request, res: Response) => {
     subject: 'Reset Password',
     text: `${'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
     'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-    'http://'}${req.headers.host}/reset-password/${token}/${user.email}\n\n` +
+    'http://'}${req.headers.host}/reset-password/${token}\n\n` +
     `If you did not request this, please ignore this email and your password will remain unchanged.\n`
   };
 
@@ -104,10 +105,39 @@ const forgotPassword = catchErrors(async (req: Request, res: Response) => {
   res.json({message: 'Please check your email for the link to reset your password'});
 });  
 
+const resetPassword = catchErrors(async (req: Request, res: Response) => {
+  
+    const errors = getErrors(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.mapped() });
+    }
+  
+    const data: any = filter.matchedData(req);
+  
+    const user = await findUserByToken(data.token);
+
+    if(! user){
+      return res.status(422).json(formatError(INVALID_PASSWORD_RESET_TOKEN));
+    }
+    if(user.password_reset_token !== data.token){
+      return res.status(422).json(formatError(INVALID_PASSWORD_RESET_TOKEN));
+    }
+    var olderThanOneHour = 
+      (Date.now() - (new Date(user.password_reset_token_expired_at).getTime())) > ONE_HOUR; 
+      
+    if(olderThanOneHour){
+      return res.status(422).json(formatError(EXPIRED_PASSWORD_RESET_TOKEN));
+    }
+    res.status(200).json({});
+
+    
+  })
+
 export {
   login,
   register,
-  forgotPassword
+  forgotPassword,
+  resetPassword
 };
 
 

@@ -52,7 +52,7 @@ export function formatError(message: string, stack: string|undefined = undefined
 
 export function handleError(res: Response, err: any){
   if(process.env.NODE_ENV !== 'test'){
-    console.error(err);
+   // console.error(err);
   }
   const IS_PROD = process.env.NODE_ENV === 'production';
   switch (err.constructor) {

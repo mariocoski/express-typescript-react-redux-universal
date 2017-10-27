@@ -87,13 +87,17 @@ var register = utils_2.catchErrors(function (req, res) { return __awaiter(_this,
 }); });
 exports.register = register;
 var login = utils_2.catchErrors(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var userInfo;
+    var user, userInfo;
     return __generator(this, function (_a) {
+        user = req.user;
+        user.password_reset_token = null;
+        user.password_reset_token_expired_at = null;
+        user.save();
         userInfo = {
-            id: req.user.id,
-            first_name: req.user.first_name,
-            last_name: req.user.last_name,
-            email: req.user.email,
+            id: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
             roles: [roles_1.USER_ROLE]
         };
         res.status(200).json({
@@ -105,7 +109,7 @@ var login = utils_2.catchErrors(function (req, res) { return __awaiter(_this, vo
 }); });
 exports.login = login;
 var forgotPassword = utils_2.catchErrors(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var errors, data, user, token, mailData, e_1;
+    var errors, data, user, token, mailData;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -133,27 +137,36 @@ var forgotPassword = utils_2.catchErrors(function (req, res) { return __awaiter(
                     subject: 'Reset Password',
                     text: "" + 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
                         'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-                        'http://' + req.headers.host + "/reset-password/" + token + "\n\n" +
+                        'http://' + req.headers.host + "/reset-password/" + token + "/" + user.email + "\n\n" +
                         "If you did not request this, please ignore this email and your password will remain unchanged.\n"
                 };
-                _a.label = 3;
-            case 3:
-                _a.trys.push([3, 5, , 6]);
                 return [4 /*yield*/, mail_1.sendEmail(mailData, mailgun)];
-            case 4:
+            case 3:
                 _a.sent();
-                return [3 /*break*/, 6];
-            case 5:
-                e_1 = _a.sent();
-                console.log(e_1);
-                return [3 /*break*/, 6];
-            case 6:
                 res.json({ message: 'Please check your email for the link to reset your password' });
                 return [2 /*return*/];
         }
     });
 }); });
 exports.forgotPassword = forgotPassword;
+var resetPassword = utils_2.catchErrors(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var errors, data, user;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                errors = utils_1.getErrors(req);
+                if (!errors.isEmpty()) {
+                    return [2 /*return*/, res.status(422).json({ errors: errors.mapped() })];
+                }
+                data = filter.matchedData(req);
+                return [4 /*yield*/, userRepo_1.findUserByEmail(data.email)];
+            case 1:
+                user = _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.resetPassword = resetPassword;
 // import * as JWT from 'jsonwebtoken';
 // import * as crypto from 'crypto';
 // // import {User} from '../models/user';
