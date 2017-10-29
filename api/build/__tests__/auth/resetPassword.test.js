@@ -40,11 +40,13 @@ require('dotenv').config();
 var errors_1 = require("../../constants/errors");
 var db = require('../../models');
 var utils_1 = require("../../utils");
+var userRepo_1 = require("../../repositories/userRepo");
 var helpers_1 = require("../helpers");
 var main_1 = require("../../config/main");
-var userRepo_1 = require("../../repositories/userRepo");
-describe('LOGIN', function () {
+var constants_1 = require("../../constants");
+describe('RESET PASSWORD', function () {
     var request = require('supertest');
+    var validData = { token: 'valid-token', password: 'password', password_confirmation: 'password' };
     var app;
     beforeEach(function () { return __awaiter(_this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -66,41 +68,65 @@ describe('LOGIN', function () {
             return [2 /*return*/];
         });
     }); });
-    it('should fail to log in without input', function () { return __awaiter(_this, void 0, void 0, function () {
+    it('should not reset password without token', function () { return __awaiter(_this, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     expect.assertions(2);
-                    return [4 /*yield*/, request(app).post('/auth/login')];
+                    return [4 /*yield*/, request(app).post('/auth/reset-password')];
                 case 1:
                     response = _a.sent();
-                    helpers_1.expectError(response, errors_1.EMAIL_IS_REQUIRED);
+                    helpers_1.expectError(response, errors_1.TOKEN_IS_REQUIRED);
                     return [2 /*return*/];
             }
         });
     }); });
-    it('should fail to log in when email is invalid', function () { return __awaiter(_this, void 0, void 0, function () {
+    it('should not reset password without password', function () { return __awaiter(_this, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request(app).post('/auth/login')
-                        .type('form')
-                        .send({ email: 'invalid@email' })];
+                case 0:
+                    expect.assertions(2);
+                    return [4 /*yield*/, request(app).post('/auth/reset-password')
+                            .type('form')
+                            .send({ token: 'token', password: 'short' })];
                 case 1:
                     response = _a.sent();
-                    helpers_1.expectError(response, errors_1.EMAIL_IS_INVALID);
+                    helpers_1.expectError(response, errors_1.PASSWORD_IS_TOO_SHORT);
                     return [2 /*return*/];
             }
         });
     }); });
-    it('should fail to log in without password', function () { return __awaiter(_this, void 0, void 0, function () {
+    it('should not reset password without password', function () { return __awaiter(_this, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request(app).post('/auth/login')
-                        .type('form')
-                        .send({ email: main_1.default.mailgun_test_recipient })];
+                case 0:
+                    expect.assertions(2);
+                    return [4 /*yield*/, request(app).post('/auth/reset-password')
+                            .type('form')
+                            .send({
+                            token: 'token',
+                            password: 'longenough',
+                            password_confirmation: 'notmatch'
+                        })];
+                case 1:
+                    response = _a.sent();
+                    helpers_1.expectError(response, errors_1.PASSWORD_CONFIRMATION_MUST_MATCH_PASSWORD);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should not reset password without password_confirmation', function () { return __awaiter(_this, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    expect.assertions(2);
+                    return [4 /*yield*/, request(app).post('/auth/reset-password')
+                            .type('form')
+                            .send({ token: 'token' })];
                 case 1:
                     response = _a.sent();
                     helpers_1.expectError(response, errors_1.PASSWORD_IS_REQUIRED);
@@ -108,77 +134,87 @@ describe('LOGIN', function () {
             }
         });
     }); });
-    it('should fail to log in when user does not exist', function () { return __awaiter(_this, void 0, void 0, function () {
+    it('should not allow to reset password when token does not match a user', function () { return __awaiter(_this, void 0, void 0, function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request(app).post('/auth/login')
-                        .type('form')
-                        .send({
-                        email: 'user_does_not_exist@email.com',
-                        password: 'password'
+                case 0: return [4 /*yield*/, db.User.create({
+                        email: main_1.default.mailgun_test_recipient,
+                        password: 'password',
+                        password_reset_token: 'valid-token'
                     })];
                 case 1:
-                    response = _a.sent();
-                    helpers_1.expectError(response, errors_1.INVALID_CREDENTIALS);
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it('should fail to log in when user provided wrong password', function () { return __awaiter(_this, void 0, void 0, function () {
-        var response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, db.User.create({ email: main_1.default.mailgun_test_recipient, password: 'password' })];
-                case 1:
                     _a.sent();
-                    return [4 /*yield*/, request(app).post('/auth/login')
+                    expect.assertions(2);
+                    return [4 /*yield*/, request(app).post('/auth/reset-password')
                             .type('form')
                             .send({
-                            email: main_1.default.mailgun_test_recipient,
-                            password: 'wrong_password'
+                            token: 'invalid-token',
+                            password: 'new_password',
+                            password_confirmation: 'new_password'
                         })];
                 case 2:
                     response = _a.sent();
-                    helpers_1.expectError(response, errors_1.INVALID_CREDENTIALS);
+                    helpers_1.expectError(response, errors_1.INVALID_PASSWORD_RESET_TOKEN);
                     return [2 /*return*/];
             }
         });
     }); });
-    it('should login user with valid credentials', function () { return __awaiter(_this, void 0, void 0, function () {
-        var validCredentials, user, response, data, loggedInUser;
+    it('should not allow to reset password when token its expired', function () { return __awaiter(_this, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, db.User.create({
+                        email: main_1.default.mailgun_test_recipient,
+                        password: 'password',
+                        password_reset_token: 'valid-token',
+                        password_reset_token_expired_at: new Date(Date.now() - constants_1.TWO_HOURS)
+                    })];
+                case 1:
+                    _a.sent();
+                    expect.assertions(2);
+                    return [4 /*yield*/, request(app).post('/auth/reset-password')
+                            .type('form')
+                            .send(validData)];
+                case 2:
+                    response = _a.sent();
+                    helpers_1.expectError(response, errors_1.EXPIRED_PASSWORD_RESET_TOKEN);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should allow to reset password when token is valid and not expired', function () { return __awaiter(_this, void 0, void 0, function () {
+        var response, updatedUser, match;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    validCredentials = {
-                        email: main_1.default.mailgun_test_recipient,
-                        password: 'password',
-                        password_reset_token: 'not null - clear up when user know password',
-                        password_reset_token_expired_at: Date.now()
-                    };
-                    return [4 /*yield*/, db.User.create(validCredentials)];
-                case 1:
-                    user = _a.sent();
-                    return [4 /*yield*/, request(app).post('/auth/login')
-                            .type('form')
-                            .send({
+                    jest.mock('mailgun-js');
+                    return [4 /*yield*/, userRepo_1.createUser({
                             email: main_1.default.mailgun_test_recipient,
-                            password: 'password'
+                            password: 'oldpassword',
+                            password_reset_token: 'valid-token',
+                            password_reset_token_expired_at: new Date()
                         })];
+                case 1:
+                    _a.sent();
+                    return [4 /*yield*/, request(app).post('/auth/reset-password')
+                            .type('form')
+                            .send(validData)];
                 case 2:
                     response = _a.sent();
-                    data = JSON.parse(response.text);
                     return [4 /*yield*/, userRepo_1.findUserByEmail(main_1.default.mailgun_test_recipient)];
                 case 3:
-                    loggedInUser = _a.sent();
+                    updatedUser = _a.sent();
+                    return [4 /*yield*/, utils_1.comparePassword(validData.password, updatedUser.password)];
+                case 4:
+                    match = _a.sent();
+                    expect(match).toBe(true);
                     expect(response.statusCode).toBe(200);
-                    expect(data.token).toMatch(/JWT/);
-                    expect(data.user).toMatchSnapshot();
-                    expect(loggedInUser.password_reset_token).toBeNull();
-                    expect(loggedInUser.password_reset_token_expired_at).toBeNull();
+                    expect(updatedUser.password_reset_token).toBeNull();
+                    expect(updatedUser.password_reset_token_expired_at).toBeNull();
                     return [2 /*return*/];
             }
         });
     }); });
 });
-//# sourceMappingURL=login.test.js.map
+//# sourceMappingURL=resetPassword.test.js.map

@@ -39,6 +39,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = require("../../utils");
 var errors_1 = require("../../lib/errors");
 var roles_js_1 = require("../../constants/roles.js");
+jest.mock('bcrypt', function () { return ({
+    hash: jest.fn(function () {
+        return Promise.resolve('hashedpassword');
+    }),
+    compare: jest.fn(function (password) {
+        if (password === 'password') {
+            return Promise.resolve(true);
+        }
+        else {
+            return Promise.reject(false);
+        }
+    })
+}); });
+var bcrypt = require("bcrypt");
 describe('UTILS', function () {
     it('can seed database', function () { return __awaiter(_this, void 0, void 0, function () {
         var queryInterface, mock;
@@ -90,14 +104,13 @@ describe('UTILS', function () {
         expect(new errors_1.ForbiddenError().message).toMatch('Forbidden');
         expect(errors_1.ForbiddenError.prototype).toBeInstanceOf(errors_1.BaseError);
     });
-    jest.mock('bcrypt');
     it('can generate hash', function () { return __awaiter(_this, void 0, void 0, function () {
         var hash;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     expect.assertions(1);
-                    return [4 /*yield*/, utils_1.generateHash('password')];
+                    return [4 /*yield*/, utils_1.generateHash('password', bcrypt)];
                 case 1:
                     hash = _a.sent();
                     expect(hash).toBe('hashedpassword');
@@ -111,7 +124,7 @@ describe('UTILS', function () {
             switch (_a.label) {
                 case 0:
                     expect.assertions(1);
-                    return [4 /*yield*/, utils_1.comparePassword('password', 'hashedpassword')];
+                    return [4 /*yield*/, utils_1.comparePassword('password', 'hashedpassword', bcrypt)];
                 case 1:
                     match = _a.sent();
                     expect(match).toBe(true);

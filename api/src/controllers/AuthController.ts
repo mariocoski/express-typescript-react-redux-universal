@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
 import { EMAIL_IS_REQUIRED, INVALID_PASSWORD_RESET_TOKEN, EXPIRED_PASSWORD_RESET_TOKEN } from '../constants/errors';
+import { PASSWORD_CHANGE_SUCCESS } from '../constants/messages';
 import { USER_ROLE } from '../constants/roles';
 import { getErrors, formatError, generateResetPasswordToken } from '../utils'
 import * as filter from 'express-validator/filter';
 import * as db from '../models';
-import { env, generateToken, catchErrors, getRoleId } from '../utils';
+import { env, generateToken, catchErrors, getRoleId, generateHash } from '../utils';
 import { sendEmail } from '../utils/mail';
 import { EMAIL_ALREADY_IN_USE,USER_NOT_FOUND } from '../constants/errors';
 import { ONE_HOUR } from '../constants';
@@ -51,9 +52,13 @@ const register = catchErrors(async (req: Request, res: Response) => {
 const login =  catchErrors(async (req: Request, res: Response) => {
 
   const user = req.user;
-  user.password_reset_token = null;
-  user.password_reset_token_expired_at = null;
-  user.save();
+  const userToBeUpdated = await findUserByEmail(user.email);
+  await userToBeUpdated.update({
+    password_reset_token : null,
+    password_reset_token_expired_at: null
+  });
+  // user.password_reset_token_expired_at = null;
+  // await user.save();
 
   const userInfo = {
     id: user.id,
@@ -86,7 +91,7 @@ const forgotPassword = catchErrors(async (req: Request, res: Response) => {
 
   const token: string = await generateResetPasswordToken();
   
-  user.update({
+  await user.update({
     password_reset_token: token,
     password_reset_token_expired_at: Date.now() + ONE_HOUR
   });
@@ -128,9 +133,24 @@ const resetPassword = catchErrors(async (req: Request, res: Response) => {
     if(olderThanOneHour){
       return res.status(422).json(formatError(EXPIRED_PASSWORD_RESET_TOKEN));
     }
-    res.status(200).json({});
 
-    
+    await user.update({
+      password_reset_token: null,
+      password_reset_token_expired_at: null,
+      password : await generateHash(data.password)
+    });
+
+    const mailData:Mailgun.messages.SendData= {
+      from: 'NoReply<user@smtp.mailgun.org>',
+      to: user.email,
+      subject: 'Password Changed',
+      text: `You are receiving this email because you changed your password.\n\n
+      'If you did not request this change, please contact us immediately.`
+    };
+  
+    await sendEmail(mailData,mailgun);
+
+    res.status(200).json({message: PASSWORD_CHANGE_SUCCESS});
   })
 
 export {

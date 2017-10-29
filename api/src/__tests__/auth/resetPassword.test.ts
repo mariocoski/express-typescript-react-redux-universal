@@ -5,14 +5,14 @@ import {TOKEN_IS_REQUIRED, EXPIRED_PASSWORD_RESET_TOKEN,
 const db = require('../../models');
 import {seedDb, comparePassword} from '../../utils';
 import {sendEmail} from '../../utils/mail';
-import {findUserByEmail} from '../../repositories/userRepo';
+import {findUserByEmail, createUser} from '../../repositories/userRepo';
 import {expectError} from '../helpers';
 import config from '../../config/main';
 import {TWO_HOURS} from '../../constants';
 
 describe('RESET PASSWORD', () => {
   const request = require('supertest');
-  const validData = { token: 'valid-token', password: 'new_password', password_confirmation: 'new_password' };
+  const validData = { token: 'valid-token', password: 'password', password_confirmation: 'password' };
 
   let app: any;
 
@@ -93,23 +93,27 @@ describe('RESET PASSWORD', () => {
     expectError(response, EXPIRED_PASSWORD_RESET_TOKEN);
   });
 
-  // it('should allow to reset password when token is valid and not expired', async () => {
-  //   await db.User.create({
-  //     email:config.mailgun_test_recipient, 
-  //     password: 'password',
-  //     password_reset_token: 'valid-token',
-  //     password_reset_token_expired_at: new Date()
-  //   });
-  //   expect.assertions(2);
-  //   const response = await request(app).post('/auth/reset-password')
-  //                                      .type('form')
-  //                                      .send(validData);
-  //   const user = await findUserByEmail(config.mailgun_test_recipient);
-  //   expect(comparePassword(validData.password, user.password)).toBe(true);
-  //   expect(response.statusCode).toBe(200);
-  //   expect(user.password_reset_token).toBeNull();
-  //   expect(user.password_reset_token_expired_at).toBeNull();
-  // });
 
+  it('should allow to reset password when token is valid and not expired', async () => {
+    jest.mock('mailgun-js');
+    await createUser({
+      email:config.mailgun_test_recipient, 
+      password: 'oldpassword',
+      password_reset_token: 'valid-token',
+      password_reset_token_expired_at: new Date()
+    });
+    const response = await request(app).post('/auth/reset-password')
+                                       .type('form')
+                                       .send(validData);
+
+    const updatedUser = await findUserByEmail(config.mailgun_test_recipient);
+   
+    const match = await comparePassword(validData.password, updatedUser.password);
+    
+    expect(match).toBe(true);
+    expect(response.statusCode).toBe(200);
+    expect(updatedUser.password_reset_token).toBeNull();
+    expect(updatedUser.password_reset_token_expired_at).toBeNull();
+  });
 
 });
