@@ -19,7 +19,6 @@ const localLogin = new LocalStrategy(localOptions, async (email, password, done)
         return done(null, false);
       }
       const userModel = user.get({ plain: true });
-
       const isMatch: boolean =  await comparePassword(password,userModel.password);
       if(! isMatch){
         return done(null, false);
@@ -51,8 +50,9 @@ const localLogin = new LocalStrategy(localOptions, async (email, password, done)
 passport.use(localLogin);
 
 const requireLogin =  (req:Request , res: Response, next: NextFunction) => {
-
+ 
   const errors = getErrors(req);
+
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.mapped() });
   }

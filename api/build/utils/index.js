@@ -44,7 +44,7 @@ var JWT = require("jsonwebtoken");
 var crypto = require("crypto");
 var roles_1 = require("../constants/roles");
 var check = require("express-validator/check");
-var bcrypt = require("bcrypt");
+var bcryptService = require("bcrypt");
 var errors_1 = require("../lib/errors");
 function resolvePort(portCandidate) {
     if (portCandidate === undefined) {
@@ -158,7 +158,8 @@ function env(key, defaultVal) {
     throw new Error("No ENV " + key + " was found");
 }
 exports.env = env;
-function generateHash(password) {
+function generateHash(password, bcrypt) {
+    if (bcrypt === void 0) { bcrypt = bcryptService; }
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             return [2 /*return*/, bcrypt.hash(password, 10)];
@@ -166,7 +167,8 @@ function generateHash(password) {
     });
 }
 exports.generateHash = generateHash;
-function comparePassword(password, hashedPassword) {
+function comparePassword(password, hashedPassword, bcrypt) {
+    if (bcrypt === void 0) { bcrypt = bcryptService; }
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             return [2 /*return*/, bcrypt.compare(password, hashedPassword)];

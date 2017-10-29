@@ -6,9 +6,21 @@ import {UnauthorizedError, BadRequestError, ForbiddenError,
 import {USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE} from '../../constants/roles.js';
 import {sendEmail} from '../../utils/mail';
 
+jest.mock('bcrypt', () => ({
+  hash: jest.fn(()=>{
+    return Promise.resolve('hashedpassword');
+  }),
+  compare: jest.fn((password)=>{
+    if(password === 'password'){
+      return Promise.resolve(true);
+    }else{
+      return Promise.reject(false);
+    } 
+  })
+}));
+import * as bcrypt from 'bcrypt';
+
 describe('UTILS', () => {
-
-
   it('can seed database', async ()=>{
     expect.assertions(4);
     const queryInterface:any = {};
@@ -58,16 +70,15 @@ describe('UTILS', () => {
     expect(ForbiddenError.prototype).toBeInstanceOf(BaseError);
   });
 
-  jest.mock('bcrypt');
   it('can generate hash', async() => {
-    expect.assertions(1);
-    const hash = await generateHash('password');
+    expect.assertions(1);    
+    const hash = await generateHash('password',bcrypt);
     expect(hash).toBe('hashedpassword');
   });
 
   it('can verify hash', async() => {
     expect.assertions(1);
-    const match = await comparePassword('password', 'hashedpassword');
+    const match = await comparePassword('password', 'hashedpassword',bcrypt);
     expect(match).toBe(true);
   });
   

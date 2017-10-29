@@ -64,7 +64,7 @@ describe('LOGIN', () => {
   });
 
   it('should login user with valid credentials', async () => {
-    expect.assertions(5);
+
     const validCredentials = {
        email:config.mailgun_test_recipient, 
        password: 'password', 
@@ -74,7 +74,10 @@ describe('LOGIN', () => {
     const user = await db.User.create(validCredentials);
     const response = await request(app).post('/auth/login')
                                        .type('form')
-                                       .send(validCredentials);
+                                       .send({ 
+                                         email:config.mailgun_test_recipient, 
+                                         password: 'password'
+                                       });
     const data = JSON.parse(response.text);
     const loggedInUser = await findUserByEmail(config.mailgun_test_recipient);
  
@@ -84,6 +87,5 @@ describe('LOGIN', () => {
     expect(loggedInUser.password_reset_token).toBeNull();
     expect(loggedInUser.password_reset_token_expired_at).toBeNull();
   });
-
 
 });

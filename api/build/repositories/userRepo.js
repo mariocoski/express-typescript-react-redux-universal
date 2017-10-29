@@ -52,18 +52,27 @@ function findUserByEmail(email) {
     });
 }
 exports.findUserByEmail = findUserByEmail;
+function findUserByToken(token) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, db.User.findOne({ where: { password_reset_token: token } })];
+        });
+    });
+}
+exports.findUserByToken = findUserByToken;
 function createUser(values, settings) {
     if (settings === void 0) { settings = {}; }
     return __awaiter(this, void 0, void 0, function () {
         var options;
         return __generator(this, function (_a) {
-            options = __assign({ fields: ['email', 'password', 'first_name', 'last_name', 'bio'] }, settings);
+            options = __assign({ fields: ['email', 'password', 'first_name', 'last_name', 'bio', 'password_reset_token', 'password_reset_token_expired_at'] }, settings);
             return [2 /*return*/, db.User.create(values, options)];
         });
     });
 }
 exports.createUser = createUser;
 exports.default = {
+    findUserByToken: findUserByToken,
     findUserByEmail: findUserByEmail,
     createUser: createUser
 };

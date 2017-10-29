@@ -8,7 +8,7 @@ import * as db from '../models';
 import { USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE } from '../constants/roles';
 import {Request, Response} from 'express';
 import * as check from 'express-validator/check';
-import * as bcrypt from 'bcrypt';
+import * as bcryptService from 'bcrypt';
 import {BadRequestError, NotFoundError, ForbiddenError,UnauthorizedError, BaseError, RoleError } from '../lib/errors';
 
 export function resolvePort(portCandidate: string|undefined):number{
@@ -52,7 +52,7 @@ export function formatError(message: string, stack: string|undefined = undefined
 
 export function handleError(res: Response, err: any){
   if(process.env.NODE_ENV !== 'test'){
-   // console.error(err);
+    console.error(err);
   }
   const IS_PROD = process.env.NODE_ENV === 'production';
   switch (err.constructor) {
@@ -111,11 +111,11 @@ export function env(key: string, defaultVal:string|undefined = undefined): strin
   throw new Error(`No ENV ${key} was found`);
 }
 
-export async function generateHash(password: string): Promise<string>{
+export async function generateHash(password: string,bcrypt:any = bcryptService): Promise<string>{
   return bcrypt.hash(password, 10);
 }
 
-export async function comparePassword(password: string, hashedPassword: string): Promise<boolean>{
+export async function comparePassword(password: string, hashedPassword: string, bcrypt = bcryptService): Promise<boolean>{
   return bcrypt.compare(password, hashedPassword);
 }
 

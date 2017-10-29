@@ -36,12 +36,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
+var errors_1 = require("../constants/errors");
+var messages_1 = require("../constants/messages");
 var roles_1 = require("../constants/roles");
 var utils_1 = require("../utils");
 var filter = require("express-validator/filter");
 var utils_2 = require("../utils");
 var mail_1 = require("../utils/mail");
-var errors_1 = require("../constants/errors");
+var errors_2 = require("../constants/errors");
+var constants_1 = require("../constants");
 var userRepo_1 = require("../repositories/userRepo");
 var roleRepo_1 = require("../repositories/roleRepo");
 var main_1 = require("../config/main");
@@ -61,7 +64,7 @@ var register = utils_2.catchErrors(function (req, res) { return __awaiter(_this,
             case 1:
                 user = _a.sent();
                 if (user) {
-                    return [2 /*return*/, res.status(422).json(utils_1.formatError(errors_1.EMAIL_ALREADY_IN_USE))];
+                    return [2 /*return*/, res.status(422).json(utils_1.formatError(errors_2.EMAIL_ALREADY_IN_USE))];
                 }
                 return [4 /*yield*/, userRepo_1.createUser(data)];
             case 2:
@@ -87,24 +90,33 @@ var register = utils_2.catchErrors(function (req, res) { return __awaiter(_this,
 }); });
 exports.register = register;
 var login = utils_2.catchErrors(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var user, userInfo;
+    var user, userToBeUpdated, userInfo;
     return __generator(this, function (_a) {
-        user = req.user;
-        user.password_reset_token = null;
-        user.password_reset_token_expired_at = null;
-        user.save();
-        userInfo = {
-            id: user.id,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            email: user.email,
-            roles: [roles_1.USER_ROLE]
-        };
-        res.status(200).json({
-            token: "JWT " + utils_2.generateToken(userInfo),
-            user: userInfo
-        });
-        return [2 /*return*/];
+        switch (_a.label) {
+            case 0:
+                user = req.user;
+                return [4 /*yield*/, userRepo_1.findUserByEmail(user.email)];
+            case 1:
+                userToBeUpdated = _a.sent();
+                return [4 /*yield*/, userToBeUpdated.update({
+                        password_reset_token: null,
+                        password_reset_token_expired_at: null
+                    })];
+            case 2:
+                _a.sent();
+                userInfo = {
+                    id: user.id,
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                    email: user.email,
+                    roles: [roles_1.USER_ROLE]
+                };
+                res.status(200).json({
+                    token: "JWT " + utils_2.generateToken(userInfo),
+                    user: userInfo
+                });
+                return [2 /*return*/];
+        }
     });
 }); });
 exports.login = login;
@@ -122,26 +134,28 @@ var forgotPassword = utils_2.catchErrors(function (req, res) { return __awaiter(
             case 1:
                 user = _a.sent();
                 if (!user) {
-                    return [2 /*return*/, res.status(422).json(utils_1.formatError(errors_1.USER_NOT_FOUND))];
+                    return [2 /*return*/, res.status(422).json(utils_1.formatError(errors_2.USER_NOT_FOUND))];
                 }
                 return [4 /*yield*/, utils_1.generateResetPasswordToken()];
             case 2:
                 token = _a.sent();
-                user.update({
-                    password_reset_token: token,
-                    password_reset_token_expired_at: Date.now() + 3600000
-                });
+                return [4 /*yield*/, user.update({
+                        password_reset_token: token,
+                        password_reset_token_expired_at: Date.now() + constants_1.ONE_HOUR
+                    })];
+            case 3:
+                _a.sent();
                 mailData = {
                     from: 'NoReply<user@smtp.mailgun.org>',
                     to: user.email,
                     subject: 'Reset Password',
                     text: "" + 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
                         'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-                        'http://' + req.headers.host + "/reset-password/" + token + "/" + user.email + "\n\n" +
+                        'http://' + req.headers.host + "/reset-password/" + token + "\n\n" +
                         "If you did not request this, please ignore this email and your password will remain unchanged.\n"
                 };
                 return [4 /*yield*/, mail_1.sendEmail(mailData, mailgun)];
-            case 3:
+            case 4:
                 _a.sent();
                 res.json({ message: 'Please check your email for the link to reset your password' });
                 return [2 /*return*/];
@@ -150,18 +164,48 @@ var forgotPassword = utils_2.catchErrors(function (req, res) { return __awaiter(
 }); });
 exports.forgotPassword = forgotPassword;
 var resetPassword = utils_2.catchErrors(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var errors, data, user;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var errors, data, user, olderThanOneHour, _a, _b, _c, mailData;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
             case 0:
                 errors = utils_1.getErrors(req);
                 if (!errors.isEmpty()) {
                     return [2 /*return*/, res.status(422).json({ errors: errors.mapped() })];
                 }
                 data = filter.matchedData(req);
-                return [4 /*yield*/, userRepo_1.findUserByEmail(data.email)];
+                return [4 /*yield*/, userRepo_1.findUserByToken(data.token)];
             case 1:
-                user = _a.sent();
+                user = _d.sent();
+                if (!user) {
+                    return [2 /*return*/, res.status(422).json(utils_1.formatError(errors_1.INVALID_PASSWORD_RESET_TOKEN))];
+                }
+                if (user.password_reset_token !== data.token) {
+                    return [2 /*return*/, res.status(422).json(utils_1.formatError(errors_1.INVALID_PASSWORD_RESET_TOKEN))];
+                }
+                olderThanOneHour = (Date.now() - (new Date(user.password_reset_token_expired_at).getTime())) > constants_1.ONE_HOUR;
+                if (olderThanOneHour) {
+                    return [2 /*return*/, res.status(422).json(utils_1.formatError(errors_1.EXPIRED_PASSWORD_RESET_TOKEN))];
+                }
+                _b = (_a = user).update;
+                _c = {
+                    password_reset_token: null,
+                    password_reset_token_expired_at: null
+                };
+                return [4 /*yield*/, utils_2.generateHash(data.password)];
+            case 2: return [4 /*yield*/, _b.apply(_a, [(_c.password = _d.sent(),
+                        _c)])];
+            case 3:
+                _d.sent();
+                mailData = {
+                    from: 'NoReply<user@smtp.mailgun.org>',
+                    to: user.email,
+                    subject: 'Password Changed',
+                    text: "You are receiving this email because you changed your password.\n\n\n      'If you did not request this change, please contact us immediately."
+                };
+                return [4 /*yield*/, mail_1.sendEmail(mailData, mailgun)];
+            case 4:
+                _d.sent();
+                res.status(200).json({ message: messages_1.PASSWORD_CHANGE_SUCCESS });
                 return [2 /*return*/];
         }
     });
