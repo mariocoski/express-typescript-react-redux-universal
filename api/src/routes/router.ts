@@ -15,7 +15,6 @@ module.exports = (app: Application) => {
               .post('/login', validateLogin, requireLogin, login)
               .post('/forgot-password', validateForgotPassword, forgotPassword)
               .post('/reset-password', validateResetPassword, resetPassword);
-    //   .post('me-from-token', meFromToken);
 
   /*** API ***/
     /*** V1 ***/
@@ -24,8 +23,6 @@ module.exports = (app: Application) => {
     apiV1Routes.get('/', (req: Request, res: Response) => {
       res.status(200).json({message: "api ready..."});
     });
-
-
 
   app.use('/api/v1', apiV1Routes);
   app.use('/auth', authRoutes);
