@@ -1,5 +1,4 @@
 import * as passport from 'passport';
-// import {User} from '../models/user';
 import {Strategy as JWTStrategy} from 'passport-jwt';
 import {ExtractJwt} from 'passport-jwt';
 import {env, comparePassword, formatError, getErrors} from '../utils';
