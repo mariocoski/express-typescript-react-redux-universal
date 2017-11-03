@@ -36,7 +36,7 @@ const register = catchErrors(async (req: Request, res: Response) => {
   await associateRole(userModel.id, getRoleId(USER_ROLE));
 
   const userInfo = {
-    id: userModel.id,
+    _id: userModel.id,
     first_name: userModel.first_name,
     last_name: userModel.last_name,
     email: userModel.email,
@@ -53,15 +53,14 @@ const login =  catchErrors(async (req: Request, res: Response) => {
 
   const user = req.user;
   const userToBeUpdated = await findUserByEmail(user.email);
+  
   await userToBeUpdated.update({
     password_reset_token : null,
     password_reset_token_expired_at: null
   });
-  // user.password_reset_token_expired_at = null;
-  // await user.save();
 
   const userInfo = {
-    id: user.id,
+    _id: user.id,
     first_name: user.first_name,
     last_name: user.last_name,
     email: user.email,

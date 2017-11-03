@@ -1,5 +1,10 @@
 const db = require('../models');
 
+
+export async function findUserById(id: string) {
+  return db.User.findById(id);
+}
+
 export async function findUserByEmail(email: string) {
   return db.User.findOne({ where: { email } });
 }

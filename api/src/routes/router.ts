@@ -2,7 +2,7 @@ import {Application, Router, Request, Response, NextFunction} from 'express';
 import {register, login, forgotPassword, resetPassword} from '../controllers/AuthController'; 
 import {validateLogin, validateRegister, validateForgotPassword, validateResetPassword } from '../validation/index';
 import * as passport from 'passport';
-import { requireLogin } from '../auth/passport';
+import { requireLogin, requireAuth } from '../auth/passport';
 
 module.exports = (app: Application) => {
 
@@ -19,9 +19,16 @@ module.exports = (app: Application) => {
   /*** V1 ***/
   const apiV1Routes: Router = Router();
   
-  apiV1Routes.get('/', (req: Request, res: Response) => {
-    res.status(200).json({message: "api ready..."});
-  });
+  apiV1Routes
+    .get('/', (req: Request, res: Response) => {
+      res.status(200).json({message: "api ready..."});
+    })
+    .get('/profile', requireAuth, (req: Request, res: Response) => {
+      res.status(200);
+    });
+
+  
+  
 
   app.use('/api/v1', apiV1Routes);
   app.use('/auth', authRoutes);

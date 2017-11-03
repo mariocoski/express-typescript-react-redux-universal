@@ -9,3 +9,4 @@ export const USER_NOT_FOUND = 'We could not find your email address';
 export const TOKEN_IS_REQUIRED = 'Token is required';
 export const INVALID_PASSWORD_RESET_TOKEN = 'Invalid password reset token';
 export const EXPIRED_PASSWORD_RESET_TOKEN = 'Token expired';
+export const UNAUTHORIZED = 'Unauthorized';

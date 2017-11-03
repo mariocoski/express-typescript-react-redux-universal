@@ -3,8 +3,8 @@ import {Strategy as JWTStrategy} from 'passport-jwt';
 import {ExtractJwt} from 'passport-jwt';
 import {env, comparePassword, formatError, getErrors} from '../utils';
 import {Strategy as LocalStrategy} from 'passport-local';
-import { findUserByEmail } from '../repositories/userRepo';
-import { INVALID_CREDENTIALS } from '../constants/errors';
+import { findUserByEmail, findUserById } from '../repositories/userRepo';
+import { UNAUTHORIZED,INVALID_CREDENTIALS } from '../constants/errors';
 import { Request, Response, NextFunction} from 'express';
 
 const localOptions = {
@@ -28,25 +28,39 @@ const localLogin = new LocalStrategy(localOptions, async (email, password, done)
     }
 });
 
+const jwtOptions = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: env('JWT_SECRET'),
+  session: false
+};
 
-// const jwtOptions = {
-//   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-//   secretOrKey: env('JWT_SECRET'),
-//   session: false
-// };
-
-// const jwtLogin = new JWTStrategy(jwtOptions, (payload, done) => {
-//     User.findById(payload._id, (err, user) => {
-//     if (err) { return done(err, false); }
-
-//     if (user) {
-//         done(null, user);
-//     } else {
-//         done(null, false);
-//     }
-//     });
-// });
+const jwtLogin = new JWTStrategy(jwtOptions, async(payload, done) => {
+    try{
+      const user = await findUserById(payload._id);  
+      if (user) {
+        done(null, user);
+      } else {
+          done(null, false);
+      }
+    }catch(e){
+      return done(e);
+    }
+});
 passport.use(localLogin);
+passport.use(jwtLogin);
+
+const requireAuth = (req:Request , res: Response, next: NextFunction) => {
+   passport.authenticate('jwt', function(err:any, user: any, info: any) {
+     if (err) { return next(err); }
+     if (!user) { 
+         res.status(401);
+         res.json(formatError(UNAUTHORIZED));
+         return;
+     }
+     req.user = user;
+     next();
+   })(req, res, next);
+ };
 
 const requireLogin =  (req:Request , res: Response, next: NextFunction) => {
  
@@ -69,6 +83,6 @@ const requireLogin =  (req:Request , res: Response, next: NextFunction) => {
 };
 
 export {
-  // jwtLogin,
+  requireAuth,
   requireLogin
 }

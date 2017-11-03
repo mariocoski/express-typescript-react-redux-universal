@@ -2,9 +2,9 @@
 
 exports[`LOGIN should login user with valid credentials 1`] = `
 Object {
+  "_id": 4,
   "email": "mariuszrajczakowski@gmail.com",
   "first_name": null,
-  "id": 4,
   "last_name": null,
   "roles": Array [
     "user",

@@ -1,4 +1,6 @@
 require('dotenv').config();
+import {UNAUTHORIZED} from '../../constants/errors';
+
 describe('API V1', () => {
 
   const request = require('supertest');  
@@ -25,9 +27,10 @@ describe('API V1', () => {
     expect(response.text).toMatch('Not found');
   });
 
-
-
-
-
+  it('should respond with 401 when token is not present', async () => {
+    const response = await request(app).get('/api/v1/profile');
+    expect(response.statusCode).toBe(401);
+    expect(response.text).toMatch(UNAUTHORIZED);
+  });
 
 });
