@@ -11,4 +11,6 @@ exports.USER_NOT_FOUND = 'We could not find your email address';
 exports.TOKEN_IS_REQUIRED = 'Token is required';
 exports.INVALID_PASSWORD_RESET_TOKEN = 'Invalid password reset token';
 exports.EXPIRED_PASSWORD_RESET_TOKEN = 'Token expired';
+exports.UNAUTHORIZED = 'Unauthorized';
+exports.USER_DOES_NOT_EXIST = 'User does not exist';
 //# sourceMappingURL=errors.js.map

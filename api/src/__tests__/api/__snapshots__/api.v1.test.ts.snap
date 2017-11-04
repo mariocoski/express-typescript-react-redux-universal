@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`API V1 should respond with 401 when token is invalid 1`] = `"{\\"error\\":\\"Unauthorized\\"}"`;
+
+exports[`API V1 should respond with 401 when token is not present 1`] = `"{\\"error\\":\\"Unauthorized\\"}"`;
+
+exports[`API V1 should respond with 401 when token is valid, but user does not exist anymore 1`] = `"{\\"error\\":\\"Unauthorized\\"}"`;
+
+exports[`API V1 should respond with 404 1`] = `"{\\"error\\":\\"Not found\\"}"`;

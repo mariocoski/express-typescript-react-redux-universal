@@ -37,20 +37,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var passport = require("passport");
+var passport_jwt_1 = require("passport-jwt");
 var utils_1 = require("../utils");
 var passport_local_1 = require("passport-local");
 var userRepo_1 = require("../repositories/userRepo");
 var errors_1 = require("../constants/errors");
+var errors_2 = require("../lib/errors");
 var localOptions = {
     usernameField: 'email'
 };
 var localLogin = new passport_local_1.Strategy(localOptions, function (email, password, done) { return __awaiter(_this, void 0, void 0, function () {
-    var user, userModel, isMatch, e_1;
+    var user, userModel, isMatch;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 3, , 4]);
-                return [4 /*yield*/, userRepo_1.findUserByEmail(email)];
+            case 0: return [4 /*yield*/, userRepo_1.findUserByEmail(email)];
             case 1:
                 user = _a.sent();
                 if (!user) {
@@ -60,33 +60,57 @@ var localLogin = new passport_local_1.Strategy(localOptions, function (email, pa
                 return [4 /*yield*/, utils_1.comparePassword(password, userModel.password)];
             case 2:
                 isMatch = _a.sent();
-                if (!isMatch) {
-                    return [2 /*return*/, done(null, false)];
+                if (isMatch) {
+                    return [2 /*return*/, done(null, user)];
                 }
-                return [2 /*return*/, done(null, user)];
-            case 3:
-                e_1 = _a.sent();
-                return [2 /*return*/, done(e_1)];
-            case 4: return [2 /*return*/];
+                return [2 /*return*/, done(null, false)];
         }
     });
 }); });
-// const jwtOptions = {
-//   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-//   secretOrKey: env('JWT_SECRET'),
-//   session: false
-// };
-// const jwtLogin = new JWTStrategy(jwtOptions, (payload, done) => {
-//     User.findById(payload._id, (err, user) => {
-//     if (err) { return done(err, false); }
-//     if (user) {
-//         done(null, user);
-//     } else {
-//         done(null, false);
-//     }
-//     });
-// });
+var jwtOptions = {
+    jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: utils_1.env('JWT_SECRET'),
+    session: false
+};
+var jwtLogin = new passport_jwt_1.Strategy(jwtOptions, function (payload, done) { return __awaiter(_this, void 0, void 0, function () {
+    var user;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                console.log("TUTAJ", payload);
+                if (!payload._id) {
+                    done(new errors_2.BadRequestError(), false);
+                }
+                return [4 /*yield*/, userRepo_1.findUserById(payload._id)];
+            case 1:
+                user = _a.sent();
+                if (user) {
+                    done(null, user);
+                }
+                else {
+                    done(new errors_2.UnauthorizedError(), false);
+                }
+                return [2 /*return*/];
+        }
+    });
+}); });
 passport.use(localLogin);
+passport.use(jwtLogin);
+var requireAuth = function (req, res, next) {
+    passport.authenticate('jwt', function (err, user, info) {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            res.status(401);
+            res.json(utils_1.formatError(errors_1.UNAUTHORIZED));
+            return;
+        }
+        req.user = user;
+        next();
+    })(req, res, next);
+};
+exports.requireAuth = requireAuth;
 var requireLogin = function (req, res, next) {
     var errors = utils_1.getErrors(req);
     if (!errors.isEmpty()) {

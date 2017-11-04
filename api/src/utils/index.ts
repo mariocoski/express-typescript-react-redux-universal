@@ -6,7 +6,7 @@ import * as JWT from 'jsonwebtoken';
 import * as crypto from 'crypto';
 import * as db from '../models';
 import { USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE } from '../constants/roles';
-import {Request, Response} from 'express';
+import {Request, Response, NextFunction} from 'express';
 import * as check from 'express-validator/check';
 import * as bcryptService from 'bcrypt';
 import {BadRequestError, NotFoundError, ForbiddenError,UnauthorizedError, BaseError, RoleError } from '../lib/errors';
@@ -35,7 +35,7 @@ export function generateToken(user: any) {
   });
 }
 
-export async function generateResetPasswordToken(){
+export async function generateRandomToken(){
   const buffer = crypto.randomBytes(24);
   return buffer.toString('hex');
 }
@@ -72,9 +72,9 @@ export function handleError(res: Response, err: any){
   }
 };
 
-export const catchErrors = (handler: any, catcher = handleError) => async (req: Request, res: Response) => {
+export const catchErrors = (handler: any, catcher = handleError) => async (req: Request, res: Response, next?: NextFunction) => {
   try {
-    await handler(req, res);
+    await handler(req, res, next);
   } catch (err) {
     return catcher(res, err);
   }
@@ -228,37 +228,13 @@ export function onError(error: any, port: number){
         console.log(port + " requires elevated privileges");
       }
       process.exit(1);
-      break;
     case "EADDRINUSE":
       if(process.env.NODE_ENV !== 'test'){
         console.log(port + " is already in use");
       }
       process.exit(1);
-      break;
     default:
       throw error;
   }
 }
-
-
-// export function isAuthorized(role: String){
-//   return function(req: Request,res: ResponssetUserInfoe,next:Function){
-//     const user = req.user;
-
-//     User.findById(user._id, (err, foundUser:any)=>{
-
-//       if(err) {
-//         res.status(422).json({error: 'No user found'});
-//         return next(err);
-//       }
-//       if(getRole(foundUser.role) >= getRole(role)){
-//         return next();
-//       }
-//       res.status(401).json({error: "You are not authorized to see the content"});
-//       return next(err);
-//     });
-
-
-//   }
-// }
 

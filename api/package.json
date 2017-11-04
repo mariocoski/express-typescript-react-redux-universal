@@ -15,7 +15,7 @@
     "build:watch": "rm -rf ./build && tsc --watch",
     "start": "NODE_ENV=development && node ./build/server.js",
     "test": "./node_modules/.bin/jest --coverage --runInBand",
-    "test:watch": "jest --coverage --watch",
+    "test:watch": "jest --coverage --runInBand --watch",
     "postinstall": "cp -n .env.example .env"
   },
   "devDependencies": {
