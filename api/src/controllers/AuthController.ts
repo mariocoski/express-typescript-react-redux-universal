@@ -2,14 +2,14 @@ import { Request, Response } from 'express';
 import { EMAIL_IS_REQUIRED, INVALID_PASSWORD_RESET_TOKEN, EXPIRED_PASSWORD_RESET_TOKEN } from '../constants/errors';
 import { PASSWORD_CHANGE_SUCCESS } from '../constants/messages';
 import { USER_ROLE } from '../constants/roles';
-import { getErrors, formatError, generateResetPasswordToken } from '../utils'
+import { getErrors, formatError, generateRandomToken } from '../utils'
 import * as filter from 'express-validator/filter';
 import * as db from '../models';
 import { env, generateToken, catchErrors, getRoleId, generateHash } from '../utils';
 import { sendEmail } from '../utils/mail';
 import { EMAIL_ALREADY_IN_USE,USER_NOT_FOUND } from '../constants/errors';
 import { ONE_HOUR } from '../constants';
-import { findUserByEmail, createUser, findUserByToken } from '../repositories/userRepo'; 
+import { findUserByEmail, createUser, findUserByResetPasswordToken } from '../repositories/userRepo'; 
 import { associateRole } from '../repositories/roleRepo';
 import * as crypto from 'crypto';
 import config from '../config/main';
@@ -31,7 +31,8 @@ const register = catchErrors(async (req: Request, res: Response) => {
     return res.status(422).json(formatError(EMAIL_ALREADY_IN_USE));
   }
 
-  const createdUser = await createUser(data);
+  const token: string = await generateRandomToken();
+  const createdUser = await createUser({...data, verify_token: token});
   const userModel = createdUser.get({ plain: true });
   await associateRole(userModel.id, getRoleId(USER_ROLE));
 
@@ -88,7 +89,7 @@ const forgotPassword = catchErrors(async (req: Request, res: Response) => {
     return res.status(422).json(formatError(USER_NOT_FOUND));
   }
 
-  const token: string = await generateResetPasswordToken();
+  const token: string = await generateRandomToken();
   
   await user.update({
     password_reset_token: token,
@@ -118,14 +119,12 @@ const resetPassword = catchErrors(async (req: Request, res: Response) => {
   
     const data: any = filter.matchedData(req);
   
-    const user = await findUserByToken(data.token);
+    const user = await findUserByResetPasswordToken(data.token);
 
     if(! user){
       return res.status(422).json(formatError(INVALID_PASSWORD_RESET_TOKEN));
     }
-    if(user.password_reset_token !== data.token){
-      return res.status(422).json(formatError(INVALID_PASSWORD_RESET_TOKEN));
-    }
+
     var olderThanOneHour = 
       (Date.now() - (new Date(user.password_reset_token_expired_at).getTime())) > ONE_HOUR; 
       
@@ -158,23 +157,3 @@ export {
   forgotPassword,
   resetPassword
 };
-
-// function roleAuthorization (requiredRole) {
-//   return function (req, res, next) {
-//     const user = req.user;
-
-//     User.findById(user._id, (err, foundUser: any) => {
-//       if (err) {
-//         res.status(422).json({ error: 'No user was found.' });
-//         return next(err);
-//       }
-
-//       // If user is found, check role.
-//       if (getRole(foundUser.role) >= getRole(requiredRole)) {
-//         return next();
-//       }
-
-//       return res.status(401).json({ error: 'You are not authorized to view this content.' });
-//     });
-//   };
-// };

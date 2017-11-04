@@ -41,6 +41,8 @@ var errors_1 = require("../../constants/errors");
 var db = require('../../models');
 var utils_1 = require("../../utils");
 var helpers_1 = require("../helpers");
+var main_1 = require("../../config/main");
+var userRepo_1 = require("../../repositories/userRepo");
 describe('REGISTER', function () {
     var request = require('supertest');
     var app;
@@ -96,7 +98,7 @@ describe('REGISTER', function () {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, request(app).post('/auth/register')
                         .type('form')
-                        .send({ email: 'valid@email.com' })];
+                        .send({ email: main_1.default.mailgun_test_recipient })];
                 case 1:
                     response = _a.sent();
                     helpers_1.expectError(response, errors_1.PASSWORD_IS_REQUIRED);
@@ -110,7 +112,7 @@ describe('REGISTER', function () {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, request(app).post('/auth/register')
                         .type('form')
-                        .send({ email: 'valid@email.com', password: 'short' })];
+                        .send({ email: main_1.default.mailgun_test_recipient, password: 'short' })];
                 case 1:
                     response = _a.sent();
                     helpers_1.expectError(response, errors_1.PASSWORD_IS_TOO_SHORT);
@@ -124,7 +126,7 @@ describe('REGISTER', function () {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, request(app).post('/auth/register')
                         .type('form')
-                        .send({ email: 'valid@email.com', password: 'short' })];
+                        .send({ email: main_1.default.mailgun_test_recipient, password: 'short' })];
                 case 1:
                     response = _a.sent();
                     helpers_1.expectError(response, errors_1.PASSWORD_IS_TOO_SHORT);
@@ -137,7 +139,7 @@ describe('REGISTER', function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    validUser = { email: 'valid@email.com', password: 'password' };
+                    validUser = { email: main_1.default.mailgun_test_recipient, password: 'password' };
                     return [4 /*yield*/, db.User.create(validUser)];
                 case 1:
                     _a.sent();
@@ -152,17 +154,19 @@ describe('REGISTER', function () {
         });
     }); });
     it('should create a user with valid input', function () { return __awaiter(_this, void 0, void 0, function () {
-        var response, data;
+        var response, data, newlyCreatedUser;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    expect.assertions(3);
-                    return [4 /*yield*/, request(app).post('/auth/register')
-                            .type('form')
-                            .send({ email: 'valid@email.com', password: 'longenough' })];
+                case 0: return [4 /*yield*/, request(app).post('/auth/register')
+                        .type('form')
+                        .send({ email: main_1.default.mailgun_test_recipient, password: 'longenough' })];
                 case 1:
                     response = _a.sent();
                     data = JSON.parse(response.text);
+                    return [4 /*yield*/, userRepo_1.findUserByEmail(main_1.default.mailgun_test_recipient)];
+                case 2:
+                    newlyCreatedUser = _a.sent();
+                    expect(newlyCreatedUser.verify_token).toBeTruthy();
                     expect(response.statusCode).toBe(201);
                     expect(data.token).toMatch(/JWT/);
                     expect(data.user).toMatchSnapshot();

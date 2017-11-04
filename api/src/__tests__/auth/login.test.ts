@@ -71,6 +71,7 @@ describe('LOGIN', () => {
        password_reset_token: 'not null - clear up when user know password',
        password_reset_token_expired_at: Date.now()
     };
+    
     const user = await db.User.create(validCredentials);
     const response = await request(app).post('/auth/login')
                                        .type('form')

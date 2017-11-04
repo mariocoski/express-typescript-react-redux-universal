@@ -1,6 +1,6 @@
 
 import {env, seedDb, generateHash, getRoleId, formatError,
-        comparePassword, generateToken, resolvePort} from '../../utils';
+        comparePassword, generateToken, resolvePort, onError} from '../../utils';
 import {UnauthorizedError, BadRequestError, ForbiddenError, 
   NotFoundError, BaseError} from '../../lib/errors';
 import {USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE} from '../../constants/roles.js';
@@ -18,11 +18,16 @@ jest.mock('bcrypt', () => ({
     } 
   })
 }));
+jest.mock('jsonwebtoken', () => ({
+  sign: jest.fn(()=>{
+    return "JWT token";
+  })
+}));
+
 import * as bcrypt from 'bcrypt';
 
 describe('UTILS', () => {
   it('can seed database', async ()=>{
-    expect.assertions(4);
     const queryInterface:any = {};
     const mock = queryInterface.bulkInsert = jest.fn();
     await seedDb(queryInterface);
@@ -33,13 +38,11 @@ describe('UTILS', () => {
   });
 
   it('can get default value of env variable', () => {
-    expect.assertions(1);
     expect(env('FOOBAR','bar')).toBe('bar');
   });
 
   it(`can throw an exception when default value 
     not provided and env var does not exist`, () => {
-    expect.assertions(1);
     const shouldThrowError = () => {
       env('FOOBAR');
     }
@@ -47,50 +50,42 @@ describe('UTILS', () => {
   });
 
   test('if UnauthorizedError has message and is an instance of Base error', () => {
-    expect.assertions(2);
     expect(new UnauthorizedError().message).toMatch('Unauthorized');
     expect(UnauthorizedError.prototype).toBeInstanceOf(BaseError);
   });
 
   test('if BadRequestError has message and is an instance of Base error', () => {
-    expect.assertions(2);
     expect(new BadRequestError().message).toMatch('Bad request');
     expect(BadRequestError.prototype).toBeInstanceOf(BaseError);
   });
 
   test('if ForbiddenError has message and is an instance of Base error', () => {
-    expect.assertions(2);
     expect(new NotFoundError().message).toMatch('Not found');
     expect(NotFoundError.prototype).toBeInstanceOf(BaseError);
   });
 
   test('if ForbiddenError has message and is an instance of Base error', () => {
-    expect.assertions(2);
     expect(new ForbiddenError().message).toMatch('Forbidden');
     expect(ForbiddenError.prototype).toBeInstanceOf(BaseError);
   });
 
-  it('can generate hash', async() => {
-    expect.assertions(1);    
+  it('can generate hash', async() => {    
     const hash = await generateHash('password',bcrypt);
     expect(hash).toBe('hashedpassword');
   });
 
   it('can verify hash', async() => {
-    expect.assertions(1);
     const match = await comparePassword('password', 'hashedpassword',bcrypt);
     expect(match).toBe(true);
   });
   
   jest.mock('jsonwebtoken');
   it('can generate token for a user', async() => {
-    expect.assertions(1);
     const token = await generateToken({});
     expect(token).toBe('JWT token');
   });
 
   it('should get role by id', () => {
-    expect.assertions(4);
     const shouldThrowError = () => {
       getRoleId('DOES_NOT_EXIST');
     }
@@ -101,17 +96,90 @@ describe('UTILS', () => {
   });
 
   it('can format an error response', () => {
-    expect.assertions(1);
     const error = 'Email already in use';
     expect(formatError(error)).toEqual({error});
   });
 
   it('can format an error response', () => {
-    expect.assertions(2);
     const shouldThrowError = () => {
       resolvePort(undefined);
     }
     expect(resolvePort('3000')).toEqual(3000);
     expect(shouldThrowError).toThrowError('Port undefined is not numeric');
   });
+
+  it('can format an error response', () => {
+    const shouldThrowError = () => {
+      resolvePort(undefined);
+    }
+    expect(resolvePort('3000')).toEqual(3000);
+    expect(shouldThrowError).toThrowError('Port undefined is not numeric');
+  });
+
+  it('should throw error when syscall not equals listen', () => {
+    const port = 3000;
+    const newErr = {syscall: 'not_listen'};
+
+    const shouldThrowError = () => {
+      onError(newErr, 3000);
+    }
+    expect(shouldThrowError).toThrowError();
+  });
+
+  it('should throw error for not known code', () => {
+    const port = 3000;
+    const newErr = new Error();
+    const shouldThrowError = () => {
+      onError(newErr, port);
+    }
+    expect(shouldThrowError).toThrowError();
+  });
+
+  // it('should exit process when requires elevated privileges', () => {
+  //   const port = 3000;
+  //   const newErr = {code: 'EACCES'};
+  //   onError(newErr, port);
+  //   const shouldThrowError = () => {
+  //     onError(newErr, 3000);
+     
+  //   }
+  //   expect(shouldThrowError).toThrowError();
+   
+  // });
+
+
+  // it('should exit process when port already in use', () => {
+  //   const port = 3000;
+  //   const newErr = {code: 'EADDRINUSE'};
+  //   onError(newErr, port);
+  //   process.on('exit', (code) => {
+  //     expect(code).toBe(2);
+  //   });
+  // });
+
+  
+
+
+  // export function onError(error: any, port: number){  
+  //   if (error.syscall !== "listen") {
+  //     throw error;
+  //   }
+  
+  //   switch (error.code) {
+  //     case "EACCES":
+  //       if(process.env.NODE_ENV !== 'test'){
+  //         console.log(port + " requires elevated privileges");
+  //       }
+  //       process.exit(1);
+  //       break;
+  //     case "EADDRINUSE":
+  //       if(process.env.NODE_ENV !== 'test'){
+  //         console.log(port + " is already in use");
+  //       }
+  //       process.exit(1);
+  //       break;
+  //     default:
+  //       throw error;
+  //   }
+  // }
 });

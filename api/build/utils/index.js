@@ -66,7 +66,7 @@ function generateToken(user) {
     });
 }
 exports.generateToken = generateToken;
-function generateResetPasswordToken() {
+function generateRandomToken() {
     return __awaiter(this, void 0, void 0, function () {
         var buffer;
         return __generator(this, function (_a) {
@@ -75,7 +75,7 @@ function generateResetPasswordToken() {
         });
     });
 }
-exports.generateResetPasswordToken = generateResetPasswordToken;
+exports.generateRandomToken = generateRandomToken;
 function getErrors(req) {
     return check.validationResult(req).formatWith(function (_a) {
         var location = _a.location, msg = _a.msg, param = _a.param, value = _a.value;
@@ -113,13 +113,13 @@ exports.handleError = handleError;
 ;
 exports.catchErrors = function (handler, catcher) {
     if (catcher === void 0) { catcher = handleError; }
-    return function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    return function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
         var err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, handler(req, res)];
+                    return [4 /*yield*/, handler(req, res, next)];
                 case 1:
                     _a.sent();
                     return [3 /*break*/, 3];
@@ -333,32 +333,14 @@ function onError(error, port) {
                 console.log(port + " requires elevated privileges");
             }
             process.exit(1);
-            break;
         case "EADDRINUSE":
             if (process.env.NODE_ENV !== 'test') {
                 console.log(port + " is already in use");
             }
             process.exit(1);
-            break;
         default:
             throw error;
     }
 }
 exports.onError = onError;
-// export function isAuthorized(role: String){
-//   return function(req: Request,res: ResponssetUserInfoe,next:Function){
-//     const user = req.user;
-//     User.findById(user._id, (err, foundUser:any)=>{
-//       if(err) {
-//         res.status(422).json({error: 'No user found'});
-//         return next(err);
-//       }
-//       if(getRole(foundUser.role) >= getRole(role)){
-//         return next();
-//       }
-//       res.status(401).json({error: "You are not authorized to see the content"});
-//       return next(err);
-//     });
-//   }
-// }
 //# sourceMappingURL=index.js.map

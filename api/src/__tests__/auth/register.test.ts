@@ -5,6 +5,8 @@ const db = require('../../models');
 import {seedDb} from '../../utils';
 import {expectError} from '../helpers';
 import {USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE} from '../../constants/roles';
+import config from '../../config/main';
+import {findUserByEmail} from '../../repositories/userRepo';
 
 describe('REGISTER', () => {
   const request = require('supertest');
@@ -35,26 +37,26 @@ describe('REGISTER', () => {
   it('should fail to create a user without password', async () => {
     const response = await request(app).post('/auth/register')
                                        .type('form')
-                                       .send( { email: 'valid@email.com' });
+                                       .send( { email: config.mailgun_test_recipient });
     expectError(response,PASSWORD_IS_REQUIRED);
   });
 
   it('should fail to create a user without password', async () => {
     const response = await request(app).post('/auth/register')
                                        .type('form')
-                                       .send( { email: 'valid@email.com', password: 'short' });
+                                       .send( { email: config.mailgun_test_recipient, password: 'short' });
     expectError(response,PASSWORD_IS_TOO_SHORT);
   });
 
   it('should fail to create a user without password', async () => {
     const response = await request(app).post('/auth/register')
                                        .type('form')
-                                       .send( { email: 'valid@email.com', password: 'short' });
+                                       .send( { email: config.mailgun_test_recipient, password: 'short' });
     expectError(response,PASSWORD_IS_TOO_SHORT);
   });
 
   it('should fail to create a user with the same email address', async () => {
-    const validUser = {email:'valid@email.com', password: 'password'};
+    const validUser = {email:config.mailgun_test_recipient, password: 'password'};
     await db.User.create(validUser);
     const response = await request(app).post('/auth/register')
                                        .type('form')
@@ -63,11 +65,14 @@ describe('REGISTER', () => {
   });
 
   it('should create a user with valid input', async () => {
-    expect.assertions(3);
     const response = await request(app).post('/auth/register')
                                        .type('form')
-                                       .send( { email: 'valid@email.com', password: 'longenough' });
+                                       .send( { email: config.mailgun_test_recipient, password: 'longenough' });
     const data = JSON.parse(response.text);
+
+    const newlyCreatedUser = await findUserByEmail(config.mailgun_test_recipient);
+
+    expect(newlyCreatedUser.verify_token).toBeTruthy();
     expect(response.statusCode).toBe(201);
     expect(data.token).toMatch(/JWT/);
     expect(data.user).toMatchSnapshot();

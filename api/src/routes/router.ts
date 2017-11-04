@@ -1,5 +1,6 @@
 import {Application, Router, Request, Response, NextFunction} from 'express';
-import {register, login, forgotPassword, resetPassword} from '../controllers/AuthController'; 
+import {register, login, forgotPassword, resetPassword} from '../controllers/AuthController';
+import {show} from '../controllers/ProfileController'; 
 import {validateLogin, validateRegister, validateForgotPassword, validateResetPassword } from '../validation/index';
 import * as passport from 'passport';
 import { requireLogin, requireAuth } from '../auth/passport';
@@ -22,10 +23,7 @@ module.exports = (app: Application) => {
   apiV1Routes
     .get('/', (req: Request, res: Response) => {
       res.status(200).json({message: "api ready..."});
-    })
-    .get('/profile', requireAuth, (req: Request, res: Response) => {
-      res.status(200);
-    });
+    }).get('/profile', requireAuth, show);
 
   
   

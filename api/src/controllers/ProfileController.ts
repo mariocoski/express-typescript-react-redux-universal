@@ -1,27 +1,28 @@
 import {Request, Response } from 'express';
-// import {User} from '../models/user';
+import {catchErrors,getErrors,formatError} from '../utils';
+import {findUserByEmail} from '../repositories/userRepo';
 
-function show(req: Request, res: Response){
-  // const user = req.user;
-  // if(req.params.id.toString() !== user._id.toString()){
-  //   res.status(401).json({error: "You are not authorized to see this resource"});
-  //   return;
-  // }
-  res.send("ok");
-  // return User.findById(user._id, (err, foundUser: any) => {
-  //   if (err) {
-  //     return res.status(422).json({ error: 'No user was found.' });
-  //   }
-  //   return res.json({email: foundUser.email});
-  // });
-}
+const show = catchErrors(async (req: Request, res: Response) => {
 
-function update(req: Request, res: Response){
-  res.json({updated: true});
-}
+  const user = req.user;
+  const userData = await findUserByEmail(user.email);
+  
+  const userInfo = {
+    first_name: userData.first_name,
+    last_name: userData.last_name,
+    email: userData.email,
+    bio: userData.bio,
+    verified:  userData.verified,
+    created_at:  userData.createdAt,
+    updated_at:  userData.updatedAt,
+    roles: userData.roles
+  };
 
-export default {
-  show,
-  update
+  res.status(200).send(userInfo);
+});
+
+
+export {
+  show
 };
 
