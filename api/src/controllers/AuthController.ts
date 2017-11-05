@@ -34,12 +34,14 @@ const register = catchErrors(async (req: Request, res: Response) => {
   const token: string = await generateRandomToken();
   const createdUser = await createUser({...data, verify_token: token});
   const userModel = createdUser.get({ plain: true });
+  
   await associateRole(userModel.id, getRoleId(USER_ROLE));
 
   const userInfo = {
     _id: userModel.id,
     first_name: userModel.first_name,
     last_name: userModel.last_name,
+    bio: userModel.bio,
     email: userModel.email,
     roles: [USER_ROLE]
   }

@@ -77,18 +77,17 @@ var jwtLogin = new passport_jwt_1.Strategy(jwtOptions, function (payload, done) 
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log("TUTAJ", payload);
                 if (!payload._id) {
-                    done(new errors_2.BadRequestError(), false);
+                    return [2 /*return*/, done(new errors_2.BadRequestError(), false)];
                 }
                 return [4 /*yield*/, userRepo_1.findUserById(payload._id)];
             case 1:
                 user = _a.sent();
                 if (user) {
-                    done(null, user);
+                    return [2 /*return*/, done(null, user)];
                 }
                 else {
-                    done(new errors_2.UnauthorizedError(), false);
+                    return [2 /*return*/, done(new errors_2.UnauthorizedError(), false)];
                 }
                 return [2 /*return*/];
         }
