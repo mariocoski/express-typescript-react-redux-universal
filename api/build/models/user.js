@@ -49,7 +49,10 @@ module.exports = function (sequelize, DataTypes) {
         first_name: DataTypes.STRING,
         last_name: DataTypes.STRING,
         bio: DataTypes.TEXT,
-        verified: DataTypes.BOOLEAN,
+        verified: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
         verify_token: DataTypes.STRING,
         password_reset_token: DataTypes.STRING,
         password_reset_token_expired_at: DataTypes.DATE,

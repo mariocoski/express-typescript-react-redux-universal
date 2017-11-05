@@ -5,6 +5,7 @@ if(process.env.NODE_ENV !== 'production'){
 import * as JWT from 'jsonwebtoken';
 import * as crypto from 'crypto';
 import * as db from '../models';
+import {ONE_HOUR} from '../constants';
 import { USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE } from '../constants/roles';
 import {Request, Response, NextFunction} from 'express';
 import * as check from 'express-validator/check';
@@ -31,7 +32,7 @@ export function resolvePort(portCandidate: string|undefined):number{
 
 export function generateToken(user: any) {
   return JWT.sign(user, env('JWT_SECRET'), {
-    expiresIn: env('JWT_EXPIRATION_TIME')
+    expiresIn: env('JWT_EXPIRATION_TIME', ONE_HOUR.toString())
   });
 }
 

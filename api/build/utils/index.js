@@ -42,6 +42,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 var JWT = require("jsonwebtoken");
 var crypto = require("crypto");
+var constants_1 = require("../constants");
 var roles_1 = require("../constants/roles");
 var check = require("express-validator/check");
 var bcryptService = require("bcrypt");
@@ -62,7 +63,7 @@ function resolvePort(portCandidate) {
 exports.resolvePort = resolvePort;
 function generateToken(user) {
     return JWT.sign(user, env('JWT_SECRET'), {
-        expiresIn: env('JWT_EXPIRATION_TIME')
+        expiresIn: env('JWT_EXPIRATION_TIME', constants_1.ONE_HOUR.toString())
     });
 }
 exports.generateToken = generateToken;

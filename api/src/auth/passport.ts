@@ -31,14 +31,15 @@ const jwtOptions = {
 };
 
 const jwtLogin = new JWTStrategy(jwtOptions, async(payload, done) => {
+
   if(!payload._id){
-    done(new BadRequestError(), false);
+    return done(new BadRequestError(), false);
   }
   const user = await findUserById(payload._id);  
   if (user) {
-    done(null, user);
+    return done(null, user);
   } else {
-      done(new UnauthorizedError(), false);
+    return done(new UnauthorizedError(), false);
   }
 });
 passport.use(localLogin);

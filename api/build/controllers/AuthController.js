@@ -88,6 +88,7 @@ var register = utils_2.catchErrors(function (req, res) { return __awaiter(_this,
                     _id: userModel.id,
                     first_name: userModel.first_name,
                     last_name: userModel.last_name,
+                    bio: userModel.bio,
                     email: userModel.email,
                     roles: [roles_1.USER_ROLE]
                 };
