@@ -78,57 +78,57 @@ describe('API V1', () => {
     expect(response.text).toMatch(config.mailgun_test_recipient);
   });
 
-  it('should fail to update a profile if password is present but too short', async () => {
-    const validUser = {email:config.mailgun_test_recipient, password: 'password'};
-    const createdUser = await db.User.create(validUser);
-    const token = await generateToken({_id: createdUser.id});
+  // it('should fail to update a profile if password is present but too short', async () => {
+  //   const validUser = {email:config.mailgun_test_recipient, password: 'password'};
+  //   const createdUser = await db.User.create(validUser);
+  //   const token = await generateToken({_id: createdUser.id});
 
-    const response = await request(app)
-                            .patch(`/api/v1/profile/${createdUser.id}`)
-                            .set('Authorization',`Bearer ${token}`)
-                            .type('form')
-                            .send({ password: 'short' });
+  //   const response = await request(app)
+  //                           .patch(`/api/v1/profile/${createdUser.id}`)
+  //                           .set('Authorization',`Bearer ${token}`)
+  //                           .type('form')
+  //                           .send({ password: 'short' });
 
-    expectError(response,PASSWORD_IS_TOO_SHORT);
-  });
+  //   expectError(response,PASSWORD_IS_TOO_SHORT);
+  // });
 
-  it('should fail to update user when email field is present but invalid', async () => {
-    const validUser = {email:config.mailgun_test_recipient, password: 'password'};
-    const createdUser = await db.User.create(validUser);
-    const token = await generateToken({_id: createdUser.id});
-    const response = await request(app) .patch(`/api/v1/profile/${createdUser.id}`)
-                                        .set('Authorization',`Bearer ${token}`)
-                                        .type('form')
-                                        .send({ email: 'invalid@email'});
-    expectError(response,EMAIL_IS_INVALID);
-  });
+  // it('should fail to update user when email field is present but invalid', async () => {
+  //   const validUser = {email:config.mailgun_test_recipient, password: 'password'};
+  //   const createdUser = await db.User.create(validUser);
+  //   const token = await generateToken({_id: createdUser.id});
+  //   const response = await request(app) .patch(`/api/v1/profile/${createdUser.id}`)
+  //                                       .set('Authorization',`Bearer ${token}`)
+  //                                       .type('form')
+  //                                       .send({ email: 'invalid@email'});
+  //   expectError(response,EMAIL_IS_INVALID);
+  // });
 
-  it('should update user when data are valid', async() => {
+  // it('should update user when data are valid', async() => {
 
-    const validUser = {email:config.mailgun_test_recipient, password: 'password'};
-    const createdUser = await db.User.create(validUser);
-    const token = await generateToken({_id: createdUser.id});
-    const newData = { 
-      email: 'newemail@email.com',
-      password: 'password2',
-      bio: 'Natural Born Killer',
-      first_name: 'James',
-      last_name: 'Bond'
-    };
+  //   const validUser = {email:config.mailgun_test_recipient, password: 'password'};
+  //   const createdUser = await db.User.create(validUser);
+  //   const token = await generateToken({_id: createdUser.id});
+  //   const newData = { 
+  //     email: 'newemail@email.com',
+  //     password: 'password2',
+  //     bio: 'Natural Born Killer',
+  //     first_name: 'James',
+  //     last_name: 'Bond'
+  //   };
   
-    const response = await request(app)
-                                .patch(`/api/v1/profile/${createdUser.id}`)
-                                .set('Authorization',`Bearer ${token}`)
-                                .type('form')
-                                .send(newData);
-    const updatedUser = await findUserById(createdUser.id);
-    const passwordMatch = await comparePassword(newData.password, updatedUser.password);
-    expect(response.statusCode).toBe(200);
-    expect(updatedUser.email).toBe(newData.email);
-    expect(updatedUser.bio).toBe(newData.bio);
-    expect(updatedUser.first_name).toBe(newData.first_name);
-    expect(updatedUser.last_name).toBe(newData.last_name);
-    expect(passwordMatch).toBe(true);
-  });
+  //   const response = await request(app)
+  //                               .patch(`/api/v1/profile/${createdUser.id}`)
+  //                               .set('Authorization',`Bearer ${token}`)
+  //                               .type('form')
+  //                               .send(newData);
+  //   const updatedUser = await findUserById(createdUser.id);
+  //   const passwordMatch = await comparePassword(newData.password, updatedUser.password);
+  //   expect(response.statusCode).toBe(200);
+  //   expect(updatedUser.email).toBe(newData.email);
+  //   expect(updatedUser.bio).toBe(newData.bio);
+  //   expect(updatedUser.first_name).toBe(newData.first_name);
+  //   expect(updatedUser.last_name).toBe(newData.last_name);
+  //   expect(passwordMatch).toBe(true);
+  // });
 
 });
