@@ -21,8 +21,12 @@ const show = catchErrors(async (req: Request, res: Response) => {
   res.status(200).send(userInfo);
 });
 
-
+const update = catchErrors(async (req: Request, res: Response) => {
+  
+  res.status(200);
+});
 export {
-  show
+  show,
+  update
 };
 
