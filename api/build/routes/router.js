@@ -19,7 +19,9 @@ module.exports = function (app) {
     apiV1Routes
         .get('/', function (req, res) {
         res.status(200).json({ message: "api ready..." });
-    }).get('/profile', passport_1.requireAuth, ProfileController_1.show);
+    })
+        .get('/profile/:userId', passport_1.requireAuth, ProfileController_1.show)
+        .patch('/profile/:userId', passport_1.requireAuth, index_1.validateUpdateProfile, ProfileController_1.update);
     app.use('/api/v1', apiV1Routes);
     app.use('/auth', authRoutes);
     return app;

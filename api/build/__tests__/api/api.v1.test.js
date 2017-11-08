@@ -39,7 +39,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require('dotenv').config();
 var utils_1 = require("../../utils");
 var userRepo_1 = require("../../repositories/userRepo");
+var errors_1 = require("../../constants/errors");
 var main_1 = require("../../config/main");
+var helpers_1 = require("../helpers");
 var db = require('../../models');
 describe('API V1', function () {
     var request = require('supertest');
@@ -94,7 +96,7 @@ describe('API V1', function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request(app).get('/api/v1/profile')];
+                case 0: return [4 /*yield*/, request(app).get('/api/v1/profile/1')];
                 case 1:
                     response = _a.sent();
                     expect(response.statusCode).toBe(401);
@@ -108,7 +110,7 @@ describe('API V1', function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, request(app)
-                        .get('/api/v1/profile')
+                        .get('/api/v1/profile/1')
                         .set('Authorization', 'Bearer invalid-token')];
                 case 1:
                     response = _a.sent();
@@ -128,7 +130,7 @@ describe('API V1', function () {
                 case 1:
                     token = _a.sent();
                     return [4 /*yield*/, request(app)
-                            .get('/api/v1/profile')
+                            .get('/api/v1/profile/1')
                             .set('Authorization', "Bearer " + token)];
                 case 2:
                     response = _a.sent();
@@ -147,12 +149,34 @@ describe('API V1', function () {
                 case 1:
                     token = _a.sent();
                     return [4 /*yield*/, request(app)
-                            .get('/api/v1/profile')
+                            .get('/api/v1/profile/1')
                             .set('Authorization', "Bearer " + token)];
                 case 2:
                     response = _a.sent();
                     expect(response.statusCode).toBe(401);
                     expect(response.text).toMatchSnapshot();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should respond with 401 when token is valid but try to look at not own profile', function () { return __awaiter(_this, void 0, void 0, function () {
+        var validUser, foundUser, token, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    validUser = { email: main_1.default.mailgun_test_recipient, password: 'password' };
+                    return [4 /*yield*/, db.User.create(validUser)];
+                case 1:
+                    foundUser = _a.sent();
+                    return [4 /*yield*/, utils_1.generateToken({ _id: foundUser.id })];
+                case 2:
+                    token = _a.sent();
+                    return [4 /*yield*/, request(app)
+                            .get("/api/v1/profile/999")
+                            .set('Authorization', "Bearer " + token)];
+                case 3:
+                    response = _a.sent();
+                    expect(response.statusCode).toBe(401);
                     return [2 /*return*/];
             }
         });
@@ -165,20 +189,156 @@ describe('API V1', function () {
                     validUser = { email: main_1.default.mailgun_test_recipient, password: 'password' };
                     return [4 /*yield*/, db.User.create(validUser)];
                 case 1:
-                    _a.sent();
-                    return [4 /*yield*/, userRepo_1.findUserByEmail(main_1.default.mailgun_test_recipient)];
-                case 2:
                     foundUser = _a.sent();
                     return [4 /*yield*/, utils_1.generateToken({ _id: foundUser.id })];
-                case 3:
+                case 2:
                     token = _a.sent();
                     return [4 /*yield*/, request(app)
-                            .get('/api/v1/profile')
+                            .get("/api/v1/profile/" + foundUser.id)
                             .set('Authorization', "Bearer " + token)];
-                case 4:
+                case 3:
                     response = _a.sent();
                     expect(response.statusCode).toBe(200);
                     expect(response.text).toMatch(main_1.default.mailgun_test_recipient);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should fail to update a profile if password is present but too short', function () { return __awaiter(_this, void 0, void 0, function () {
+        var validUser, createdUser, token, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    validUser = { email: main_1.default.mailgun_test_recipient, password: 'password' };
+                    return [4 /*yield*/, db.User.create(validUser)];
+                case 1:
+                    createdUser = _a.sent();
+                    return [4 /*yield*/, utils_1.generateToken({ _id: createdUser.id })];
+                case 2:
+                    token = _a.sent();
+                    return [4 /*yield*/, request(app)
+                            .patch("/api/v1/profile/" + createdUser.id)
+                            .set('Authorization', "Bearer " + token)
+                            .type('form')
+                            .send({ password: 'short' })];
+                case 3:
+                    response = _a.sent();
+                    helpers_1.expectError(response, errors_1.PASSWORD_IS_TOO_SHORT);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should fail to update user when email field is present but invalid', function () { return __awaiter(_this, void 0, void 0, function () {
+        var validUser, createdUser, token, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    validUser = { email: main_1.default.mailgun_test_recipient, password: 'password' };
+                    return [4 /*yield*/, db.User.create(validUser)];
+                case 1:
+                    createdUser = _a.sent();
+                    return [4 /*yield*/, utils_1.generateToken({ _id: createdUser.id })];
+                case 2:
+                    token = _a.sent();
+                    return [4 /*yield*/, request(app).patch("/api/v1/profile/" + createdUser.id)
+                            .set('Authorization', "Bearer " + token)
+                            .type('form')
+                            .send({ email: 'invalid@email' })];
+                case 3:
+                    response = _a.sent();
+                    helpers_1.expectError(response, errors_1.EMAIL_IS_INVALID);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should fail to update user when email field is present but already in use', function () { return __awaiter(_this, void 0, void 0, function () {
+        var validUser, createdUser, token, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    validUser = { email: main_1.default.mailgun_test_recipient, password: 'password' };
+                    return [4 /*yield*/, db.User.create(validUser)];
+                case 1:
+                    createdUser = _a.sent();
+                    return [4 /*yield*/, db.User.create({ email: 'other@example.com', password: 'password' })];
+                case 2:
+                    _a.sent();
+                    return [4 /*yield*/, utils_1.generateToken({ _id: createdUser.id })];
+                case 3:
+                    token = _a.sent();
+                    return [4 /*yield*/, request(app).patch("/api/v1/profile/" + createdUser.id)
+                            .set('Authorization', "Bearer " + token)
+                            .type('form')
+                            .send({ email: 'other@example.com' })];
+                case 4:
+                    response = _a.sent();
+                    helpers_1.expectError(response, errors_1.EMAIL_ALREADY_IN_USE);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should fail to update user when user id is not matching', function () { return __awaiter(_this, void 0, void 0, function () {
+        var validUser, createdUser, token, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    validUser = { email: main_1.default.mailgun_test_recipient, password: 'password' };
+                    return [4 /*yield*/, db.User.create(validUser)];
+                case 1:
+                    createdUser = _a.sent();
+                    return [4 /*yield*/, utils_1.generateToken({ _id: createdUser.id })];
+                case 2:
+                    token = _a.sent();
+                    return [4 /*yield*/, request(app)
+                            .patch("/api/v1/profile/999")
+                            .set('Authorization', "Bearer " + token)
+                            .type('form')
+                            .send({ first_name: 'James' })];
+                case 3:
+                    response = _a.sent();
+                    expect(response.statusCode).toBe(401);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should update user when data are valid', function () { return __awaiter(_this, void 0, void 0, function () {
+        var validUser, createdUser, token, newData, response, updatedUser, passwordMatch;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    validUser = { email: main_1.default.mailgun_test_recipient, password: 'password' };
+                    return [4 /*yield*/, db.User.create(validUser)];
+                case 1:
+                    createdUser = _a.sent();
+                    return [4 /*yield*/, utils_1.generateToken({ _id: createdUser.id })];
+                case 2:
+                    token = _a.sent();
+                    newData = {
+                        email: 'newemail@email.com',
+                        password: 'password2',
+                        bio: 'Natural Born Killer',
+                        first_name: 'James',
+                        last_name: 'Bond'
+                    };
+                    return [4 /*yield*/, request(app)
+                            .patch("/api/v1/profile/" + createdUser.id)
+                            .set('Authorization', "Bearer " + token)
+                            .type('form')
+                            .send(newData)];
+                case 3:
+                    response = _a.sent();
+                    return [4 /*yield*/, userRepo_1.findUserById(createdUser.id)];
+                case 4:
+                    updatedUser = _a.sent();
+                    return [4 /*yield*/, utils_1.comparePassword(newData.password, updatedUser.password)];
+                case 5:
+                    passwordMatch = _a.sent();
+                    expect(response.statusCode).toBe(200);
+                    expect(updatedUser.email).toBe(newData.email);
+                    expect(updatedUser.bio).toBe(newData.bio);
+                    expect(updatedUser.first_name).toBe(newData.first_name);
+                    expect(updatedUser.last_name).toBe(newData.last_name);
+                    expect(passwordMatch).toBe(true);
                     return [2 /*return*/];
             }
         });

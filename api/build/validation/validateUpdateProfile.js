@@ -36,59 +36,27 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var utils_1 = require("../utils");
+var validator = require("express-validator/check");
+var errors_1 = require("../constants/errors");
 var userRepo_1 = require("../repositories/userRepo");
-var errors_1 = require("../lib/errors");
-var filter = require("express-validator/filter");
-var show = utils_1.catchErrors(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var user, userData, userInfo;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                user = req.user;
-                if (user.id.toString() !== req.params.userId) {
-                    throw new errors_1.UnauthorizedError();
-                }
-                return [4 /*yield*/, userRepo_1.findUserByEmail(user.email)];
-            case 1:
-                userData = _a.sent();
-                userInfo = {
-                    first_name: userData.first_name,
-                    last_name: userData.last_name,
-                    email: userData.email,
-                    bio: userData.bio,
-                    verified: userData.verified,
-                    created_at: userData.createdAt,
-                    updated_at: userData.updatedAt,
-                    roles: userData.roles
-                };
-                res.status(200).send(userInfo);
-                return [2 /*return*/];
-        }
-    });
-}); });
-exports.show = show;
-var update = utils_1.catchErrors(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var user, errors, data;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                user = req.user;
-                if (user.id.toString() !== req.params.userId) {
-                    throw new errors_1.UnauthorizedError();
-                }
-                errors = utils_1.getErrors(req);
-                if (!errors.isEmpty()) {
-                    return [2 /*return*/, res.status(422).json({ errors: errors.mapped() })];
-                }
-                data = filter.matchedData(req);
-                return [4 /*yield*/, userRepo_1.updateUser(user.id, data)];
-            case 1:
-                _a.sent();
-                res.status(200).json({ updated: true });
-                return [2 /*return*/];
-        }
-    });
-}); });
-exports.update = update;
-//# sourceMappingURL=ProfileController.js.map
+exports.default = [
+    validator.check('email', errors_1.EMAIL_IS_INVALID).optional().isEmail().custom(function (value, data) { return __awaiter(_this, void 0, void 0, function () {
+        var user;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, userRepo_1.findUserByEmail(value)];
+                case 1:
+                    user = _a.sent();
+                    if (user && data.req.user.email !== value) {
+                        throw new Error(errors_1.EMAIL_ALREADY_IN_USE);
+                    }
+                    return [2 /*return*/, true];
+            }
+        });
+    }); }).trim().normalizeEmail(),
+    validator.check('password', errors_1.PASSWORD_IS_TOO_SHORT).optional().isLength({ min: 6 }),
+    validator.check('first_name').trim(),
+    validator.check('last_name').trim(),
+    validator.check('bio').trim()
+];
+//# sourceMappingURL=validateUpdateProfile.js.map

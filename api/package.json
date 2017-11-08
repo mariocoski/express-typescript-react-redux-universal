@@ -65,6 +65,7 @@
     "express-validator": "^4.2.1",
     "iconv-lite": "^0.4.19",
     "jsonwebtoken": "^8.0.0",
+    "lodash": "^4.17.4",
     "mailgun-js": "^0.13.1",
     "morgan": "^1.8.2",
     "mysql2": "^1.4.2",
