@@ -1,10 +1,17 @@
 import {Request, Response } from 'express';
 import {catchErrors,getErrors,formatError} from '../utils';
-import {findUserByEmail} from '../repositories/userRepo';
+import {findUserByEmail,updateUser} from '../repositories/userRepo';
+import {UnauthorizedError} from '../lib/errors';
+import * as filter from 'express-validator/filter';
 
 const show = catchErrors(async (req: Request, res: Response) => {
 
   const user = req.user;
+
+  if(user.id.toString() !== req.params.userId){
+    throw new UnauthorizedError();
+  }
+
   const userData = await findUserByEmail(user.email);
   
   const userInfo = {
@@ -23,8 +30,24 @@ const show = catchErrors(async (req: Request, res: Response) => {
 
 const update = catchErrors(async (req: Request, res: Response) => {
   
-  res.status(200);
+  const user = req.user;
+
+  if(user.id.toString() !== req.params.userId){
+    throw new UnauthorizedError();
+  }
+
+  const errors = getErrors(req);
+
+  if(!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.mapped() });
+  }
+  const data: any = filter.matchedData(req);
+
+  await updateUser(user.id, data);
+
+  res.status(200).json({ updated: true});
 });
+
 export {
   show,
   update

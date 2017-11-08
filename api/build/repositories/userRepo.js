@@ -44,6 +44,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var db = require('../models');
+var utils_1 = require("../utils");
+var _ = require("lodash");
 function findUserById(id) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -80,6 +82,30 @@ function createUser(values, settings) {
     });
 }
 exports.createUser = createUser;
+function updateUser(userId, data) {
+    return __awaiter(this, void 0, void 0, function () {
+        var fillable, validData, _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    fillable = ['email', 'password', 'first_name', 'last_name', 'bio'];
+                    validData = _.pick(data, fillable);
+                    if (!validData.password) return [3 /*break*/, 2];
+                    _a = validData;
+                    return [4 /*yield*/, utils_1.generateHash(validData.password)];
+                case 1:
+                    _a.password = _b.sent();
+                    _b.label = 2;
+                case 2: return [2 /*return*/, db.User.update(validData, {
+                        where: {
+                            id: userId
+                        }
+                    })];
+            }
+        });
+    });
+}
+exports.updateUser = updateUser;
 exports.default = {
     findUserByResetPasswordToken: findUserByResetPasswordToken,
     findUserByEmail: findUserByEmail,

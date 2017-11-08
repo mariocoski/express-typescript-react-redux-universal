@@ -1,5 +1,6 @@
 const db = require('../models');
-
+import {generateHash} from '../utils';
+import * as _ from 'lodash';
 
 export async function findUserById(id: number) {
   return db.User.findById(id);
@@ -20,6 +21,20 @@ export async function createUser(values: Object, settings: Object = {}) {
     ...settings 
   };
   return db.User.create(values, options);
+}
+
+export async function updateUser(userId: number, data: any) {
+  const fillable = ['email','password', 'first_name', 'last_name', 'bio'];
+  
+  const validData: any = _.pick(data, fillable);
+  if(validData.password){
+    validData.password = await generateHash(validData.password);
+  }
+  return db.User.update(validData, {
+    where: {
+      id: userId
+    }
+  });
 }
 
 export default {
