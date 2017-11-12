@@ -4,7 +4,7 @@
 ### Api
 [![Circle CI](https://circleci.com/gh/mariocoski/express-typescript-react-redux-universal/tree/master.svg?style=shield&circle-token=88e32946d9aeadd3a9aacb7871a857355da29cb6)](https://circleci.com/gh/mariocoski/express-typescript-react-redux-universal/tree/master)
 
-####inspired by [https://github.com/joshuaslate/mern-starter]
+#### inspired by [https://github.com/joshuaslate/mern-starter]
 
 ### Client (universal app)
 
