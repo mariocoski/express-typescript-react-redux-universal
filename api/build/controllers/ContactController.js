@@ -34,49 +34,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-require("babel-polyfill");
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
-}
-var utils_1 = require("./utils");
-var socketIO = require("socket.io");
-var http = require("http");
-var iconvLite = require('iconv-lite');
-iconvLite.encodingExists('foo');
-var app = require('./app');
-var models = require('./models');
-process.on('SIGINT', function () {
-    process.exit(0);
-});
-var IS_TEST = process.env.NODE_ENV === 'test';
-var portCandidate = IS_TEST ? utils_1.env('TEST_PORT') : utils_1.env('PORT');
-var port = utils_1.resolvePort(portCandidate);
-function dbInit() {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, models.sequelize.sync()];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
+var utils_1 = require("../utils");
+var sendMessage = utils_1.catchErrors(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        res.status(200);
+        return [2 /*return*/];
     });
-}
-var server = new http.Server(app);
-if (process.env.NODE_ENV !== 'test') {
-    dbInit();
-}
-server.listen(port, function () {
-    if (!IS_TEST) {
-        console.log("Listening at http://localhost:" + port);
-    }
-});
-server.on('error', utils_1.onError.bind(port));
-process.on('uncaughtException', function (err) {
-    console.log(err);
-});
-var io = socketIO(server);
-module.exports = server;
-//# sourceMappingURL=server.js.map
+}); });
+exports.sendMessage = sendMessage;
+//# sourceMappingURL=ContactController.js.map

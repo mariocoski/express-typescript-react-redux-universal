@@ -1,1 +1,1 @@
-{"version":3,"file":"RoleError.js","sourceRoot":"","sources":["../../../src/lib/errors/RoleError.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,yCAAoC;AAEpC;IAA6B,6BAAS;IACpC,mBAAY,QAAgB;eAC1B,kBAAM,UAAQ,QAAQ,oBAAiB,CAAC;IAC1C,CAAC;IACH,gBAAC;AAAD,CAAC,AAJD,CAA6B,mBAAS,GAIrC"}
+{"version":3,"file":"RoleError.js","sourceRoot":"","sources":["../../../src/lib/errors/RoleError.js"],"names":[],"mappings":";;;;;;;;;;;;AAAA,yCAAoC;AAEpC;IAA6B,6BAAS;IACpC,mBAAY,QAAQ;eAClB,kBAAM,UAAQ,QAAQ,oBAAiB,CAAC;IAC1C,CAAC;IACH,gBAAC;AAAD,CAAC,AAJD,CAA6B,mBAAS,GAIrC"}

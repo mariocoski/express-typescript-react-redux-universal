@@ -1,5 +1,6 @@
 import {Application, Router, Request, Response, NextFunction} from 'express';
 import {register, login, forgotPassword, resetPassword} from '../controllers/AuthController';
+import {getAllTodos} from '../controllers/TodosController';
 import { show, update} from '../controllers/ProfileController'; 
 import {validateLogin, validateRegister, validateForgotPassword, validateResetPassword, validateUpdateProfile } from '../validation/index';
 import * as passport from 'passport';
@@ -27,11 +28,12 @@ module.exports = (app: Application) => {
     .get('/profile/:userId', requireAuth, show)
     .patch('/profile/:userId', requireAuth, validateUpdateProfile, update);
 
-  
+  //todos
+  apiV1Routes.get('/todos',requireAuth, getAllTodos);
   
 
   app.use('/api/v1', apiV1Routes);
   app.use('/auth', authRoutes);
-  
+
   return app;
 } 
