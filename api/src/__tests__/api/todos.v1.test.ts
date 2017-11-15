@@ -23,4 +23,13 @@ describe('API V1', () => {
     expect(response.statusCode).toBe(401);
   });
 
+    
+  it('should respond with 401 when token is invalid', async() => {
+    const response = await request(app)
+                                  .get('/api/v1/todos')
+                                  .set('Authorization', 'Bearer invalid-token');
+    expect(response.statusCode).toBe(401);
+    expect(response.text).toMatchSnapshot();
+  });
+
 });
