@@ -45,7 +45,6 @@ describe('API V1', () => {
 
 
     expect(response.statusCode).toBe(200);
-    expect(response).toMatchSnapshot();
   });
 
 });
