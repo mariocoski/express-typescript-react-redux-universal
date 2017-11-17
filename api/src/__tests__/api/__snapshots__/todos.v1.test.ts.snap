@@ -1,29 +1,3 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`API V1 should respond with 401 when token is invalid 1`] = `"{\\"error\\":\\"Unauthorized\\"}"`;
-
-exports[`API V1 should show all todos for a authenticated user 1`] = `
-Object {
-  "header": Object {
-    "access-control-allow-origin": "*",
-    "connection": "close",
-    "content-length": "2",
-    "content-type": "application/json; charset=utf-8",
-    "date": "Wed, 15 Nov 2017 21:29:40 GMT",
-    "etag": "W/\\"2-vyGp6PvFo4RvsFtPoIWeCReyIC8\\"",
-    "vary": "Accept-Encoding",
-    "x-powered-by": "Express",
-  },
-  "req": Object {
-    "data": undefined,
-    "headers": Object {
-      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOjEsImlhdCI6MTUxMDc4MTM4MCwiZXhwIjoxNTEwNzg0OTgwfQ.XrcHayzNbh4vhnrtX4KxbZLih_qlrLOJtBo0SeBWo7U",
-      "user-agent": "node-superagent/3.6.3",
-    },
-    "method": "GET",
-    "url": "http://127.0.0.1:61675/api/v1/todos",
-  },
-  "status": 200,
-  "text": "{}",
-}
-`;
