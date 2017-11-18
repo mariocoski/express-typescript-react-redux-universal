@@ -1,4 +1,12 @@
 "use strict";
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -35,45 +43,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-require("babel-polyfill");
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
-}
-var utils_1 = require("./utils");
-var socketIO = require("socket.io");
-var http = require("http");
-var iconvLite = require('iconv-lite');
-iconvLite.encodingExists('foo');
-var app = require('./app');
-var models = require('./models');
-process.on('SIGINT', function () {
-    process.exit(0);
-});
-var IS_TEST = process.env.NODE_ENV === 'test';
-var portCandidate = IS_TEST ? utils_1.env('TEST_PORT') : utils_1.env('PORT');
-var port = utils_1.resolvePort(portCandidate);
-function dbInit() {
+var db = require('../models');
+function createTodo(values, settings) {
+    if (settings === void 0) { settings = {}; }
     return __awaiter(this, void 0, void 0, function () {
+        var options;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, models.sequelize.sync()];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
+            options = __assign({ fields: ['user_id', 'title', 'description', 'completed_at', 'deleted_at', 'created_at', 'updated_at'] }, settings);
+            return [2 /*return*/, db.Todo.create(values, options)];
         });
     });
 }
-var server = new http.Server(app);
-if (process.env.NODE_ENV !== 'test') {
-    dbInit();
+exports.createTodo = createTodo;
+function getTodosForUserId(user_id) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, db.Todo.findAll({ where: { user_id: user_id, deleted_at: null } })];
+        });
+    });
 }
-server.listen(port, function () {
-    if (!IS_TEST) {
-        console.log("Listening at http://localhost:" + port);
-    }
-});
-server.on('error', utils_1.onError.bind(port));
-var io = socketIO(server);
-module.exports = server;
-//# sourceMappingURL=server.js.map
+exports.getTodosForUserId = getTodosForUserId;
+//# sourceMappingURL=todoRepo.js.map

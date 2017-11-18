@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
 var AuthController_1 = require("../controllers/AuthController");
+var TodosController_1 = require("../controllers/TodosController");
 var ProfileController_1 = require("../controllers/ProfileController");
 var index_1 = require("../validation/index");
 var passport_1 = require("../auth/passport");
@@ -22,6 +23,8 @@ module.exports = function (app) {
     })
         .get('/profile/:userId', passport_1.requireAuth, ProfileController_1.show)
         .patch('/profile/:userId', passport_1.requireAuth, index_1.validateUpdateProfile, ProfileController_1.update);
+    //todos
+    apiV1Routes.get('/todos', passport_1.requireAuth, TodosController_1.getAllTodos);
     app.use('/api/v1', apiV1Routes);
     app.use('/auth', authRoutes);
     return app;

@@ -107,7 +107,6 @@ describe('RESET PASSWORD', () => {
                                        .send(validData);
 
     const updatedUser = await findUserByEmail(config.mailgun_test_recipient);
-   
     const match = await comparePassword(validData.password, updatedUser.password);
     
     expect(match).toBe(true);
