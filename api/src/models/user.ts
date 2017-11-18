@@ -41,6 +41,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
       through: 'users_roles',
       foreignKey: 'user_id'
     });
+
+    User.hasMany(models.Todo,{
+      as: 'todos'
+    });
   }
   
   User.beforeCreate(async (user: any, options: object) => {
