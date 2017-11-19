@@ -1,4 +1,12 @@
 "use strict";
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -38,6 +46,7 @@ var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = require("../utils");
 var todoRepo_1 = require("../repositories/todoRepo");
+var filter = require("express-validator/filter");
 var getAllTodos = utils_1.catchErrors(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var todos;
     return __generator(this, function (_a) {
@@ -51,4 +60,23 @@ var getAllTodos = utils_1.catchErrors(function (req, res) { return __awaiter(_th
     });
 }); });
 exports.getAllTodos = getAllTodos;
+var storeTodo = utils_1.catchErrors(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var errors, data;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                errors = utils_1.getErrors(req);
+                if (!errors.isEmpty()) {
+                    return [2 /*return*/, res.status(422).json({ errors: errors.mapped() })];
+                }
+                data = __assign({}, filter.matchedData(req), { user_id: req.user.id, completed_at: null, deleted_at: null });
+                return [4 /*yield*/, todoRepo_1.createTodo(data)];
+            case 1:
+                _a.sent();
+                res.status(201).json({ created: true });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.storeTodo = storeTodo;
 //# sourceMappingURL=TodosController.js.map

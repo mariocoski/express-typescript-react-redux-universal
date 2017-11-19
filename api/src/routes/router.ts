@@ -1,8 +1,9 @@
 import {Application, Router, Request, Response, NextFunction} from 'express';
 import {register, login, forgotPassword, resetPassword} from '../controllers/AuthController';
-import {getAllTodos} from '../controllers/TodosController';
+import {getAllTodos, storeTodo} from '../controllers/TodosController';
 import { show, update} from '../controllers/ProfileController'; 
-import {validateLogin, validateRegister, validateForgotPassword, validateResetPassword, validateUpdateProfile } from '../validation/index';
+import {validateLogin, validateRegister, validateForgotPassword,
+     validateResetPassword, validateUpdateProfile, validateCreateTodo } from '../validation/index';
 import * as passport from 'passport';
 import { requireLogin, requireAuth } from '../auth/passport';
 
@@ -29,7 +30,8 @@ module.exports = (app: Application) => {
     .patch('/profile/:userId', requireAuth, validateUpdateProfile, update);
 
   //todos
-  apiV1Routes.get('/todos',requireAuth, getAllTodos);
+  apiV1Routes.get('/todos',requireAuth, getAllTodos)
+             .post('/todos',validateCreateTodo, requireAuth, storeTodo);
   
 
   app.use('/api/v1', apiV1Routes);

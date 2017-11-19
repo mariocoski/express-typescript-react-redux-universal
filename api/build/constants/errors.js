@@ -13,4 +13,5 @@ exports.INVALID_PASSWORD_RESET_TOKEN = 'Invalid password reset token';
 exports.EXPIRED_PASSWORD_RESET_TOKEN = 'Token expired';
 exports.UNAUTHORIZED = 'Unauthorized';
 exports.USER_DOES_NOT_EXIST = 'User does not exist';
+exports.TITLE_IS_REQUIRED = 'Title is required';
 //# sourceMappingURL=errors.js.map

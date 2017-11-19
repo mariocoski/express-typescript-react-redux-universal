@@ -2,8 +2,9 @@ require('dotenv').config();
 import config from '../../config/main';
 import {expectError} from '../helpers';
 import {generateToken} from '../../utils';
-import {createTodo} from '../../repositories/todoRepo';
-import {createUser} from '../../repositories/userRepo';
+import {createTodo,getTodosForUserId} from '../../repositories/todoRepo';
+import {createUser,findUserByEmail} from '../../repositories/userRepo';
+import {TITLE_IS_REQUIRED} from '../../constants/errors';
 const db = require('../../models');
 
 describe('API V1', () => {
@@ -64,4 +65,45 @@ describe('API V1', () => {
     expect(body.data[1]).toMatchObject(todo2);
   });
 
+   it('should not create a new todo when unauthenticated', async () => {
+    const response = await request(app).post('/api/v1/todos');
+    expect(response.statusCode).toBe(401);
+  });
+
+    
+  it('should respond with 401 when token is invalid', async() => {
+    const response = await request(app)
+                                  .post('/api/v1/todos')
+                                  .set('Authorization', 'Bearer invalid-token');
+    expect(response.statusCode).toBe(401);
+  });
+
+  it('should fail to create a new todo without title', async () => {
+     const validUser = {email:config.mailgun_test_recipient, password: 'password'};
+    const createdUser = await createUser(validUser);
+    const token = await generateToken({_id: createdUser.id});
+
+    const response = await request(app).post('/api/v1/todos')
+                                       .set('Authorization',`Bearer ${token}`)
+                                       .send({});
+    expectError(response,TITLE_IS_REQUIRED);
+  });
+
+  it('should sucessfully create a new todo', async () => {
+    const validUser = {email:config.mailgun_test_recipient, password: 'password'};
+    const todo = { title: 'Shopping', description: 'Buy bread, milk and butter'};
+    const createdUser = await createUser(validUser);
+    const token = await generateToken({_id: createdUser.id});
+
+    const response = await request(app).post('/api/v1/todos')
+                                       .set('Authorization',`Bearer ${token}`)
+                                       .send(todo);
+
+    const todos = await getTodosForUserId(createdUser.id);
+ 
+    expect(todos).toHaveLength(1);
+    expect(todos[0].title).toEqual(todo.title);
+    expect(todos[0].title).toEqual(todo.title);
+    expect(response.statusCode).toBe(201);
+  });
 });

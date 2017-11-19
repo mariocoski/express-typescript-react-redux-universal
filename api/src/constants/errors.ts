@@ -11,3 +11,4 @@ export const INVALID_PASSWORD_RESET_TOKEN = 'Invalid password reset token';
 export const EXPIRED_PASSWORD_RESET_TOKEN = 'Token expired';
 export const UNAUTHORIZED = 'Unauthorized';
 export const USER_DOES_NOT_EXIST = 'User does not exist';
+export const TITLE_IS_REQUIRED = 'Title is required';

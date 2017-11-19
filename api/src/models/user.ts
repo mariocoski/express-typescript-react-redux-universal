@@ -43,7 +43,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
     });
 
     User.hasMany(models.Todo,{
-      as: 'todos'
+      foreignKey: 'user_id',
+      constraints: false,
     });
   }
   
