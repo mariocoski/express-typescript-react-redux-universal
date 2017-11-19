@@ -10,5 +10,4 @@ export async function createTodo(values: Object, settings: Object = {}) {
 
 export async function getTodosForUserId(user_id: string) {
   return db.Todo.findAll({ where: { user_id, deleted_at: null } });
-
 }

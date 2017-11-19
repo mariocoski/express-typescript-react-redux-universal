@@ -38,9 +38,11 @@ var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 require('dotenv').config();
 var main_1 = require("../../config/main");
+var helpers_1 = require("../helpers");
 var utils_1 = require("../../utils");
 var todoRepo_1 = require("../../repositories/todoRepo");
 var userRepo_1 = require("../../repositories/userRepo");
+var errors_1 = require("../../constants/errors");
 var db = require('../../models');
 describe('API V1', function () {
     var request = require('supertest');
@@ -130,6 +132,86 @@ describe('API V1', function () {
                     expect(body.data).toHaveLength(2);
                     expect(body.data[0]).toMatchObject(todo1);
                     expect(body.data[1]).toMatchObject(todo2);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should not create a new todo when unauthenticated', function () { return __awaiter(_this, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, request(app).post('/api/v1/todos')];
+                case 1:
+                    response = _a.sent();
+                    expect(response.statusCode).toBe(401);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should respond with 401 when token is invalid', function () { return __awaiter(_this, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, request(app)
+                        .post('/api/v1/todos')
+                        .set('Authorization', 'Bearer invalid-token')];
+                case 1:
+                    response = _a.sent();
+                    expect(response.statusCode).toBe(401);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should fail to create a new todo without title', function () { return __awaiter(_this, void 0, void 0, function () {
+        var validUser, createdUser, token, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    validUser = { email: main_1.default.mailgun_test_recipient, password: 'password' };
+                    return [4 /*yield*/, userRepo_1.createUser(validUser)];
+                case 1:
+                    createdUser = _a.sent();
+                    return [4 /*yield*/, utils_1.generateToken({ _id: createdUser.id })];
+                case 2:
+                    token = _a.sent();
+                    return [4 /*yield*/, request(app).post('/api/v1/todos')
+                            .set('Authorization', "Bearer " + token)
+                            .send({})];
+                case 3:
+                    response = _a.sent();
+                    helpers_1.expectError(response, errors_1.TITLE_IS_REQUIRED);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should sucessfully create a new todo', function () { return __awaiter(_this, void 0, void 0, function () {
+        var validUser, todo, createdUser, token, response, todos, dane;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    validUser = { email: main_1.default.mailgun_test_recipient, password: 'password' };
+                    todo = { title: 'Shopping', description: 'Buy bread, milk and butter' };
+                    return [4 /*yield*/, userRepo_1.createUser(validUser)];
+                case 1:
+                    createdUser = _a.sent();
+                    return [4 /*yield*/, utils_1.generateToken({ _id: createdUser.id })];
+                case 2:
+                    token = _a.sent();
+                    return [4 /*yield*/, request(app).post('/api/v1/todos')
+                            .set('Authorization', "Bearer " + token)
+                            .send(todo)];
+                case 3:
+                    response = _a.sent();
+                    return [4 /*yield*/, todoRepo_1.getTodosForUserId(createdUser.id)];
+                case 4:
+                    todos = _a.sent();
+                    return [4 /*yield*/, userRepo_1.findUserByEmail(main_1.default.mailgun_test_recipient)];
+                case 5:
+                    dane = _a.sent();
+                    expect(todos).toHaveLength(1);
+                    expect(todos[0].title).toEqual(todo.title);
+                    expect(todos[0].title).toEqual(todo.title);
+                    expect(response.statusCode).toBe(201);
                     return [2 /*return*/];
             }
         });

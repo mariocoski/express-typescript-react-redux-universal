@@ -34,10 +34,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
   });
 
    Todo.associate = (models: any) => {
+
     Todo.belongsTo(models.User,{
-      foreignKey: {
-        unique: false
-      }
+      as: 'User'
     });
   }
 
