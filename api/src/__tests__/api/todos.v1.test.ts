@@ -2,7 +2,7 @@ require('dotenv').config();
 import config from '../../config/main';
 import {expectError} from '../helpers';
 import {generateToken} from '../../utils';
-import {createTodo,getTodosForUserId} from '../../repositories/todoRepo';
+import {createTodo,getTodosForUserId,getTodoById} from '../../repositories/todoRepo';
 import {createUser,findUserByEmail} from '../../repositories/userRepo';
 import {TITLE_IS_REQUIRED} from '../../constants/errors';
 const db = require('../../models');
@@ -106,4 +106,60 @@ describe('API V1', () => {
     expect(todos[0].title).toEqual(todo.title);
     expect(response.statusCode).toBe(201);
   });
+
+  it('should not update todo when unauthenticated', async () => {
+    const response = await request(app).patch('/api/v1/todos/1');
+    expect(response.statusCode).toBe(401);
+  });
+
+    
+  it('should respond with 401 when updating todo and token is invalid', async() => {
+    const response = await request(app)
+                                  .patch('/api/v1/todos/1')
+                                  .set('Authorization', 'Bearer invalid-token');
+    expect(response.statusCode).toBe(401);
+  });
+
+  it('should fail to update todo without a title', async () => {
+     const validUser = {email:config.mailgun_test_recipient, password: 'password'};
+    const createdUser = await createUser(validUser);
+    const token = await generateToken({_id: createdUser.id});
+
+    const response = await request(app).patch('/api/v1/todos/1')
+                                       .set('Authorization',`Bearer ${token}`)
+                                       .send({});
+    expectError(response,TITLE_IS_REQUIRED);
+  });
+
+  it('should update todo when data are valid', async() => {
+
+    const validUser = {email:config.mailgun_test_recipient, password: 'password'};
+    const createdUser = await db.User.create(validUser);
+    const token = await generateToken({_id: createdUser.id});
+
+    const oldData = {title: 'Old title', description: 'Old description', completed_at: null};
+
+    const todoToBeUpdated = await createTodo(oldData);
+
+    const newData = { 
+      title: 'New Title',
+      description: 'New Description',
+      completed_at: new Date()
+    };
+  
+    const response = await request(app)
+                                .patch(`/api/v1/todos/${todoToBeUpdated.id}`)
+                                .set('Authorization',`Bearer ${token}`)
+                                .type('form')
+                                .send(newData);
+
+    const updatedTodo = await getTodoById(todoToBeUpdated.id);
+
+    expect(response.statusCode).toBe(200);
+    expect(updatedTodo.title).toBe(newData.title);
+    expect(updatedTodo.description).toBe(newData.description);
+    expect(updatedTodo.completed_at).toEqual(newData.completed_at);
+  });
+
+
 });

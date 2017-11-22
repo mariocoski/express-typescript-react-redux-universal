@@ -78,7 +78,8 @@ module.exports = function (sequelize, DataTypes) {
             foreignKey: 'user_id'
         });
         User.hasMany(models.Todo, {
-            as: 'todos'
+            foreignKey: 'user_id',
+            constraints: false,
         });
     };
     User.beforeCreate(function (user, options) { return __awaiter(_this, void 0, void 0, function () {

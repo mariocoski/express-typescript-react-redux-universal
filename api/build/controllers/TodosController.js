@@ -79,4 +79,24 @@ var storeTodo = utils_1.catchErrors(function (req, res) { return __awaiter(_this
     });
 }); });
 exports.storeTodo = storeTodo;
+var updateTodo = utils_1.catchErrors(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var errors, data, todoId;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                errors = utils_1.getErrors(req);
+                if (!errors.isEmpty()) {
+                    return [2 /*return*/, res.status(422).json({ errors: errors.mapped() })];
+                }
+                data = filter.matchedData(req);
+                todoId = req.params.todoId;
+                return [4 /*yield*/, todoRepo_1.updateTodoById(todoId, data)];
+            case 1:
+                _a.sent();
+                res.status(200).json({ updated: true });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.updateTodo = updateTodo;
 //# sourceMappingURL=TodosController.js.map

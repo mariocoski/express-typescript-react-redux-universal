@@ -12,4 +12,6 @@ var validateUpdateProfile_1 = require("./validateUpdateProfile");
 exports.validateUpdateProfile = validateUpdateProfile_1.default;
 var validateCreateTodo_1 = require("./validateCreateTodo");
 exports.validateCreateTodo = validateCreateTodo_1.default;
+var validateUpdateTodo_1 = require("./validateUpdateTodo");
+exports.validateUpdateTodo = validateUpdateTodo_1.default;
 //# sourceMappingURL=index.js.map

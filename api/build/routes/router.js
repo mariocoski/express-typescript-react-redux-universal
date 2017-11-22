@@ -25,7 +25,8 @@ module.exports = function (app) {
         .patch('/profile/:userId', passport_1.requireAuth, index_1.validateUpdateProfile, ProfileController_1.update);
     //todos
     apiV1Routes.get('/todos', passport_1.requireAuth, TodosController_1.getAllTodos)
-        .post('/todos', index_1.validateCreateTodo, passport_1.requireAuth, TodosController_1.storeTodo);
+        .post('/todos', passport_1.requireAuth, index_1.validateCreateTodo, TodosController_1.storeTodo)
+        .patch('/todos/:todoId', index_1.validateUpdateTodo, passport_1.requireAuth, TodosController_1.updateTodo);
     app.use('/api/v1', apiV1Routes);
     app.use('/auth', authRoutes);
     return app;
