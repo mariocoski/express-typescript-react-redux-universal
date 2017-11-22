@@ -185,7 +185,7 @@ describe('API V1', function () {
         });
     }); });
     it('should sucessfully create a new todo', function () { return __awaiter(_this, void 0, void 0, function () {
-        var validUser, todo, createdUser, token, response, todos, dane;
+        var validUser, todo, createdUser, token, response, todos;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -205,13 +205,97 @@ describe('API V1', function () {
                     return [4 /*yield*/, todoRepo_1.getTodosForUserId(createdUser.id)];
                 case 4:
                     todos = _a.sent();
-                    return [4 /*yield*/, userRepo_1.findUserByEmail(main_1.default.mailgun_test_recipient)];
-                case 5:
-                    dane = _a.sent();
                     expect(todos).toHaveLength(1);
                     expect(todos[0].title).toEqual(todo.title);
                     expect(todos[0].title).toEqual(todo.title);
                     expect(response.statusCode).toBe(201);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should not update todo when unauthenticated', function () { return __awaiter(_this, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, request(app).patch('/api/v1/todos/1')];
+                case 1:
+                    response = _a.sent();
+                    expect(response.statusCode).toBe(401);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should respond with 401 when updating todo and token is invalid', function () { return __awaiter(_this, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, request(app)
+                        .patch('/api/v1/todos/1')
+                        .set('Authorization', 'Bearer invalid-token')];
+                case 1:
+                    response = _a.sent();
+                    expect(response.statusCode).toBe(401);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should fail to update todo without a title', function () { return __awaiter(_this, void 0, void 0, function () {
+        var validUser, createdUser, token, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    validUser = { email: main_1.default.mailgun_test_recipient, password: 'password' };
+                    return [4 /*yield*/, userRepo_1.createUser(validUser)];
+                case 1:
+                    createdUser = _a.sent();
+                    return [4 /*yield*/, utils_1.generateToken({ _id: createdUser.id })];
+                case 2:
+                    token = _a.sent();
+                    return [4 /*yield*/, request(app).patch('/api/v1/todos/1')
+                            .set('Authorization', "Bearer " + token)
+                            .send({})];
+                case 3:
+                    response = _a.sent();
+                    helpers_1.expectError(response, errors_1.TITLE_IS_REQUIRED);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should update todo when data are valid', function () { return __awaiter(_this, void 0, void 0, function () {
+        var validUser, createdUser, token, oldData, todoToBeUpdated, newData, response, updatedTodo;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    validUser = { email: main_1.default.mailgun_test_recipient, password: 'password' };
+                    return [4 /*yield*/, db.User.create(validUser)];
+                case 1:
+                    createdUser = _a.sent();
+                    return [4 /*yield*/, utils_1.generateToken({ _id: createdUser.id })];
+                case 2:
+                    token = _a.sent();
+                    oldData = { title: 'Old title', description: 'Old description', completed_at: null };
+                    return [4 /*yield*/, todoRepo_1.createTodo(oldData)];
+                case 3:
+                    todoToBeUpdated = _a.sent();
+                    newData = {
+                        title: 'New Title',
+                        description: 'New Description',
+                        completed_at: new Date()
+                    };
+                    return [4 /*yield*/, request(app)
+                            .patch("/api/v1/todos/" + todoToBeUpdated.id)
+                            .set('Authorization', "Bearer " + token)
+                            .type('form')
+                            .send(newData)];
+                case 4:
+                    response = _a.sent();
+                    return [4 /*yield*/, todoRepo_1.getTodoById(todoToBeUpdated.id)];
+                case 5:
+                    updatedTodo = _a.sent();
+                    expect(response.statusCode).toBe(200);
+                    expect(updatedTodo.title).toBe(newData.title);
+                    expect(updatedTodo.description).toBe(newData.description);
+                    expect(updatedTodo.completed_at).toEqual(newData.completed_at);
                     return [2 /*return*/];
             }
         });

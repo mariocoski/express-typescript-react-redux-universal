@@ -44,6 +44,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var db = require('../models');
+var _ = require("lodash");
 function createTodo(values, settings) {
     if (settings === void 0) { settings = {}; }
     return __awaiter(this, void 0, void 0, function () {
@@ -63,4 +64,27 @@ function getTodosForUserId(user_id) {
     });
 }
 exports.getTodosForUserId = getTodosForUserId;
+function getTodoById(todo_id) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, db.Todo.findOne({ where: { deleted_at: null } })];
+        });
+    });
+}
+exports.getTodoById = getTodoById;
+function updateTodoById(todoId, data) {
+    return __awaiter(this, void 0, void 0, function () {
+        var fillable, validData;
+        return __generator(this, function (_a) {
+            fillable = ['title', 'description', 'completed_at'];
+            validData = _.pick(data, fillable);
+            return [2 /*return*/, db.Todo.update(validData, {
+                    where: {
+                        id: todoId
+                    }
+                })];
+        });
+    });
+}
+exports.updateTodoById = updateTodoById;
 //# sourceMappingURL=todoRepo.js.map
