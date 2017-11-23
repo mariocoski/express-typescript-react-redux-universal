@@ -261,6 +261,35 @@ describe('API V1', function () {
             }
         });
     }); });
+    it('should not update todo when data are valid but it does not belong to user', function () { return __awaiter(_this, void 0, void 0, function () {
+        var validUser, createdUser, token, newData, someoneElseTodo, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    validUser = { email: main_1.default.mailgun_test_recipient, password: 'password' };
+                    return [4 /*yield*/, db.User.create(validUser)];
+                case 1:
+                    createdUser = _a.sent();
+                    return [4 /*yield*/, utils_1.generateToken({ _id: createdUser.id })];
+                case 2:
+                    token = _a.sent();
+                    newData = { title: 'title', description: 'description', user_id: 999,
+                        completed_at: null };
+                    return [4 /*yield*/, todoRepo_1.createTodo(newData)];
+                case 3:
+                    someoneElseTodo = _a.sent();
+                    return [4 /*yield*/, request(app)
+                            .patch("/api/v1/todos/" + someoneElseTodo.id)
+                            .set('Authorization', "Bearer " + token)
+                            .type('form')
+                            .send(newData)];
+                case 4:
+                    response = _a.sent();
+                    expect(response.statusCode).toBe(403);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
     it('should update todo when data are valid', function () { return __awaiter(_this, void 0, void 0, function () {
         var validUser, createdUser, token, oldData, todoToBeUpdated, newData, response, updatedTodo;
         return __generator(this, function (_a) {
@@ -273,7 +302,8 @@ describe('API V1', function () {
                     return [4 /*yield*/, utils_1.generateToken({ _id: createdUser.id })];
                 case 2:
                     token = _a.sent();
-                    oldData = { title: 'Old title', description: 'Old description', completed_at: null };
+                    oldData = { title: 'Old title', description: 'Old description',
+                        user_id: createdUser.id, completed_at: null };
                     return [4 /*yield*/, todoRepo_1.createTodo(oldData)];
                 case 3:
                     todoToBeUpdated = _a.sent();
@@ -296,6 +326,112 @@ describe('API V1', function () {
                     expect(updatedTodo.title).toBe(newData.title);
                     expect(updatedTodo.description).toBe(newData.description);
                     expect(updatedTodo.completed_at).toEqual(newData.completed_at);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should not delete todo when unauthenticated', function () { return __awaiter(_this, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, request(app).delete('/api/v1/todos/1')];
+                case 1:
+                    response = _a.sent();
+                    expect(response.statusCode).toBe(401);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should respond with 401 when deleting todo and token is invalid', function () { return __awaiter(_this, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, request(app)
+                        .delete('/api/v1/todos/1')
+                        .set('Authorization', 'Bearer invalid-token')];
+                case 1:
+                    response = _a.sent();
+                    expect(response.statusCode).toBe(401);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should not return 404 when todo does not exist', function () { return __awaiter(_this, void 0, void 0, function () {
+        var validUser, createdUser, token, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    validUser = { email: main_1.default.mailgun_test_recipient, password: 'password' };
+                    return [4 /*yield*/, db.User.create(validUser)];
+                case 1:
+                    createdUser = _a.sent();
+                    return [4 /*yield*/, utils_1.generateToken({ _id: createdUser.id })];
+                case 2:
+                    token = _a.sent();
+                    return [4 /*yield*/, request(app)
+                            .delete("/api/v1/todos/999")
+                            .set('Authorization', "Bearer " + token)];
+                case 3:
+                    response = _a.sent();
+                    expect(response.statusCode).toBe(404);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should not delete todo when it does not belong to user', function () { return __awaiter(_this, void 0, void 0, function () {
+        var validUser, createdUser, token, newData, someoneElseTodo, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    validUser = { email: main_1.default.mailgun_test_recipient, password: 'password' };
+                    return [4 /*yield*/, db.User.create(validUser)];
+                case 1:
+                    createdUser = _a.sent();
+                    return [4 /*yield*/, utils_1.generateToken({ _id: createdUser.id })];
+                case 2:
+                    token = _a.sent();
+                    newData = { title: 'title', description: 'description', user_id: 999,
+                        completed_at: null };
+                    return [4 /*yield*/, todoRepo_1.createTodo(newData)];
+                case 3:
+                    someoneElseTodo = _a.sent();
+                    return [4 /*yield*/, request(app)
+                            .delete("/api/v1/todos/" + someoneElseTodo.id)
+                            .set('Authorization', "Bearer " + token)];
+                case 4:
+                    response = _a.sent();
+                    expect(response.statusCode).toBe(403);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should delete todo when exists and belongs to user', function () { return __awaiter(_this, void 0, void 0, function () {
+        var validUser, createdUser, token, data, todoToBeDeleted, response, todo;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    validUser = { email: main_1.default.mailgun_test_recipient, password: 'password' };
+                    return [4 /*yield*/, db.User.create(validUser)];
+                case 1:
+                    createdUser = _a.sent();
+                    return [4 /*yield*/, utils_1.generateToken({ _id: createdUser.id })];
+                case 2:
+                    token = _a.sent();
+                    data = { title: 'Old title', description: 'Old description',
+                        user_id: createdUser.id, completed_at: null };
+                    return [4 /*yield*/, todoRepo_1.createTodo(data)];
+                case 3:
+                    todoToBeDeleted = _a.sent();
+                    return [4 /*yield*/, request(app)
+                            .delete("/api/v1/todos/" + todoToBeDeleted.id)
+                            .set('Authorization', "Bearer " + token)];
+                case 4:
+                    response = _a.sent();
+                    return [4 /*yield*/, todoRepo_1.getTodoById(todoToBeDeleted.id)];
+                case 5:
+                    todo = _a.sent();
+                    expect(todo).toBeNull();
+                    expect(response.statusCode).toBe(200);
                     return [2 /*return*/];
             }
         });

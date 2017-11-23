@@ -1,6 +1,6 @@
 import {Application, Router, Request, Response, NextFunction} from 'express';
 import {register, login, forgotPassword, resetPassword} from '../controllers/AuthController';
-import {getAllTodos, storeTodo, updateTodo} from '../controllers/TodosController';
+import {getAllTodos, storeTodo, updateTodo, deleteTodo} from '../controllers/TodosController';
 import { show, update } from '../controllers/ProfileController'; 
 import {validateLogin, validateRegister, validateForgotPassword,
         validateResetPassword, validateUpdateProfile,
@@ -33,7 +33,8 @@ module.exports = (app: Application) => {
   //todos
   apiV1Routes.get('/todos',requireAuth, getAllTodos)
              .post('/todos',requireAuth, validateCreateTodo, storeTodo)
-             .patch('/todos/:todoId', validateUpdateTodo, requireAuth, updateTodo);
+             .patch('/todos/:todoId', requireAuth, validateUpdateTodo,  updateTodo)
+             .delete('/todos/:todoId', requireAuth,  deleteTodo);
   
 
   app.use('/api/v1', apiV1Routes);

@@ -45,6 +45,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = require("../utils");
+var errors_1 = require("../lib/errors");
 var todoRepo_1 = require("../repositories/todoRepo");
 var filter = require("express-validator/filter");
 var getAllTodos = utils_1.catchErrors(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
@@ -80,7 +81,7 @@ var storeTodo = utils_1.catchErrors(function (req, res) { return __awaiter(_this
 }); });
 exports.storeTodo = storeTodo;
 var updateTodo = utils_1.catchErrors(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var errors, data, todoId;
+    var errors, data, todoId, todo;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -90,8 +91,14 @@ var updateTodo = utils_1.catchErrors(function (req, res) { return __awaiter(_thi
                 }
                 data = filter.matchedData(req);
                 todoId = req.params.todoId;
-                return [4 /*yield*/, todoRepo_1.updateTodoById(todoId, data)];
+                return [4 /*yield*/, todoRepo_1.getTodoById(todoId)];
             case 1:
+                todo = _a.sent();
+                if (todo.user_id !== req.user.id) {
+                    throw new errors_1.ForbiddenError();
+                }
+                return [4 /*yield*/, todoRepo_1.updateTodoById(todoId, data)];
+            case 2:
                 _a.sent();
                 res.status(200).json({ updated: true });
                 return [2 /*return*/];
@@ -99,4 +106,28 @@ var updateTodo = utils_1.catchErrors(function (req, res) { return __awaiter(_thi
     });
 }); });
 exports.updateTodo = updateTodo;
+var deleteTodo = utils_1.catchErrors(function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var todoId, todo;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                todoId = req.params.todoId;
+                return [4 /*yield*/, todoRepo_1.getTodoById(todoId)];
+            case 1:
+                todo = _a.sent();
+                if (!todo) {
+                    throw new errors_1.NotFoundError();
+                }
+                if (todo.user_id !== req.user.id) {
+                    throw new errors_1.ForbiddenError();
+                }
+                return [4 /*yield*/, todoRepo_1.deleteTodoById(todoId)];
+            case 2:
+                _a.sent();
+                res.status(200).json({ deleted: true });
+                return [2 /*return*/];
+        }
+    });
+}); });
+exports.deleteTodo = deleteTodo;
 //# sourceMappingURL=TodosController.js.map

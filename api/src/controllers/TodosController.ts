@@ -1,7 +1,8 @@
 import {Request, Response } from 'express';
 import {catchErrors,getErrors,formatError} from '../utils';
-import {UnauthorizedError} from '../lib/errors';
-import {getTodosForUserId, getTodoById, createTodo, updateTodoById} from '../repositories/todoRepo';
+import {UnauthorizedError, ForbiddenError, NotFoundError} from '../lib/errors';
+import {getTodosForUserId, getTodoById, createTodo, 
+        updateTodoById, deleteTodoById } from '../repositories/todoRepo';
 import * as filter from 'express-validator/filter';
 
 const getAllTodos = catchErrors(async (req: Request, res: Response) => {
@@ -39,17 +40,42 @@ const updateTodo = catchErrors(async (req: Request, res: Response) => {
   }
   
   const data: any = filter.matchedData(req);
+  
   const todoId = req.params.todoId;
+
+  const todo = await getTodoById(todoId);
+
+  if(todo.user_id !== req.user.id){
+    throw new ForbiddenError();
+  }
 
   await updateTodoById(todoId, data);
 
   res.status(200).json({ updated: true });
 });
 
+const deleteTodo = catchErrors(async (req: Request, res: Response) => {
 
+  const todoId = req.params.todoId;
+
+  const todo = await getTodoById(todoId);
+
+  if(! todo){
+    throw new NotFoundError();
+  }
+
+  if(todo.user_id !== req.user.id){
+    throw new ForbiddenError();
+  }
+  
+  await deleteTodoById(todoId);
+
+  res.status(200).json({ deleted: true });
+});
 
 export {
   getAllTodos,
   storeTodo,
-  updateTodo
+  updateTodo,
+  deleteTodo
 }
