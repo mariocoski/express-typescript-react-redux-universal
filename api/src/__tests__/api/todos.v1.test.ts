@@ -131,13 +131,33 @@ describe('API V1', () => {
     expectError(response,TITLE_IS_REQUIRED);
   });
 
+  it('should not update todo when data are valid but it does not belong to user', async() => {
+
+    const validUser = {email:config.mailgun_test_recipient, password: 'password'};
+    const createdUser = await db.User.create(validUser);
+    const token = await generateToken({_id: createdUser.id});
+
+     const newData = {title: 'title', description: 'description', user_id: 999,
+                        completed_at: null};
+
+    const someoneElseTodo = await createTodo(newData);
+    const response = await request(app)
+                                .patch(`/api/v1/todos/${someoneElseTodo.id}`)
+                                .set('Authorization',`Bearer ${token}`)
+                                .type('form')
+                                .send(newData);
+
+    expect(response.statusCode).toBe(403);
+  });
+
   it('should update todo when data are valid', async() => {
 
     const validUser = {email:config.mailgun_test_recipient, password: 'password'};
     const createdUser = await db.User.create(validUser);
     const token = await generateToken({_id: createdUser.id});
 
-    const oldData = {title: 'Old title', description: 'Old description', completed_at: null};
+    const oldData = {title: 'Old title', description: 'Old description', 
+                    user_id: createdUser.id, completed_at: null};
 
     const todoToBeUpdated = await createTodo(oldData);
 
@@ -159,6 +179,71 @@ describe('API V1', () => {
     expect(updatedTodo.title).toBe(newData.title);
     expect(updatedTodo.description).toBe(newData.description);
     expect(updatedTodo.completed_at).toEqual(newData.completed_at);
+  });
+
+   it('should not delete todo when unauthenticated', async () => {
+    const response = await request(app).delete('/api/v1/todos/1');
+    expect(response.statusCode).toBe(401);
+  });
+
+    
+  it('should respond with 401 when deleting todo and token is invalid', async() => {
+    const response = await request(app)
+                                  .delete('/api/v1/todos/1')
+                                  .set('Authorization', 'Bearer invalid-token');
+    expect(response.statusCode).toBe(401);
+  });
+
+  it('should not return 404 when todo does not exist', async() => {
+
+    const validUser = {email:config.mailgun_test_recipient, password: 'password'};
+    const createdUser = await db.User.create(validUser);
+    const token = await generateToken({_id: createdUser.id});
+
+    const response = await request(app)
+                                .delete(`/api/v1/todos/999`)
+                                .set('Authorization',`Bearer ${token}`);
+
+    expect(response.statusCode).toBe(404);
+  });
+
+  it('should not delete todo when it does not belong to user', async() => {
+
+    const validUser = {email:config.mailgun_test_recipient, password: 'password'};
+    const createdUser = await db.User.create(validUser);
+    const token = await generateToken({_id: createdUser.id});
+
+    const newData = {title: 'title', description: 'description', user_id: 999,
+                        completed_at: null};
+
+    const someoneElseTodo = await createTodo(newData);
+
+    const response = await request(app)
+                                .delete(`/api/v1/todos/${someoneElseTodo.id}`)
+                                .set('Authorization',`Bearer ${token}`);
+
+    expect(response.statusCode).toBe(403);
+  });
+
+  it('should delete todo when exists and belongs to user', async() => {
+
+    const validUser = {email:config.mailgun_test_recipient, password: 'password'};
+    const createdUser = await db.User.create(validUser);
+    const token = await generateToken({_id: createdUser.id});
+
+    const data = {title: 'Old title', description: 'Old description', 
+                    user_id: createdUser.id, completed_at: null};
+
+    const todoToBeDeleted = await createTodo(data);
+
+    const response = await request(app)
+                                .delete(`/api/v1/todos/${todoToBeDeleted.id}`)
+                                .set('Authorization',`Bearer ${token}`);
+
+    const todo = await getTodoById(todoToBeDeleted.id);
+
+    expect(todo).toBeNull();
+    expect(response.statusCode).toBe(200);
   });
 
 

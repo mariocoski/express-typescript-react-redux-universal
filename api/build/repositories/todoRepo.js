@@ -87,4 +87,16 @@ function updateTodoById(todoId, data) {
     });
 }
 exports.updateTodoById = updateTodoById;
+function deleteTodoById(todoId) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, db.Todo.destroy({
+                    where: {
+                        id: todoId
+                    }
+                })];
+        });
+    });
+}
+exports.deleteTodoById = deleteTodoById;
 //# sourceMappingURL=todoRepo.js.map

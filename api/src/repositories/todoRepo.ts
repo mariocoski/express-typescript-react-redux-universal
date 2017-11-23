@@ -28,3 +28,11 @@ export async function updateTodoById(todoId: number, data: any) {
     }
   });
 }
+
+export async function deleteTodoById(todoId: number) {
+  return db.Todo.destroy({
+    where: {
+      id: todoId
+    }
+  });
+}

@@ -26,7 +26,8 @@ module.exports = function (app) {
     //todos
     apiV1Routes.get('/todos', passport_1.requireAuth, TodosController_1.getAllTodos)
         .post('/todos', passport_1.requireAuth, index_1.validateCreateTodo, TodosController_1.storeTodo)
-        .patch('/todos/:todoId', index_1.validateUpdateTodo, passport_1.requireAuth, TodosController_1.updateTodo);
+        .patch('/todos/:todoId', passport_1.requireAuth, index_1.validateUpdateTodo, TodosController_1.updateTodo)
+        .delete('/todos/:todoId', passport_1.requireAuth, TodosController_1.deleteTodo);
     app.use('/api/v1', apiV1Routes);
     app.use('/auth', authRoutes);
     return app;
