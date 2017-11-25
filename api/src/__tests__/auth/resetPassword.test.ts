@@ -4,7 +4,6 @@ import {TOKEN_IS_REQUIRED, EXPIRED_PASSWORD_RESET_TOKEN,
   INVALID_PASSWORD_RESET_TOKEN} from '../../constants/errors';
 const db = require('../../models');
 import {seedDb, comparePassword} from '../../utils';
-import {sendEmail} from '../../utils/mail';
 import {findUserByEmail, createUser} from '../../repositories/userRepo';
 import {expectError} from '../helpers';
 import config from '../../config/main';

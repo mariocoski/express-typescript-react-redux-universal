@@ -4,7 +4,6 @@ import {EMAIL_IS_REQUIRED, EMAIL_IS_INVALID, PASSWORD_IS_REQUIRED,
 const db = require('../../models');
 import {seedDb} from '../../utils';
 import {expectError} from '../helpers';
-import {USER_ROLE, ADMIN_ROLE, SUPERADMIN_ROLE} from '../../constants/roles';
 import config from '../../config/main';
 import {findUserByEmail} from '../../repositories/userRepo';
 
