@@ -1,6 +1,6 @@
 require('dotenv').config();
-import { generateToken,comparePassword} from '../../utils';
-import {findUserById, findUserByEmail} from '../../repositories/userRepo';
+import { generateToken, comparePassword} from '../../utils';
+import {findUserById} from '../../repositories/userRepo';
 import {UNAUTHORIZED,USER_DOES_NOT_EXIST,PASSWORD_IS_TOO_SHORT,
   EMAIL_ALREADY_IN_USE, EMAIL_IS_INVALID} from '../../constants/errors';
 import config from '../../config/main';

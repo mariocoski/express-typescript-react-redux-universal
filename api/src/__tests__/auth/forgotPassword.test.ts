@@ -2,7 +2,6 @@ require('dotenv').config();
 import {EMAIL_IS_REQUIRED, EMAIL_IS_INVALID, USER_NOT_FOUND} from '../../constants/errors';
 const db = require('../../models');
 import {seedDb} from '../../utils';
-import {sendEmail} from '../../utils/mail';
 import {findUserByEmail} from '../../repositories/userRepo';
 import {expectError} from '../helpers';
 import config from '../../config/main';

@@ -3,7 +3,7 @@ import config from '../../config/main';
 import {expectError} from '../helpers';
 import {generateToken} from '../../utils';
 import {createTodo,getTodosForUserId,getTodoById} from '../../repositories/todoRepo';
-import {createUser,findUserByEmail} from '../../repositories/userRepo';
+import {createUser} from '../../repositories/userRepo';
 import {TITLE_IS_REQUIRED} from '../../constants/errors';
 const db = require('../../models');
 
