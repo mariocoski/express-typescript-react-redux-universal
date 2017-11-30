@@ -43,6 +43,17 @@ var utils_1 = require("../../utils");
 var userRepo_1 = require("../../repositories/userRepo");
 var helpers_1 = require("../helpers");
 var main_1 = require("../../config/main");
+jest.mock('mailgun-js', function () {
+    return jest.fn(function (options) {
+        return {
+            messages: jest.fn(function () {
+                return {
+                    send: jest.fn(function () { console.log('sent'); })
+                };
+            })
+        };
+    });
+});
 describe('FORGOT PASSWORD', function () {
     var request = require('supertest');
     var app;
@@ -108,7 +119,6 @@ describe('FORGOT PASSWORD', function () {
             }
         });
     }); });
-    jest.mock('mailgun-js');
     it('should send an email with link when email exists', function () { return __awaiter(_this, void 0, void 0, function () {
         var response, user;
         return __generator(this, function (_a) {

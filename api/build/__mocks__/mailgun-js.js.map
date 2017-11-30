@@ -1,1 +1,0 @@
-{"version":3,"file":"mailgun-js.js","sourceRoot":"","sources":["../../src/__mocks__/mailgun-js.ts"],"names":[],"mappings":";AAAA,MAAM,CAAC,OAAO,GAAG,IAAI,CAAC,EAAE,CAAC,UAAC,OAAO;IAC/B,MAAM,CAAC;QACL,QAAQ,EAAE,IAAI,CAAC,EAAE,CAAC;YAChB,MAAM,CAAC;gBACL,IAAI,EAAE,IAAI,CAAC,EAAE,EAAE;aAChB,CAAA;QACH,CAAC,CAAC;KACH,CAAA;AACH,CAAC,CAAC,CAAA"}
