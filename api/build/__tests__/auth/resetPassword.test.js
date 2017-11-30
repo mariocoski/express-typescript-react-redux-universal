@@ -44,6 +44,17 @@ var userRepo_1 = require("../../repositories/userRepo");
 var helpers_1 = require("../helpers");
 var main_1 = require("../../config/main");
 var constants_1 = require("../../constants");
+jest.mock('mailgun-js', function () {
+    return jest.fn(function (options) {
+        return {
+            messages: jest.fn(function () {
+                return {
+                    send: jest.fn()
+                };
+            })
+        };
+    });
+});
 describe('RESET PASSWORD', function () {
     var request = require('supertest');
     var validData = { token: 'valid-token', password: 'password', password_confirmation: 'password' };
@@ -187,14 +198,12 @@ describe('RESET PASSWORD', function () {
         var response, updatedUser, match;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    jest.mock('mailgun-js');
-                    return [4 /*yield*/, userRepo_1.createUser({
-                            email: main_1.default.mailgun_test_recipient,
-                            password: 'oldpassword',
-                            password_reset_token: 'valid-token',
-                            password_reset_token_expired_at: new Date()
-                        })];
+                case 0: return [4 /*yield*/, userRepo_1.createUser({
+                        email: main_1.default.mailgun_test_recipient,
+                        password: 'oldpassword',
+                        password_reset_token: 'valid-token',
+                        password_reset_token_expired_at: new Date()
+                    })];
                 case 1:
                     _a.sent();
                     return [4 /*yield*/, request(app).post('/auth/reset-password')

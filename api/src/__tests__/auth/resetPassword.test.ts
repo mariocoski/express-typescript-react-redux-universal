@@ -9,6 +9,18 @@ import {expectError} from '../helpers';
 import config from '../../config/main';
 import {TWO_HOURS} from '../../constants';
 
+jest.mock('mailgun-js',()=>{
+  return jest.fn((options)=>{
+    return {
+      messages: jest.fn(() => {
+        return {
+          send: jest.fn()
+        }
+      })
+    }
+  });
+});
+
 describe('RESET PASSWORD', () => {
   const request = require('supertest');
   const validData = { token: 'valid-token', password: 'password', password_confirmation: 'password' };
@@ -94,7 +106,6 @@ describe('RESET PASSWORD', () => {
 
 
   it('should allow to reset password when token is valid and not expired', async () => {
-    jest.mock('mailgun-js');
     await createUser({
       email:config.mailgun_test_recipient, 
       password: 'oldpassword',

@@ -6,6 +6,18 @@ import {findUserByEmail} from '../../repositories/userRepo';
 import {expectError} from '../helpers';
 import config from '../../config/main';
 
+jest.mock('mailgun-js',()=>{
+  return jest.fn((options)=>{
+    return {
+      messages: jest.fn(() => {
+        return {
+          send: jest.fn()
+        }
+      })
+    }
+  });
+});
+
 describe('FORGOT PASSWORD', () => {
   const request = require('supertest');
   let app: any;
@@ -41,7 +53,6 @@ describe('FORGOT PASSWORD', () => {
     expectError(response,USER_NOT_FOUND);
   });
 
-  jest.mock('mailgun-js');
   it('should send an email with link when email exists', async () => {
     await db.User.create({email:config.mailgun_test_recipient, password: 'password'});
     const response = await request(app).post('/auth/forgot-password')
