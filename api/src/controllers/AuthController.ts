@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { EMAIL_IS_REQUIRED, INVALID_PASSWORD_RESET_TOKEN, EXPIRED_PASSWORD_RESET_TOKEN } from '../constants/errors';
+import {  INVALID_PASSWORD_RESET_TOKEN, EXPIRED_PASSWORD_RESET_TOKEN } from '../constants/errors';
 import { PASSWORD_CHANGE_SUCCESS } from '../constants/messages';
 import { USER_ROLE } from '../constants/roles';
 import { getErrors, formatError, generateRandomToken } from '../utils'
@@ -11,9 +11,9 @@ import { EMAIL_ALREADY_IN_USE,USER_NOT_FOUND } from '../constants/errors';
 import { ONE_HOUR } from '../constants';
 import { findUserByEmail, createUser, findUserByResetPasswordToken } from '../repositories/userRepo'; 
 import { associateRole } from '../repositories/roleRepo';
-import * as crypto from 'crypto';
 import config from '../config/main';
 import * as mailgunService from "mailgun-js";
+
 const mailgun: Mailgun.Mailgun = mailgunService({apiKey: config.mailgun_api_key, domain: config.mailgun_domain});
 
 const register = catchErrors(async (req: Request, res: Response) => {
