@@ -3,7 +3,7 @@ import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt';
 import { env, comparePassword, formatError, getErrors } from '../utils';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { findUserByEmail, findUserById } from '../repositories/userRepo';
-import { UNAUTHORIZED,INVALID_CREDENTIALS, USER_DOES_NOT_EXIST } from '../constants/errors';
+import { UNAUTHORIZED,INVALID_CREDENTIALS } from '../constants/errors';
 import { Request, Response, NextFunction} from 'express';
 import {BadRequestError,UnauthorizedError} from '../lib/errors';
 
