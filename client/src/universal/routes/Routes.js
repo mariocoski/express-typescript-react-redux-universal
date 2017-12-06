@@ -21,7 +21,7 @@ class Routes extends Component {
       <AppContainer>
         <Switch>
           <Route exact location={location} path='/' component={RouteMap.Home} />
-          <Route exact location={location} path='/todos' component={RouteMap.Todos} />
+          <PrivateRoute exact location={location} path='/todos' component={RouteMap.Todos} />
           <Route exact location={location} path='/contact' component={RouteMap.Contact} />
           <Route exact location={location} path='/login' component={RouteMap.Login} />
           <PrivateRoute exact location={location} path='/dashboard' component={RouteMap.Dashboard} />

@@ -85,7 +85,7 @@ describe('RESET PASSWORD', function () {
             switch (_a.label) {
                 case 0:
                     expect.assertions(2);
-                    return [4 /*yield*/, request(app).post('/auth/reset-password')];
+                    return [4 /*yield*/, request(app).post('/api/v1/auth/reset-password')];
                 case 1:
                     response = _a.sent();
                     helpers_1.expectError(response, errors_1.TOKEN_IS_REQUIRED);
@@ -99,7 +99,7 @@ describe('RESET PASSWORD', function () {
             switch (_a.label) {
                 case 0:
                     expect.assertions(2);
-                    return [4 /*yield*/, request(app).post('/auth/reset-password')
+                    return [4 /*yield*/, request(app).post('/api/v1/auth/reset-password')
                             .type('form')
                             .send({ token: 'token', password: 'short' })];
                 case 1:
@@ -115,7 +115,7 @@ describe('RESET PASSWORD', function () {
             switch (_a.label) {
                 case 0:
                     expect.assertions(2);
-                    return [4 /*yield*/, request(app).post('/auth/reset-password')
+                    return [4 /*yield*/, request(app).post('/api/v1/auth/reset-password')
                             .type('form')
                             .send({
                             token: 'token',
@@ -135,7 +135,7 @@ describe('RESET PASSWORD', function () {
             switch (_a.label) {
                 case 0:
                     expect.assertions(2);
-                    return [4 /*yield*/, request(app).post('/auth/reset-password')
+                    return [4 /*yield*/, request(app).post('/api/v1/auth/reset-password')
                             .type('form')
                             .send({ token: 'token' })];
                 case 1:
@@ -157,7 +157,7 @@ describe('RESET PASSWORD', function () {
                 case 1:
                     _a.sent();
                     expect.assertions(2);
-                    return [4 /*yield*/, request(app).post('/auth/reset-password')
+                    return [4 /*yield*/, request(app).post('/api/v1/auth/reset-password')
                             .type('form')
                             .send({
                             token: 'invalid-token',
@@ -184,7 +184,7 @@ describe('RESET PASSWORD', function () {
                 case 1:
                     _a.sent();
                     expect.assertions(2);
-                    return [4 /*yield*/, request(app).post('/auth/reset-password')
+                    return [4 /*yield*/, request(app).post('/api/v1/auth/reset-password')
                             .type('form')
                             .send(validData)];
                 case 2:
@@ -206,7 +206,7 @@ describe('RESET PASSWORD', function () {
                     })];
                 case 1:
                     _a.sent();
-                    return [4 /*yield*/, request(app).post('/auth/reset-password')
+                    return [4 /*yield*/, request(app).post('/api/v1/auth/reset-password')
                             .type('form')
                             .send(validData)];
                 case 2:

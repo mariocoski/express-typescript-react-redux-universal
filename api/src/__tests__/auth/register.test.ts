@@ -22,33 +22,33 @@ describe('REGISTER', () => {
   });
 
   it('should fail to create a user without input', async () => {
-    const response = await request(app).post('/auth/register');
+    const response = await request(app).post('/api/v1/auth/register');
     expectError(response,EMAIL_IS_REQUIRED);
   });
 
   it('should fail to create a user when email is invalid', async () => {
-    const response = await request(app).post('/auth/register')
+    const response = await request(app).post('/api/v1/auth/register')
                                        .type('form')
                                        .send( { email: 'invalid@email' });
     expectError(response,EMAIL_IS_INVALID);
   });
 
   it('should fail to create a user without password', async () => {
-    const response = await request(app).post('/auth/register')
+    const response = await request(app).post('/api/v1/auth/register')
                                        .type('form')
                                        .send( { email: config.mailgun_test_recipient });
     expectError(response,PASSWORD_IS_REQUIRED);
   });
 
   it('should fail to create a user without password', async () => {
-    const response = await request(app).post('/auth/register')
+    const response = await request(app).post('/api/v1/auth/register')
                                        .type('form')
                                        .send( { email: config.mailgun_test_recipient, password: 'short' });
     expectError(response,PASSWORD_IS_TOO_SHORT);
   });
 
   it('should fail to create a user without password', async () => {
-    const response = await request(app).post('/auth/register')
+    const response = await request(app).post('/api/v1/auth/register')
                                        .type('form')
                                        .send( { email: config.mailgun_test_recipient, password: 'short' });
     expectError(response,PASSWORD_IS_TOO_SHORT);
@@ -57,14 +57,14 @@ describe('REGISTER', () => {
   it('should fail to create a user with the same email address', async () => {
     const validUser = {email:config.mailgun_test_recipient, password: 'password'};
     await db.User.create(validUser);
-    const response = await request(app).post('/auth/register')
+    const response = await request(app).post('/api/v1/auth/register')
                                        .type('form')
                                        .send( validUser);
     expectError(response,EMAIL_ALREADY_IN_USE);
   });
 
   it('should create a user with valid input', async () => {
-    const response = await request(app).post('/auth/register')
+    const response = await request(app).post('/api/v1/auth/register')
                                        .type('form')
                                        .send( { email: config.mailgun_test_recipient, password: 'longenough' });
     const data = JSON.parse(response.text);

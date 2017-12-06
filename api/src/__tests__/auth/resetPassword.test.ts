@@ -39,13 +39,13 @@ describe('RESET PASSWORD', () => {
 
   it('should not reset password without token', async () => {
     expect.assertions(2);
-    const response = await request(app).post('/auth/reset-password');
+    const response = await request(app).post('/api/v1/auth/reset-password');
     expectError(response, TOKEN_IS_REQUIRED);
   });
 
   it('should not reset password without password', async () => {
     expect.assertions(2);
-    const response = await request(app).post('/auth/reset-password')
+    const response = await request(app).post('/api/v1/auth/reset-password')
                                        .type('form')
                                        .send( { token: 'token', password: 'short' });
     expectError(response, PASSWORD_IS_TOO_SHORT);
@@ -53,7 +53,7 @@ describe('RESET PASSWORD', () => {
 
   it('should not reset password without password', async () => {
     expect.assertions(2);
-    const response = await request(app).post('/auth/reset-password')
+    const response = await request(app).post('/api/v1/auth/reset-password')
                                        .type('form')
                                        .send({ 
                                          token: 'token', 
@@ -65,7 +65,7 @@ describe('RESET PASSWORD', () => {
 
   it('should not reset password without password_confirmation', async () => {
     expect.assertions(2);
-    const response = await request(app).post('/auth/reset-password')
+    const response = await request(app).post('/api/v1/auth/reset-password')
                                        .type('form')
                                        .send( { token: 'token' });
     expectError(response, PASSWORD_IS_REQUIRED);
@@ -78,7 +78,7 @@ describe('RESET PASSWORD', () => {
       password_reset_token: 'valid-token'
     });
     expect.assertions(2);
-    const response = await request(app).post('/auth/reset-password')
+    const response = await request(app).post('/api/v1/auth/reset-password')
                                        .type('form')
                                        .send({ 
                                          token: 'invalid-token', 
@@ -98,7 +98,7 @@ describe('RESET PASSWORD', () => {
       password_reset_token_expired_at: new Date(Date.now() - TWO_HOURS)
     });
     expect.assertions(2);
-    const response = await request(app).post('/auth/reset-password')
+    const response = await request(app).post('/api/v1/auth/reset-password')
                                        .type('form')
                                        .send(validData);
     expectError(response, EXPIRED_PASSWORD_RESET_TOKEN);
@@ -112,7 +112,7 @@ describe('RESET PASSWORD', () => {
       password_reset_token: 'valid-token',
       password_reset_token_expired_at: new Date()
     });
-    const response = await request(app).post('/auth/reset-password')
+    const response = await request(app).post('/api/v1/auth/reset-password')
                                        .type('form')
                                        .send(validData);
 
