@@ -22,9 +22,11 @@ class TopNavContainer extends Component {
                         <PhoneScreenHidden>
                             <NavLink className='item' activeClassName='teal active' to="/" exact={true}>Home</NavLink>
                         </PhoneScreenHidden>
+                        {this.props.isAuthenticated && 
                         <PhoneScreenHidden>    
                             <NavLink className='item' activeClassName='teal active' to="/todos" exact={true}>Todos</NavLink>
-                        </PhoneScreenHidden>   
+                        </PhoneScreenHidden> 
+                        }  
                         <PhoneScreenHidden>    
                             <NavLink className='item' activeClassName='teal active' to="/contact" exact={true}>Contact</NavLink>
                         </PhoneScreenHidden> 

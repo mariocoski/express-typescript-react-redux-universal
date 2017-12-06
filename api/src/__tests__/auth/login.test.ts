@@ -23,26 +23,26 @@ describe('LOGIN', () => {
 
   it('should fail to log in without input', async () => {
     expect.assertions(2);
-    const response = await request(app).post('/auth/login');
+    const response = await request(app).post('/api/v1/auth/login');
     expectError(response,EMAIL_IS_REQUIRED);
   });
 
   it('should fail to log in when email is invalid', async () => {
-    const response = await request(app).post('/auth/login')
+    const response = await request(app).post('/api/v1/auth/login')
                                        .type('form')
                                        .send( { email: 'invalid@email' });
     expectError(response,EMAIL_IS_INVALID);
   });
 
   it('should fail to log in without password', async () => {
-    const response = await request(app).post('/auth/login')
+    const response = await request(app).post('/api/v1/auth/login')
                                        .type('form')
                                        .send( { email: config.mailgun_test_recipient });
     expectError(response,PASSWORD_IS_REQUIRED);
   });
 
   it('should fail to log in when user does not exist', async () => {
-    const response = await request(app).post('/auth/login')
+    const response = await request(app).post('/api/v1/auth/login')
                                        .type('form')
                                        .send( { 
                                          email: 'user_does_not_exist@email.com',
@@ -53,7 +53,7 @@ describe('LOGIN', () => {
 
   it('should fail to log in when user provided wrong password', async () => {
     await db.User.create({email:config.mailgun_test_recipient, password: 'password'});
-    const response = await request(app).post('/auth/login')
+    const response = await request(app).post('/api/v1/auth/login')
                                        .type('form')
                                        .send( { 
                                          email: config.mailgun_test_recipient,
@@ -72,7 +72,7 @@ describe('LOGIN', () => {
     };
     
     const user = await db.User.create(validCredentials);
-    const response = await request(app).post('/auth/login')
+    const response = await request(app).post('/api/v1/auth/login')
                                        .type('form')
                                        .send({ 
                                          email:config.mailgun_test_recipient, 

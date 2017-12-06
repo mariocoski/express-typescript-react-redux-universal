@@ -38,7 +38,7 @@ module.exports = (app: Application) => {
   
 
   app.use('/api/v1', apiV1Routes);
-  app.use('/auth', authRoutes);
+  app.use('/api/v1/auth', authRoutes);
 
   return app;
 } 

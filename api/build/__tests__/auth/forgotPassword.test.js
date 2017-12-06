@@ -48,7 +48,7 @@ jest.mock('mailgun-js', function () {
         return {
             messages: jest.fn(function () {
                 return {
-                    send: jest.fn(function () { console.log('sent'); })
+                    send: jest.fn()
                 };
             })
         };
@@ -83,7 +83,7 @@ describe('FORGOT PASSWORD', function () {
             switch (_a.label) {
                 case 0:
                     expect.assertions(2);
-                    return [4 /*yield*/, request(app).post('/auth/forgot-password')];
+                    return [4 /*yield*/, request(app).post('/api/v1/auth/forgot-password')];
                 case 1:
                     response = _a.sent();
                     helpers_1.expectError(response, errors_1.EMAIL_IS_REQUIRED);
@@ -95,7 +95,7 @@ describe('FORGOT PASSWORD', function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request(app).post('/auth/forgot-password')
+                case 0: return [4 /*yield*/, request(app).post('/api/v1/auth/forgot-password')
                         .type('form')
                         .send({ email: 'invalid@email' })];
                 case 1:
@@ -109,7 +109,7 @@ describe('FORGOT PASSWORD', function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request(app).post('/auth/forgot-password')
+                case 0: return [4 /*yield*/, request(app).post('/api/v1/auth/forgot-password')
                         .type('form')
                         .send({ email: main_1.default.mailgun_test_recipient })];
                 case 1:
@@ -126,7 +126,7 @@ describe('FORGOT PASSWORD', function () {
                 case 0: return [4 /*yield*/, db.User.create({ email: main_1.default.mailgun_test_recipient, password: 'password' })];
                 case 1:
                     _a.sent();
-                    return [4 /*yield*/, request(app).post('/auth/forgot-password')
+                    return [4 /*yield*/, request(app).post('/api/v1/auth/forgot-password')
                             .type('form')
                             .send({ email: main_1.default.mailgun_test_recipient })];
                 case 2:

@@ -29,7 +29,7 @@ module.exports = function (app) {
         .patch('/todos/:todoId', passport_1.requireAuth, index_1.validateUpdateTodo, TodosController_1.updateTodo)
         .delete('/todos/:todoId', passport_1.requireAuth, TodosController_1.deleteTodo);
     app.use('/api/v1', apiV1Routes);
-    app.use('/auth', authRoutes);
+    app.use('/api/v1/auth', authRoutes);
     return app;
 };
 //# sourceMappingURL=router.js.map

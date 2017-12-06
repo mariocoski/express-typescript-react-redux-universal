@@ -34,19 +34,19 @@ describe('FORGOT PASSWORD', () => {
 
   it('should fail to send reminder link without email', async () => {
     expect.assertions(2);
-    const response = await request(app).post('/auth/forgot-password');
+    const response = await request(app).post('/api/v1/auth/forgot-password');
     expectError(response, EMAIL_IS_REQUIRED);
   });
 
   it('should fail to send reminder link valid email', async () => {
-    const response = await request(app).post('/auth/forgot-password')
+    const response = await request(app).post('/api/v1/auth/forgot-password')
                                        .type('form')
                                        .send( { email: 'invalid@email' });
     expectError(response,EMAIL_IS_INVALID);
   });
 
   it('should fail to send reminder link when email does not match any user', async () => {
-    const response = await request(app).post('/auth/forgot-password')
+    const response = await request(app).post('/api/v1/auth/forgot-password')
                                        .type('form')
                                        .send( { email: config.mailgun_test_recipient });
 
@@ -55,7 +55,7 @@ describe('FORGOT PASSWORD', () => {
 
   it('should send an email with link when email exists', async () => {
     await db.User.create({email:config.mailgun_test_recipient, password: 'password'});
-    const response = await request(app).post('/auth/forgot-password')
+    const response = await request(app).post('/api/v1/auth/forgot-password')
                                        .type('form')
                                        .send( { email: config.mailgun_test_recipient });
     const user = await findUserByEmail(config.mailgun_test_recipient);

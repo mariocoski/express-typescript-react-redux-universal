@@ -61,3 +61,29 @@ export function toggleTodo(id){
 }
 
 
+export function loginUser(history,{email, password}){
+    return dispatch =>  {
+        dispatch(setLoginPending(true));
+        dispatch(setLoginSuccess(false));
+        dispatch(setLoginError(false));
+        return fetch(`${API_URL}/auth/login`,{
+            method: "POST",
+            redirect: 'follow',
+            body: JSON.stringify({ email, password }),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+        })
+        .then(response => (response.json()))
+        .then(response => {
+            localStorage.setItem(JWT_TOKEN, response.token);
+            dispatch(setLoginPending(false));
+            dispatch(setLoginSuccess(true));
+            history.push('/dashboard');
+        }).catch(error => {
+            toastr.error(error.message);
+            console.log(error);
+        });
+    }
+} 

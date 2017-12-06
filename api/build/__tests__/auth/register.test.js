@@ -70,7 +70,7 @@ describe('REGISTER', function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request(app).post('/auth/register')];
+                case 0: return [4 /*yield*/, request(app).post('/api/v1/auth/register')];
                 case 1:
                     response = _a.sent();
                     helpers_1.expectError(response, errors_1.EMAIL_IS_REQUIRED);
@@ -82,7 +82,7 @@ describe('REGISTER', function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request(app).post('/auth/register')
+                case 0: return [4 /*yield*/, request(app).post('/api/v1/auth/register')
                         .type('form')
                         .send({ email: 'invalid@email' })];
                 case 1:
@@ -96,7 +96,7 @@ describe('REGISTER', function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request(app).post('/auth/register')
+                case 0: return [4 /*yield*/, request(app).post('/api/v1/auth/register')
                         .type('form')
                         .send({ email: main_1.default.mailgun_test_recipient })];
                 case 1:
@@ -110,7 +110,7 @@ describe('REGISTER', function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request(app).post('/auth/register')
+                case 0: return [4 /*yield*/, request(app).post('/api/v1/auth/register')
                         .type('form')
                         .send({ email: main_1.default.mailgun_test_recipient, password: 'short' })];
                 case 1:
@@ -124,7 +124,7 @@ describe('REGISTER', function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request(app).post('/auth/register')
+                case 0: return [4 /*yield*/, request(app).post('/api/v1/auth/register')
                         .type('form')
                         .send({ email: main_1.default.mailgun_test_recipient, password: 'short' })];
                 case 1:
@@ -143,7 +143,7 @@ describe('REGISTER', function () {
                     return [4 /*yield*/, db.User.create(validUser)];
                 case 1:
                     _a.sent();
-                    return [4 /*yield*/, request(app).post('/auth/register')
+                    return [4 /*yield*/, request(app).post('/api/v1/auth/register')
                             .type('form')
                             .send(validUser)];
                 case 2:
@@ -157,7 +157,7 @@ describe('REGISTER', function () {
         var response, data, newlyCreatedUser;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request(app).post('/auth/register')
+                case 0: return [4 /*yield*/, request(app).post('/api/v1/auth/register')
                         .type('form')
                         .send({ email: main_1.default.mailgun_test_recipient, password: 'longenough' })];
                 case 1:
