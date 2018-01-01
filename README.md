@@ -1,5 +1,5 @@
 # express-typescript-react-redux-universal
-Universal project which allows you to quickly get up and go with building any large scale java script app.
+Universal project which allows you to quickly get up and going with any large scale javascript app.
 
 ## Why universal? Because it is written in java script that can run on the client and server.
 
