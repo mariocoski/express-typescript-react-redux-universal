@@ -13,8 +13,6 @@ Other nice features:
 ## Technologies used:
 
 CLIENT (UI)
-[![Circle CI](https://circleci.com/gh/mariocoski/express-typescript-react-redux-universal/tree/master.svg?style=shield&circle-token=88e32946d9aeadd3a9aacb7871a857355da29cb6)](https://circleci.com/gh/mariocoski/express-typescript-react-redux-universal/tree/master)
-[![codecov](https://codecov.io/gh/mariocoski/express-typescript-react-redux-universal/branch/master/graph/badge.svg)](https://codecov.io/gh/mariocoski/express-typescript-react-redux-universal)
 - React.js v.16
 - React Router v4
 - Redux 
@@ -23,8 +21,12 @@ CLIENT (UI)
 - Jest
 
 API
-- typescript(used in LL)
-- sequelize (similar to knex)
+
+[![Circle CI](https://circleci.com/gh/mariocoski/express-typescript-react-redux-universal/tree/master.svg?style=shield&circle-token=88e32946d9aeadd3a9aacb7871a857355da29cb6)](https://circleci.com/gh/mariocoski/express-typescript-react-redux-universal/tree/master)
+[![codecov](https://codecov.io/gh/mariocoski/express-typescript-react-redux-universal/branch/master/graph/badge.svg)](https://codecov.io/gh/mariocoski/express-typescript-react-redux-universal)
+
+- typescript
+- sequelize
 - jest 
 - JWT
 
